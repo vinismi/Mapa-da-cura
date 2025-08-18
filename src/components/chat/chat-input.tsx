@@ -3,18 +3,21 @@
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Paperclip, Mic, Send } from "lucide-react";
+import { Mic, Send } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type ChatInputProps = {
   userInput: string;
   onUserInput: (text: string) => void;
   onSendMessage: (text: string) => void;
+  options?: string[];
 };
 
 export function ChatInput({
   userInput,
   onUserInput,
   onSendMessage,
+  options,
 }: ChatInputProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -23,13 +26,25 @@ export function ChatInput({
     }
   };
 
+  const handleOptionClick = (option: string) => {
+    onSendMessage(option);
+  };
+
   return (
     <div className="p-2 md:p-4 bg-secondary/50 border-t">
+       {options && options.length > 0 && (
+        <ScrollArea className="w-full whitespace-nowrap pb-2">
+            <div className="flex gap-2">
+                {options.map((option) => (
+                    <Button key={option} variant="outline" size="sm" className="bg-background" onClick={() => handleOptionClick(option)}>
+                        {option}
+                    </Button>
+                ))}
+            </div>
+            <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      )}
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="rounded-full shrink-0">
-          <Paperclip className="h-5 w-5" />
-          <span className="sr-only">Attach file</span>
-        </Button>
         <Input
           type="text"
           placeholder="Digite uma mensagem..."
@@ -37,6 +52,7 @@ export function ChatInput({
           onChange={(e) => onUserInput(e.target.value)}
           className="flex-1 bg-background h-12 rounded-full px-5"
           autoComplete="off"
+          disabled={!!options && options.length > 0}
         />
         {userInput ? (
           <Button
@@ -52,6 +68,7 @@ export function ChatInput({
             type="button"
             size="icon"
             className="rounded-full shrink-0 w-12 h-12 bg-primary hover:bg-primary/90"
+            disabled={!!options && options.length > 0}
           >
             <Mic className="h-5 w-5" />
             <span className="sr-only">Record audio</span>
@@ -61,3 +78,5 @@ export function ChatInput({
     </div>
   );
 }
+
+    

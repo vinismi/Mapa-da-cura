@@ -18,17 +18,28 @@ export function ChatLayout({
   onUserInput,
   onSendMessage,
 }: ChatLayoutProps) {
+  const lastMessageWithOptions = messages.slice().reverse().find(m => m.options && m.options.length > 0);
+
   return (
     <div className="flex flex-col h-full w-full">
       <ChatHeader />
-      <div className="flex-1 overflow-y-auto bg-[#F0F0F0] dark:bg-zinc-800">
-        <ChatMessages messages={messages} isTyping={isTyping} />
+      <div 
+        className="flex-1 overflow-y-auto bg-repeat bg-center" 
+        style={{ 
+          backgroundImage: "url('/spiritual-bg.png')",
+          backgroundSize: '300px 300px' 
+        }}
+      >
+        <ChatMessages messages={messages} onSendMessage={onSendMessage}/>
       </div>
       <ChatInput
         userInput={userInput}
         onUserInput={onUserInput}
         onSendMessage={onSendMessage}
+        options={lastMessageWithOptions?.options}
       />
     </div>
   );
 }
+
+    
