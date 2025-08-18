@@ -2,6 +2,7 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CheckCheck, Gem, Shield, BookOpen, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 
 import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,11 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 export function ChatMessage({ message }: ChatMessageProps) {
   const { toast } = useToast();
   const isUser = message.sender === "user";
+  const [formattedTime, setFormattedTime] = useState("");
+
+  useEffect(() => {
+    setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
+  }, [message.timestamp]);
 
   const onButtonClick = () => {
     toast({
@@ -148,7 +154,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             isUser ? "text-green-800/70" : "text-muted-foreground"
           )}
         >
-          {format(message.timestamp, "HH:mm", { locale: ptBR })}
+          {formattedTime}
           {isUser && (
             <CheckCheck className="inline-block ml-1 h-4 w-4 text-accent" />
           )}
@@ -157,5 +163,3 @@ export function ChatMessage({ message }: ChatMessageProps) {
     </div>
   );
 }
-
-    
