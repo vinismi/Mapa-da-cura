@@ -78,7 +78,7 @@ export default function Home() {
            setUserMotivation(motivation);
            
            await showTypingIndicator(3500);
-           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Demonstre que você entende o que ele(a) busca de forma breve e empática.` });
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Demonstre que você entende o que ele(a) busca de forma breve e empática, sem repetir o que ele disse.` });
            addMessage({
              sender: "bot",
              type: "text",
@@ -96,7 +96,7 @@ export default function Home() {
             setUserPainDuration(duration);
 
             await showTypingIndicator(3500);
-            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${userPainDuration}. Mostre empatia de forma breve, dizendo que entende o quão desgastante isso pode ser.` });
+            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${duration}. Mostre empatia de forma breve, dizendo que entende o quão desgastante isso pode ser.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -159,40 +159,42 @@ export default function Home() {
                 return; // Wait for user to close status view
             }
             
-            await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
-            
-            await showTypingIndicator(4000);
-            addMessage({ sender: "bot", type: "text", content: `Agora, prepare-se. Senti que seria importante para você e uma pessoa que passou pela mesma situação que a sua vai te ligar. Ela vai te apresentar os benefícios do que a ajudou.` });
-            
-            await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
+            // This logic runs after the user has seen the status
+            if (text === "Já vi os status!") {
+              await showTypingIndicator(3500);
+              addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
+              
+              await showTypingIndicator(4000);
+              addMessage({ sender: "bot", type: "text", content: `Agora, prepare-se. Senti que seria importante para você e uma pessoa que passou pela mesma situação que a sua vai te ligar. Ela vai te apresentar os benefícios do que a ajudou.` });
+              
+              await showTypingIndicator(3000);
+              addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
 
-            setTimeout(async () => {
-                setMessages(prev => prev.filter(m => m.type !== 'live-call'));
-                await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com a Ana tenha te inspirado.` });
+              setTimeout(async () => {
+                  setMessages(prev => prev.filter(m => m.type !== 'live-call'));
+                  await showTypingIndicator(3500);
+                  addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com a Ana tenha te inspirado.` });
 
-                await showTypingIndicator(4000);
-                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
+                  await showTypingIndicator(4000);
+                  addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
 
-                await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança. Por isso, vou te dar acesso a tudo ANTES de você pagar.`});
-                
-                await showTypingIndicator(4000);
-                 addMessage({
-                    sender: "bot",
-                    type: "text",
-                    content: "Você receberá o Mapa da Cura Espiritual completo e todos os bônus. Se sentir no coração que é o caminho certo, você realiza o pagamento.",
-                });
+                  await showTypingIndicator(3500);
+                  addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança. Por isso, vou te dar acesso a tudo ANTES de você pagar.`});
+                  
+                  await showTypingIndicator(4000);
+                  addMessage({
+                      sender: "bot",
+                      type: "text",
+                      content: "Você receberá o Mapa da Cura Espiritual completo e todos os bônus. Se sentir no coração que é o caminho certo, você realiza o pagamento.",
+                  });
 
-                await showTypingIndicator(3500);
-                
-                addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
+                  await showTypingIndicator(3500);
+                  
+                  addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
-                setConversationStep(6);
-            }, 10000); 
-
+                  setConversationStep(6);
+              }, 10000); 
+            }
             break;
 
         case 6: // Access before payment
@@ -248,8 +250,9 @@ export default function Home() {
     
     // This will trigger the next step in the conversation after closing the status.
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage.type === 'status') {
-      handleSendMessage("Já vi os status!");
+    if (lastMessage.type === 'status' && conversationStep === 5) {
+        // We don't add "Já vi os status!" as a user message, just proceed.
+        handleSendMessage("Já vi os status!");
     }
   };
 
