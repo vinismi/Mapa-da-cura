@@ -21,12 +21,15 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   const togglePlay = () => {
     if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
+    
+    if (audioRef.current.paused) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(e => console.error("Audio play failed:", e));
     } else {
-      audioRef.current.play();
+      audioRef.current.pause();
+      setIsPlaying(false);
     }
-    setIsPlaying(!isPlaying);
   };
   
    useEffect(() => {
@@ -44,15 +47,21 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
         setCurrentTime(audio.currentTime);
     }
 
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+
     audio.addEventListener('loadeddata', setAudioData);
     audio.addEventListener('timeupdate', setAudioTime);
-
-    audio.addEventListener('ended', () => setIsPlaying(false));
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended', handlePause);
 
     return () => {
       audio.removeEventListener('loadeddata', setAudioData);
       audio.removeEventListener('timeupdate', setAudioTime);
-      audio.removeEventListener('ended', () => setIsPlaying(false));
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended', handlePause);
     };
   }, []);
 
@@ -117,5 +126,3 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     </div>
   );
 }
-
-    
