@@ -11,8 +11,11 @@ const initialMessages: Message[] = [
   {
     id: "1",
     sender: "bot",
-    type: "text",
-    content: "Olá! Antes de te mostrar como posso ajudar na sua jornada, me diga seu nome, por favor.",
+    type: "audio",
+    content: "/initial_audio.mp3",
+    meta: {
+      audioText: "Olá! Antes de te mostrar como posso ajudar na sua jornada, me diga seu nome, por favor."
+    },
     timestamp: new Date(),
   }
 ];
@@ -121,7 +124,7 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Entendo completamente o quão desgastante pode ser carregar essa dor há tanto tempo.`,
+                content: `Carregar essa dor há tanto tempo pode ser realmente desgastante.`,
             });
             
             await showTypingIndicator(4200);
@@ -315,3 +318,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
