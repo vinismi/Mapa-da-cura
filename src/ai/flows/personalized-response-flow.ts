@@ -55,3 +55,41 @@ const personalizedResponseFlow = ai.defineFlow(
     return output!;
   }
 );
+// New flow to check if user is correcting their name
+const NameCorrectionCheckInputSchema = z.object({
+  previousName: z.string(),
+  currentInput: z.string(),
+});
+export type NameCorrectionCheckInput = z.infer<typeof NameCorrectionCheckInputSchema>;
+
+const NameCorrectionCheckOutputSchema = z.object({
+  isCorrectingName: z.boolean().describe("True if the user seems to be correcting their name, false otherwise."),
+  newName: z.string().nullable().describe("The corrected name if isCorrectingName is true, otherwise null."),
+});
+export type NameCorrectionCheckOutput = z.infer<typeof NameCorrectionCheckOutputSchema>;
+
+export async function checkForNameCorrection(input: NameCorrectionCheckInput): Promise<NameCorrectionCheckOutput> {
+    return nameCorrectionCheckFlow(input);
+}
+
+const nameCorrectionPrompt = ai.definePrompt({
+    name: 'nameCorrectionPrompt',
+    input: { schema: NameCorrectionCheckInputSchema },
+    output: { schema: NameCorrectionCheckOutputSchema },
+    prompt: `A user previously said their name was "{{previousName}}". Their current input is "{{currentInput}}".
+    Analyze the user's input to determine if they are trying to correct their name.
+    Common patterns for name correction include phrases like "meu nome é...", "na verdade é...", "quis dizer...", or simply stating a new name that is different from the previous one.
+    If it seems like a correction, set isCorrectingName to true and extract the new name. Otherwise, set isCorrectingName to false.`,
+});
+
+const nameCorrectionCheckFlow = ai.defineFlow(
+    {
+        name: 'nameCorrectionCheckFlow',
+        inputSchema: NameCorrectionCheckInputSchema,
+        outputSchema: NameCorrectionCheckOutputSchema,
+    },
+    async (input) => {
+        const { output } = await nameCorrectionPrompt(input);
+        return output!;
+    }
+);

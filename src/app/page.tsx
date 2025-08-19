@@ -2,19 +2,12 @@
 
 import { useState } from "react";
 import { ChatLayout } from "@/components/chat/chat-layout";
-import { generatePersonalizedResponse } from "@/ai/flows/personalized-response-flow";
+import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrectionCheckOutput } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
 
 const initialMessages: Message[] = [
-  {
-    id: "0",
-    sender: "bot",
-    type: "audio",
-    content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder
-    timestamp: new Date(new Date().getTime() - 1000), // Ensure audio is slightly before text
-  },
   {
     id: "1",
     sender: "bot",
@@ -49,6 +42,26 @@ export default function Home() {
       setIsTyping(false);
   }
 
+  const handleNameCorrection = async (correction: NameCorrectionCheckOutput, text: string, currentQuestion: () => void) => {
+    if (correction.isCorrectingName && correction.newName) {
+        setUserName(correction.newName);
+        await showTypingIndicator(2000);
+        addMessage({ sender: "bot", type: "text", content: `Entendido, irei te chamar de ${correction.newName} daqui para frente.` });
+        await showTypingIndicator(3000);
+        currentQuestion(); // Re-ask the current question
+        return true;
+    }
+    return false;
+  }
+
+  const askMotivationQuestion = () => {
+    addMessage({
+        sender: "bot",
+        type: "text",
+        content: `Que bom ter você aqui, ${userName}! Queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
+    });
+  }
+  
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
@@ -78,6 +91,12 @@ export default function Home() {
 
         case 1: // Asked about motivation
            const motivation = text;
+           
+           const nameCorrection = await checkForNameCorrection({ previousName: userName, currentInput: text });
+           if (await handleNameCorrection(nameCorrection, text, () => {
+               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrection.newName}! E qual seria a sua maior motivação para buscar a cura espiritual?` });
+           })) return;
+
            setUserMotivation(motivation);
            
            await showTypingIndicator(5500);
@@ -99,11 +118,10 @@ export default function Home() {
             setUserPainDuration(duration);
 
             await showTypingIndicator(5500);
-            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${duration}. Mostre empatia de forma breve, dizendo que entende o quão desgastante isso pode ser.` });
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: empathyResponse.personalizedResponse,
+                content: `Entendo completamente o quão desgastante pode ser carregar essa dor há tanto tempo.`,
             });
             
             await showTypingIndicator(4200);
