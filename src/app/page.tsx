@@ -54,7 +54,7 @@ export default function Home() {
     addMessage({
       sender: "bot",
       type: "audio",
-      content: "/initial_audio.mp3",
+      content: "https://storage.googleapis.com/studiopublic/initial_audio.mp3",
       meta: {
         audioText: "Olá! Que bom que você veio. Tudo bem com você?",
       },
