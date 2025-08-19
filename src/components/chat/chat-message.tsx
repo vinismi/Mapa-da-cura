@@ -57,25 +57,24 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 function LiveCall({ content }: { content: string }) {
      const [callAccepted, setCallAccepted] = useState(false);
      const videoRef = useRef<HTMLVideoElement>(null);
-
-    useEffect(() => {
-        // Simulate auto-accepting the call
-        const timer = setTimeout(() => {
-            setCallAccepted(true);
-        }, 2500);
-        return () => clearTimeout(timer);
-    }, []);
+     const [showNotification, setShowNotification] = useState(true);
 
     useEffect(() => {
         if (callAccepted && videoRef.current) {
-            videoRef.current.play();
+            videoRef.current.play().catch(error => {
+                console.error("Video play failed:", error);
+            });
         }
     }, [callAccepted]);
 
+    const handleAcceptCall = () => {
+        setShowNotification(false);
+        setCallAccepted(true);
+    }
 
-    if (!callAccepted) {
+    if (showNotification) {
         return (
-            <div className="fixed inset-x-0 top-4 z-50 flex justify-center animate-in fade-in-25 slide-in-from-top-10">
+            <div className="fixed inset-x-0 top-4 z-50 flex justify-center animate-in fade-in-25 slide-in-from-top-10 duration-500">
                  <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
                     <CardContent className="p-4 flex items-center gap-4">
                          <Avatar className="h-12 w-12 border-2 border-background">
@@ -84,9 +83,9 @@ function LiveCall({ content }: { content: string }) {
                         </Avatar>
                         <div className="flex-1">
                             <p className="font-bold">Ana</p>
-                            <p className="text-sm text-green-500">Chamada de vídeo recebida...</p>
+                            <p className="text-sm text-green-500 animate-pulse">Chamada de vídeo recebida...</p>
                         </div>
-                        <Button variant="ghost" size="icon" className="rounded-full bg-green-500 hover:bg-green-600 text-white h-12 w-12">
+                        <Button variant="ghost" size="icon" className="rounded-full bg-green-500 hover:bg-green-600 text-white h-12 w-12" onClick={handleAcceptCall}>
                             <Phone className="h-6 w-6" />
                         </Button>
                     </CardContent>
@@ -95,33 +94,39 @@ function LiveCall({ content }: { content: string }) {
         )
     }
 
-    return (
-        <div className="fixed inset-0 bg-zinc-800/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in">
-             <div className="flex-1 flex items-center justify-center p-4 relative">
-                 <div className="absolute top-4 left-4 text-white bg-black/30 p-2 rounded-lg">
-                    <p className="font-bold">Ana</p>
-                    <p className="text-sm">01:15</p>
-                 </div>
-                 <video 
-                    ref={videoRef}
-                    src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
-                    className="aspect-video w-full max-w-4xl rounded-lg" 
-                    muted 
-                />
+    if (callAccepted) {
+        return (
+            <div className="fixed inset-0 bg-zinc-900/95 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-500">
+                 <div className="flex-1 flex items-center justify-center p-4 relative">
+                     <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
+                        <p className="font-bold">Ana</p>
+                        <p className="text-xs">01:15</p>
+                     </div>
+                     <video 
+                        ref={videoRef}
+                        src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+                        className="aspect-video w-full max-w-4xl rounded-lg shadow-2xl" 
+                        muted
+                        autoPlay 
+                        loop
+                    />
+                </div>
+                <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
+                    <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                        <VideoOff className="h-6 w-6" />
+                    </Button>
+                    <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                        <MicOff className="h-6 w-6" />
+                    </Button>
+                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16">
+                        <Phone className="h-7 w-7 transform -rotate-[135deg]" />
+                    </Button>
+                </div>
             </div>
-            <div className="bg-black/30 p-4 flex justify-center items-center gap-4">
-                <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
-                    <VideoOff className="h-6 w-6" />
-                </Button>
-                <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
-                    <MicOff className="h-6 w-6" />
-                </Button>
-                <Button variant="destructive" size="icon" className="rounded-full h-16 w-16">
-                    <Phone className="h-7 w-7 transform -rotate-[135deg]" />
-                </Button>
-            </div>
-        </div>
-    )
+        )
+    }
+    
+    return null;
 }
 
 
@@ -131,7 +136,6 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   const [formattedTime, setFormattedTime] = useState("");
 
   useEffect(() => {
-    // This check prevents hydration errors by ensuring `new Date()` is only used client-side
     if (message.timestamp) {
       setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
     }
@@ -143,8 +147,6 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
       title: "Jornada Iniciada!",
       description: message.meta?.text,
     });
-    // Here you would typically redirect to a checkout URL
-    // window.location.href = 'https://checkout.example.com';
   };
 
   const renderContent = () => {
