@@ -11,23 +11,21 @@ const initialMessages: Message[] = [
     id: "1",
     sender: "bot",
     type: "audio",
-    content: "audio-placeholder",
+    content: "audio-placeholder-1",
     meta: {
-      audioText: "Olá! Eu sou João e estou aqui para te guiar nessa jornada de despertar espiritual. Em breve, você terá acesso ao Mapa da Cura Espiritual, um material exclusivo que pode transformar sua vida. Mas antes de qualquer coisa, gostaria de fazer algo diferente e apresentar o conteúdo para você de forma antecipada. Vamos começar?"
+      audioText: "Olá! Eu sou João e estou aqui para te guiar nessa jornada de despertar espiritual. Em breve, você terá acesso ao Mapa da Cura Espiritual, um material exclusivo que pode transformar sua vida."
     },
     timestamp: new Date(Date.now() - 1000 * 60 * 2),
   },
   {
     id: "2",
     sender: "bot",
-    type: "image",
-    content: "https://placehold.co/600x400.png",
-    dataAiHint: "spiritual map scroll",
-    meta: {
-      title: "Desbloqueie seu poder espiritual agora!"
+    type: "audio",
+    content: "audio-placeholder-2",
+     meta: {
+      audioText: "Mas antes de qualquer coisa, gostaria de fazer algo diferente e apresentar o conteúdo para você de forma antecipada. Para começar, como posso te chamar?"
     },
     timestamp: new Date(Date.now() - 1000 * 60 * 1),
-    options: ["Vamos começar!"],
   }
 ];
 
@@ -37,7 +35,7 @@ export default function Home() {
   const [userInput, setUserInput] = useState("");
   const [conversationStep, setConversationStep] = useState(0);
   const { toast } = useToast();
-  const [userName, setUserName] = useState(""); // We can still use name for personalization
+  const [userName, setUserName] = useState("");
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -45,51 +43,51 @@ export default function Home() {
       { ...message, id: Date.now().toString(), timestamp: new Date() },
     ]);
   };
+  
+  const showTypingIndicator = async (duration: number) => {
+      setIsTyping(true);
+      await new Promise(resolve => setTimeout(resolve, duration));
+      setIsTyping(false);
+  }
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
     addMessage({ sender: "user", type: "text", content: text });
     setUserInput("");
-    setIsTyping(true);
     
-    // Disable options on previous messages
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await showTypingIndicator(1000);
 
     try {
       switch (conversationStep) {
-        case 0: // Welcome
-          const namePrompt = await generatePersonalizedResponse({
-              userInput: `O usuário está pronto para começar. Peça o nome dele para personalizar a conversa.`,
+        case 0: // Welcome, asked for name
+          const name = text.trim();
+          setUserName(name);
+          const welcomeResponse = await generatePersonalizedResponse({
+              userInput: `O nome do usuário é ${name}. Dê as boas-vindas de forma calorosa e pergunte qual área da vida dele(a) mais precisa de cura espiritual. Crie uma conexão, talvez dizendo que você também já se sentiu assim.`,
           });
           addMessage({
             sender: "bot",
             type: "text",
-            content: namePrompt.personalizedResponse,
+            content: welcomeResponse.personalizedResponse,
+            options: ["Saúde física e mental", "Prosperidade financeira", "Relacionamentos", "Energia espiritual"],
           });
           setConversationStep(1);
           break;
-        case 1: // Asked for name
-          const name = text.trim();
-          setUserName(name);
-          addMessage({
-            sender: "bot",
-            type: "text",
-            content: `Que bom ter você aqui, ${name}! Para te ajudar da melhor forma, me diga: qual área da sua vida você sente que mais precisa de cura espiritual? Isso nos ajudará a te mostrar como o Mapa da Cura pode transformar sua jornada.`,
-            options: ["Saúde física e mental", "Prosperidade financeira", "Relacionamentos pessoais", "Energia espiritual"],
-          });
-          setConversationStep(2);
-          break;
-        case 2: // Asked about area to heal
+
+        case 1: // Asked about area to heal
+           const area = text;
+           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia, diga que entende perfeitamente e que o Mapa da Cura Espiritual foi fundamental para você nessa mesma área. Introduza a ideia de um vídeo curto que explica como funciona.` });
+
            addMessage({
             sender: "bot",
             type: "text",
-            content: "O Mapa da Cura Espiritual vai te ajudar a desbloquear toda a sabedoria que você precisa para prosperar em qualquer área da sua vida. O melhor de tudo: vamos te dar acesso antecipado ao conteúdo, para que você possa testar o material e sentir os benefícios antes de decidir.",
+            content: empathyResponse.personalizedResponse
           });
           
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await showTypingIndicator(1500);
           
           addMessage({
             sender: "bot",
@@ -97,62 +95,73 @@ export default function Home() {
             content: "https://placehold.co/600x400.png",
             dataAiHint: "spiritual guidance video",
             meta: {
-              videoTitle: "Aperitivo do Mapa da Cura Espiritual"
+              videoTitle: "Um vislumbre do Mapa da Cura Espiritual"
             }
           })
           
+          await showTypingIndicator(1000);
+
           addMessage({
             sender: "bot",
             type: "text",
-            content: "Assista ao vídeo acima e descubra como o Mapa da Cura Espiritual pode transformar sua vida. Assim que terminar, me diga o que achou!",
-            options: ["Sim, sinto que é o que preciso!", "Preciso de mais informações.", "Ainda não estou certo."]
+            content: "Assista a este vídeo rápido. Ele mostra um pouco do que o Mapa pode fazer. O que você acha? Faz sentido para você?",
+            options: ["Sim, faz todo sentido!", "Preciso ver mais.", "Não tenho certeza."]
           });
+          setConversationStep(2);
+          break;
+
+        case 2: // After video
+          if (text.toLowerCase().includes("preciso ver mais") || text.toLowerCase().includes("não tenho certeza")) {
+              addMessage({ sender: "bot", type: "text", content: "Entendo perfeitamente. Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
+              await showTypingIndicator(1200);
+              addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
+              await showTypingIndicator(1500);
+              addMessage({ sender: "bot", type: "text", content: "O depoimento da Ana é poderoso, não acha? Muita gente se sente como você antes de começar. Agora, para você ter uma experiência ainda mais real, preparei algo nos meus status." });
+          } else { // "Sim, faz todo sentido!"
+              addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu a conexão, ${userName}! É exatamente esse o primeiro passo. Agora, para você sentir a verdadeira transformação, preparei alguns depoimentos no meu status do WhatsApp. Lá, você verá histórias reais.` });
+          }
+          await showTypingIndicator(1500);
+          addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
           setConversationStep(3);
           break;
 
-        case 3: // After video
-          if (text.toLowerCase().includes("preciso de mais informações")) {
-              const moreInfo = await generatePersonalizedResponse({ userInput: `O usuário ${userName} precisa de mais informações. Detalhe os benefícios do Mapa da Cura e mencione os bônus exclusivos (Áudio de Meditação, Ritual de Proteção, Livro dos Salmos, Desconto especial).` });
-              addMessage({ sender: "bot", type: "text", content: moreInfo.personalizedResponse, options: ["Entendi! Parece ótimo.", "Ainda tenho dúvidas."] });
-          } else if (text.toLowerCase().includes("não estou certo")) {
-              addMessage({ sender: "bot", type: "text", content: "Entendo perfeitamente. Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
-              addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
-              await new Promise(resolve => setTimeout(resolve, 500));
-              addMessage({ sender: "bot", type: "text", content: "O que você acha de um depoimento como esse?", options: ["É inspirador!", "Quero saber mais."] });
-          } else { // "Sim, sinto que é o que preciso!"
-              addMessage({ sender: "bot", type: "text", content: `Incrível, ${userName}! Agora, para você sentir a verdadeira transformação, preparei alguns depoimentos no meu status do WhatsApp. Lá, você verá histórias reais de pessoas que usaram o Mapa e mudaram suas vidas.` });
-              await new Promise(resolve => setTimeout(resolve, 500));
-              addMessage({ sender: "bot", type: "status", content: "Dê uma olhada no meu status e volte aqui!", meta: { buttonText: "Ver Status do WhatsApp" } });
-              await new Promise(resolve => setTimeout(resolve, 1500));
-              addMessage({ sender: "bot", type: "text", content: `O depoimento de Ana sobre como o Mapa da Cura transformou sua vida vai te inspirar. Ela passou por um processo de despertar espiritual profundo.`});
-              addMessage({ sender: "bot", type: "text", content: `Agora, gostaria de te oferecer algo ainda mais especial. Vamos te chamar para uma ligação de vídeo ao vivo com um especialista. Ele vai conversar com você sobre sua jornada e como o Mapa pode ajudar. Vamos fazer essa conexão?`, options: ["Sim, estou pronto para a ligação.", "Não, prefiro continuar por aqui."] });
-          }
-          setConversationStep(4);
-          break;
-
-        case 4: // After social proof / more info
-            if (text.toLowerCase().includes("ligação")) {
-                addMessage({ sender: "bot", type: "text", content: "Perfeito! Nosso especialista espiritual já está disponível para conversar com você! Aceite a ligação de vídeo e vamos conversar sobre sua jornada." });
-                addMessage({ sender: "bot", type: "live-call", content: "Ligação ao vivo com Especialista Espiritual" });
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                addMessage({ sender: "bot", type: "text", content: "Espero que a conversa tenha sido esclarecedora!" });
-            }
-
-            const finalOffer = await generatePersonalizedResponse({
-                userInput: `O usuário ${userName} já viu as provas e talvez até falou com um especialista. Crie uma mensagem de oferta final. Diga que agora que ele viu a transformação, está pronto para o primeiro passo. Mencione o preço de R$39,99 e convide-o a finalizar a compra para garantir o acesso imediato e os bônus.`,
-            });
-
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: finalOffer.personalizedResponse,
-            });
+        case 3: // After Status
+            addMessage({ sender: "bot", type: "text", content: `Incrível, não é? A jornada de cada um é única, mas a transformação é sempre profunda. Fico feliz que tenha se inspirado, ${userName}.` });
+            await showTypingIndicator(2000);
+            addMessage({ sender: "bot", type: "text", content: "Agora, prepare-se. Tenho uma surpresa para você... Nosso especialista sentiu uma forte conexão com sua energia e está te ligando agora para uma conversa rápida." });
             
-            addMessage({ sender: "bot", type: "text", content: "E o melhor: com nossa garantia de 7 dias, você pode testar o Mapa da Cura e todos os bônus sem risco algum. Se não ficar satisfeito, basta nos avisar. Estamos 100% comprometidos com sua transformação espiritual!", options: ["Sim, quero garantir minha jornada espiritual!"] });
-            setConversationStep(5);
+            // Trigger the live call
+            await showTypingIndicator(2500);
+            addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
+
+            // Simulate conversation after call ends
+            setTimeout(async () => {
+                setMessages(prev => prev.filter(m => m.type !== 'live-call'));
+                await showTypingIndicator(1500);
+                addMessage({ sender: "bot", type: "text", content: `Uau, que conversa incrível! Espero que essa conexão com nosso especialista tenha clareado ainda mais seu caminho.` });
+
+                await showTypingIndicator(2000);
+
+                 const finalOffer = await generatePersonalizedResponse({
+                    userInput: `O usuário ${userName} acabou de falar com um especialista. Crie uma mensagem de oferta final. Diga que agora que ele sentiu a conexão, está pronto para o primeiro passo. Mencione o preço de R$39,99 e convide-o a finalizar a compra para garantir o acesso imediato e os bônus.`,
+                });
+                
+                addMessage({
+                    sender: "bot",
+                    type: "text",
+                    content: finalOffer.personalizedResponse,
+                });
+
+                await showTypingIndicator(1000);
+                
+                addMessage({ sender: "bot", type: "text", content: "E o melhor: com nossa garantia de 7 dias, você pode testar o Mapa da Cura e todos os bônus sem risco algum. Se não ficar satisfeito, basta nos avisar. Estamos 100% comprometidos com sua transformação espiritual!", options: ["Sim, quero garantir minha jornada espiritual!"] });
+
+                setConversationStep(4);
+            }, 10000); // Wait 10 seconds to simulate call duration
+
             break;
 
-        case 5: // Final CTA
+        case 4: // Final CTA
             addMessage({ sender: "bot", type: "text", content: "Clique abaixo para garantir sua jornada espiritual e acessar todos os bônus exclusivos. Sua transformação começa agora. Estamos esperando por você." });
             addMessage({
                 sender: "bot",
@@ -164,7 +173,7 @@ export default function Home() {
                   imageHint: "spiritual map golden light"
                 },
               });
-            setConversationStep(6);
+            setConversationStep(5);
             break;
             
         default:

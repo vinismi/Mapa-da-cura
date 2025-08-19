@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Play, Pause } from "lucide-react";
@@ -9,19 +9,72 @@ import { cn } from "@/lib/utils";
 
 type AudioPlayerProps = {
   text?: string;
+  audioSrc: string;
 };
 
-export function AudioPlayer({ text }: AudioPlayerProps) {
+export function AudioPlayer({ text, audioSrc }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(25); // initial decorative progress
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
     setIsPlaying(!isPlaying);
   };
+  
+   useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const setAudioData = () => {
+      setDuration(audio.duration);
+      setCurrentTime(audio.currentTime);
+    }
+
+    const setAudioTime = () => {
+        const newProgress = (audio.currentTime / audio.duration) * 100;
+        setProgress(newProgress);
+        setCurrentTime(audio.currentTime);
+    }
+
+    audio.addEventListener('loadeddata', setAudioData);
+    audio.addEventListener('timeupdate', setAudioTime);
+
+    audio.addEventListener('ended', () => setIsPlaying(false));
+
+    return () => {
+      audio.removeEventListener('loadeddata', setAudioData);
+      audio.removeEventListener('timeupdate', setAudioTime);
+      audio.removeEventListener('ended', () => setIsPlaying(false));
+    };
+  }, []);
+
+  const handleSliderChange = (value: number[]) => {
+    if(audioRef.current) {
+        const newTime = (value[0] / 100) * duration;
+        audioRef.current.currentTime = newTime;
+        setProgress(value[0]);
+    }
+  }
+
+  const formatTime = (time: number) => {
+    if (isNaN(time) || time === 0) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
 
   return (
     <div className="w-full max-w-xs">
       <div className="flex items-center gap-3 w-full">
+        <audio ref={audioRef} src={audioSrc} preload="metadata" />
         <Avatar className="h-10 w-10">
           <AvatarImage
             src="https://placehold.co/100x100.png"
@@ -45,7 +98,7 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
         <div className="flex-1 flex flex-col justify-center gap-1">
           <Slider
             value={[progress]}
-            onValueChange={(value) => setProgress(value[0])}
+            onValueChange={handleSliderChange}
             max={100}
             step={1}
             className={cn(
@@ -53,8 +106,8 @@ export function AudioPlayer({ text }: AudioPlayerProps) {
             )}
           />
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>0:12</span>
-            <span>0:48</span>
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
           </div>
         </div>
       </div>

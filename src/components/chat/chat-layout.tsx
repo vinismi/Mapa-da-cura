@@ -30,7 +30,7 @@ export function ChatLayout({
           backgroundSize: '300px 300px' 
         }}
       >
-        <ChatMessages messages={messages} onSendMessage={onSendMessage}/>
+        <ChatMessages messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
       </div>
       <ChatInput
         userInput={userInput}
@@ -41,5 +41,3 @@ export function ChatLayout({
     </div>
   );
 }
-
-    

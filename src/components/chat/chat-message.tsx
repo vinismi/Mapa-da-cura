@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound, MicOff, VideoOff } from "lucide-react";
 import { useState, useEffect } from "react";
 
 import type { Message } from "@/lib/types";
@@ -47,30 +47,59 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 }
 
 function LiveCall({ content }: { content: string }) {
+     const [callAccepted, setCallAccepted] = useState(false);
+
+    useEffect(() => {
+        // Simulate auto-accepting the call
+        const timer = setTimeout(() => setCallAccepted(true), 2000);
+        return () => clearTimeout(timer);
+    }, []);
+
+
+    if (!callAccepted) {
+        return (
+            <div className="fixed inset-x-0 top-4 z-50 flex justify-center animate-in fade-in-25 slide-in-from-top-10">
+                 <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
+                    <CardContent className="p-4 flex items-center gap-4">
+                         <Avatar className="h-12 w-12 border-2 border-background">
+                            <AvatarImage src="https://placehold.co/100x100.png" alt="Especialista" data-ai-hint="person friendly expert"/>
+                            <AvatarFallback>E</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                            <p className="font-bold">{content}</p>
+                            <p className="text-sm text-green-500">Chamada de vídeo recebida...</p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="rounded-full bg-green-500 hover:bg-green-600 text-white h-12 w-12">
+                            <Phone className="h-6 w-6" />
+                        </Button>
+                    </CardContent>
+                 </Card>
+            </div>
+        )
+    }
+
     return (
-        <Card className="bg-gradient-to-br from-primary/80 to-accent/80 border-primary/20 shadow-xl text-primary-foreground animate-in fade-in zoom-in-95">
-            <CardContent className="p-4 flex flex-col items-center text-center gap-4">
-                <div className="relative">
-                    <Avatar className="h-20 w-20 border-4 border-background">
-                        <AvatarImage src="https://placehold.co/100x100.png" alt="Especialista" data-ai-hint="person friendly expert"/>
-                        <AvatarFallback>E</AvatarFallback>
-                    </Avatar>
-                    <span className="absolute bottom-0 right-0 block h-5 w-5 rounded-full bg-green-500 border-2 border-background ring-2 ring-green-500"/>
-                </div>
-                <div className="space-y-1">
-                    <p className="font-bold">{content}</p>
-                    <p className="text-sm opacity-80">Chamada recebida...</p>
-                </div>
-                 <div className="flex items-center gap-4 mt-2">
-                    <Button variant="destructive" size="icon" className="rounded-full h-14 w-14">
-                        <Phone className="h-6 w-6 transform -rotate-[135deg]" />
-                    </Button>
-                     <Button variant="default" size="icon" className="rounded-full h-14 w-14 bg-green-500 hover:bg-green-600">
-                        <Video className="h-6 w-6" />
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="fixed inset-0 bg-zinc-800/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in">
+            <div className="flex-1 flex items-center justify-center p-4">
+                 <video 
+                    src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+                    className="aspect-video w-full max-w-4xl rounded-lg" 
+                    autoPlay 
+                    muted 
+                />
+            </div>
+            <div className="bg-black/30 p-4 flex justify-center items-center gap-4">
+                <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                    <VideoOff className="h-6 w-6" />
+                </Button>
+                <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                    <MicOff className="h-6 w-6" />
+                </Button>
+                <Button variant="destructive" size="icon" className="rounded-full h-16 w-16">
+                    <Phone className="h-7 w-7 transform -rotate-[135deg]" />
+                </Button>
+            </div>
+        </div>
     )
 }
 
@@ -83,7 +112,11 @@ export function ChatMessage({ message }: ChatMessageProps) {
   useEffect(() => {
     // This check prevents hydration errors by ensuring `new Date()` is only used client-side
     if (typeof window !== "undefined") {
-      setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
+      try {
+         setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
+      } catch(e) {
+        // Invalid date, do nothing
+      }
     }
   }, [message.timestamp]);
 
@@ -96,6 +129,15 @@ export function ChatMessage({ message }: ChatMessageProps) {
     // Here you would typically redirect to a checkout URL
     // window.location.href = 'https://checkout.example.com';
   };
+
+  const handleStatusClick = () => {
+    // Simulate opening WhatsApp status
+    toast({
+        title: "Abrindo Status...",
+        description: "Você será redirecionado para a conversa em breve."
+    })
+    // In a real scenario, this would be a deep link to WhatsApp
+  }
 
   const renderContent = () => {
     switch (message.type) {
@@ -120,33 +162,29 @@ export function ChatMessage({ message }: ChatMessageProps) {
       case "video":
         return (
           <div className="relative">
-            <Image
-              src={message.content}
-              alt="Video thumbnail"
+            <video
+              src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
               width={600}
               height={400}
-              className="rounded-md object-cover"
+              className="rounded-md object-cover bg-black"
               data-ai-hint={message.dataAiHint}
+              controls
+              poster={message.content}
             />
              {message.meta?.videoTitle && (
               <p className="font-semibold text-foreground mt-2">{message.meta.videoTitle}</p>
             )}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-md">
-              <div className="h-16 w-16 rounded-full bg-white/80 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5V19L19 12L8 5Z" fill="black"/></svg>
-              </div>
-            </div>
           </div>
         );
       case "audio":
-        return <AudioPlayer text={message.meta?.audioText} />;
+        return <AudioPlayer text={message.meta?.audioText} audioSrc={message.content} />;
       case "bonuses":
         return <BonusList />;
        case "testimonial":
         return <Testimonial content={message.content} author={message.meta?.author} />;
        case "status":
          return (
-            <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95">
+            <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95" onClick={handleStatusClick}>
                 <div className="flex items-center gap-3">
                     <div className="p-1.5 rounded-full bg-gradient-to-b from-green-400 to-green-600">
                         <CircleUserRound className="h-8 w-8 text-white"/>
@@ -180,11 +218,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </div>
         );
       default:
-        return <p className="text-foreground">{message.content}</p>;
+        // Split by newline and render paragraphs to respect formatting from AI
+        return message.content.split('\n').map((paragraph, index) => (
+          <p key={index} className="text-foreground">{paragraph}</p>
+        ));
     }
   };
 
-  if (message.type === 'button' || message.type === 'live-call') {
+  if (message.type === 'button') {
     return (
       <div className={cn("flex w-full my-4", isUser ? "justify-end" : "justify-center")}>
         <div className="animate-in fade-in zoom-in-95">
@@ -192,6 +233,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </div>
       </div>
     );
+  }
+
+  if (message.type === 'live-call') {
+      return <LiveCall content={message.content} />;
   }
 
   return (

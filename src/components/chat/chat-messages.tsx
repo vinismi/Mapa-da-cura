@@ -4,19 +4,15 @@ import { useEffect, useRef } from "react";
 import type { Message } from "@/lib/types";
 import { ChatMessage } from "./chat-message";
 import { TypingIndicator } from "./typing-indicator";
-import { Button } from "../ui/button";
 
 type ChatMessagesProps = {
   messages: Message[];
+  isTyping: boolean;
   onSendMessage: (text: string) => void;
 };
 
-export function ChatMessages({ messages, onSendMessage }: ChatMessagesProps) {
+export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  const lastMessage = messages[messages.length - 1];
-  const isTyping = lastMessage?.sender === "bot" && !lastMessage.content && !lastMessage.options;
-
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -35,5 +31,3 @@ export function ChatMessages({ messages, onSendMessage }: ChatMessagesProps) {
     </div>
   );
 }
-
-    
