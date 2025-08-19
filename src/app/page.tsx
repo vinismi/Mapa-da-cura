@@ -6,22 +6,11 @@ import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrecti
 import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
-
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    sender: "bot",
-    type: "audio",
-    content: "/initial_audio.mp3",
-    meta: {
-      audioText: "Olá! Antes de te mostrar como posso ajudar na sua jornada, me diga seu nome, por favor."
-    },
-    timestamp: new Date(),
-  }
-];
+import { Button } from "@/components/ui/button";
+import { Send } from "lucide-react";
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [conversationStep, setConversationStep] = useState(0);
@@ -31,6 +20,7 @@ export default function Home() {
   const [userPainDuration, setUserPainDuration] = useState("");
   const [userAttempts, setUserAttempts] = useState("");
   const [isViewingStatus, setIsViewingStatus] = useState(false);
+  const [conversationStarted, setConversationStarted] = useState(false);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -56,15 +46,21 @@ export default function Home() {
     }
     return false;
   }
-
-  const askMotivationQuestion = () => {
+  
+  const startConversation = async () => {
+    setConversationStarted(true);
+    addMessage({ sender: "user", type: "text", content: "Olá! Vi sobre a Jornada e quero saber mais." });
+    await showTypingIndicator(2500);
     addMessage({
         sender: "bot",
         type: "text",
-        content: `Que bom ter você aqui, ${userName}! Queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
+        content: "Olá! Que bom que você veio. Tudo bem com você?",
+        options: ["Tudo bem!", "Não muito bem."]
     });
-  }
-  
+    setConversationStep(1); // Move to next step which is asking for name
+  };
+
+
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
@@ -78,7 +74,27 @@ export default function Home() {
 
     try {
       switch (conversationStep) {
-        case 0: // Asked for name
+        case 1: // Asked how user is
+            await showTypingIndicator(2000);
+            if (text.toLowerCase().includes("não")) {
+                addMessage({ sender: "bot", type: "text", content: "Sinto muito por isso. Espero que nossa conversa possa trazer um pouco de luz para o seu dia." });
+            } else {
+                addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber." });
+            }
+            
+            await showTypingIndicator(3000);
+            addMessage({
+                sender: "bot",
+                type: "audio",
+                content: "/initial_audio.mp3",
+                meta: {
+                audioText: "Para começar nossa jornada, me diga seu nome, por favor."
+                },
+            });
+            setConversationStep(2);
+            break;
+
+        case 2: // Asked for name
           const name = text.trim();
           setUserName(name);
           
@@ -89,10 +105,10 @@ export default function Home() {
             content: `Que bom ter você aqui, ${name}! Queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
           });
           
-          setConversationStep(1);
+          setConversationStep(3);
           break;
 
-        case 1: // Asked about motivation
+        case 3: // Asked about motivation
            const motivation = text;
            
            const nameCorrection = await checkForNameCorrection({ previousName: userName, currentInput: text });
@@ -113,10 +129,10 @@ export default function Home() {
            await showTypingIndicator(4800);
            addMessage({ sender: "bot", type: "text", content: "Há quanto tempo você sente que essa área da sua vida precisa de atenção?" });
           
-          setConversationStep(2);
+          setConversationStep(4);
           break;
         
-        case 2: // Asked about pain duration
+        case 4: // Asked about pain duration
             const duration = text;
             setUserPainDuration(duration);
 
@@ -124,7 +140,7 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Carregar essa dor há tanto tempo pode ser realmente desgastante.`,
+                content: `Carregar isso por tanto tempo pode ser realmente desgastante.`,
             });
             
             await showTypingIndicator(4200);
@@ -136,10 +152,10 @@ export default function Home() {
               type: "text",
               content: `E ${userName}, você já tentou alguma coisa para resolver isso? Como foi a experiência?`
             });
-            setConversationStep(3);
+            setConversationStep(5);
             break;
             
-        case 3: // Asked about previous attempts
+        case 5: // Asked about previous attempts
             const attempts = text;
             setUserAttempts(attempts);
 
@@ -157,10 +173,10 @@ export default function Home() {
                 type: "text",
                 content: "Para eu ter uma ideia, qual foi a última vez que você se sentiu verdadeiramente conectado(a) e em paz consigo mesmo(a)?",
             });
-            setConversationStep(4);
+            setConversationStep(6);
             break;
 
-        case 4: // Answered last time felt connected
+        case 6: // Answered last time felt connected
             await showTypingIndicator(4800);
             addMessage({
                 sender: "bot",
@@ -173,10 +189,10 @@ export default function Home() {
                 type: "status",
                 content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
             });
-            setConversationStep(5);
+            setConversationStep(7);
             break;
 
-        case 5: // After Status
+        case 7: // After Status
             if (text === "Ver status") {
                 setIsViewingStatus(true);
                 return; 
@@ -189,11 +205,11 @@ export default function Home() {
               await showTypingIndicator(5000);
               addMessage({ sender: "bot", type: "text", content: `Essas histórias ressoaram com você de alguma forma? Me diga o que achou.` });
               
-              setConversationStep(6);
+              setConversationStep(8);
             }
             break;
         
-        case 6: // User reacts to testimonials
+        case 8: // User reacts to testimonials
               await showTypingIndicator(5000);
               addMessage({ sender: "bot", type: "text", content: `Fico feliz em saber. Agora, prepare-se. Senti que seria importante para você e uma pessoa que passou pela mesma situação que a sua vai te ligar.` });
               
@@ -221,11 +237,11 @@ export default function Home() {
                   await showTypingIndicator(4500);
                   addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
-                  setConversationStep(7);
+                  setConversationStep(9);
               }, 15000); // Increased duration for the call
               break;
 
-        case 7: // Access before payment
+        case 9: // Access before payment
             if (text === "Sim, estou disposto!") {
                 await showTypingIndicator(4000);
                 addMessage({ sender: "bot", type: "text", content: `Excelente, ${userName}! Fico muito feliz com sua confiança. Preparei um vídeo rápido para te guiar:` });
@@ -253,13 +269,13 @@ export default function Home() {
                 addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
                 addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará selada. Estou aqui para te apoiar em cada passo." });
 
-                setConversationStep(8);
+                setConversationStep(10);
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(4500);
                  addMessage({ sender: "bot", type: "text", content: `É simples! Você recebe acesso a todo o material agora mesmo. Pode explorar, sentir a energia e começar sua transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com. Você só paga se sentir que é o caminho certo para você.` });
                  await showTypingIndicator(4000);
                  addMessage({ sender: "bot", type: "text", content: `Pronto para começar?`, options: ["Sim, estou disposto!"]});
-                 // Keep step at 7 to handle the "Sim" response next.
+                 // Keep step at 9 to handle the "Sim" response next.
             }
             break;
             
@@ -296,14 +312,36 @@ export default function Home() {
 
   const handleStatusFinish = () => {
     setIsViewingStatus(false);
-    // Automatically trigger the next step in the conversation
-    if (conversationStep === 5) {
+    if (conversationStep === 7) {
       handleSendMessage("Já vi os status!");
     }
   };
 
   if (isViewingStatus) {
     return <StatusView onFinish={handleStatusFinish} />;
+  }
+
+  if (!conversationStarted) {
+    return (
+      <div className="flex h-screen flex-col">
+        <div 
+          className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-repeat bg-center"
+          style={{ 
+            backgroundImage: "url('/spiritual-bg.png')",
+            backgroundSize: '300px 300px' 
+          }}
+        >
+            <div className="bg-background/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl max-w-md">
+                <h1 className="text-3xl font-bold text-primary mb-2">Jornada do Despertar Espiritual</h1>
+                <p className="text-foreground/80 mb-6">Receba orientação personalizada e encontre o caminho para a sua cura interior.</p>
+                <Button size="lg" className="w-full text-lg h-14 rounded-full" onClick={startConversation}>
+                    Iniciar Conversa
+                    <Send className="ml-2 h-5 w-5"/>
+                </Button>
+            </div>
+        </div>
+      </div>
+    );
   }
   
   return (
@@ -318,5 +356,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
