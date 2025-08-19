@@ -3,16 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Headphones } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
 type AudioPlayerProps = {
-  text?: string;
   audioSrc: string;
 };
 
-export function AudioPlayer({ text, audioSrc }: AudioPlayerProps) {
+export function AudioPlayer({ audioSrc }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -75,14 +74,6 @@ export function AudioPlayer({ text, audioSrc }: AudioPlayerProps) {
     <div className="w-full max-w-xs">
       <div className="flex items-center gap-3 w-full">
         <audio ref={audioRef} src={audioSrc} preload="metadata" />
-        <Avatar className="h-10 w-10">
-          <AvatarImage
-            src="https://placehold.co/100x100.png"
-            alt="Sales Rep"
-            data-ai-hint="person portrait"
-          />
-          <AvatarFallback>JS</AvatarFallback>
-        </Avatar>
         <Button
           variant="ghost"
           size="icon"
@@ -105,17 +96,20 @@ export function AudioPlayer({ text, audioSrc }: AudioPlayerProps) {
               "[&>span]:h-1 [&>span>span]:bg-primary [&>span>span]:h-1 [&>span>button]:h-3 [&>span>button]:w-3 [&>span>button]:border-primary"
             )}
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+          <div className="flex justify-between items-center">
+             <span className="text-xs text-muted-foreground">{formatTime(duration)}</span>
+             <Headphones className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
+        <Avatar className="h-10 w-10">
+          <AvatarImage
+            src="https://placehold.co/100x100.png"
+            alt="Sales Rep"
+            data-ai-hint="person portrait"
+          />
+          <AvatarFallback>JS</AvatarFallback>
+        </Avatar>
       </div>
-       {text && (
-        <div className="mt-2 pt-2 border-t border-black/10">
-          <p className="text-sm text-foreground">{text}</p>
-        </div>
-      )}
     </div>
   );
 }

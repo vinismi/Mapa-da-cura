@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -177,7 +179,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </div>
         );
       case "audio":
-        return <AudioPlayer text={message.meta?.audioText} audioSrc={message.content} />;
+        return <AudioPlayer audioSrc={message.content} />;
       case "bonuses":
         return <BonusList />;
        case "testimonial":
@@ -234,6 +236,32 @@ export function ChatMessage({ message }: ChatMessageProps) {
       </div>
     );
   }
+  
+  if (message.type === 'audio') {
+     return (
+        <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
+            <div className={cn(
+                "relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg shadow-sm animate-in fade-in zoom-in-95 p-2",
+                 isUser
+                    ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
+                    : "bg-white dark:bg-zinc-700 rounded-bl-none"
+            )}>
+                 <div className="flex items-end gap-2">
+                    {renderContent()}
+                    <div className={cn(
+                        "text-xs self-end",
+                        isUser ? "text-green-800/70" : "text-muted-foreground"
+                    )}>
+                        {formattedTime}
+                         {isUser && (
+                            <CheckCheck className="inline-block ml-1 h-4 w-4 text-accent" />
+                        )}
+                    </div>
+                 </div>
+            </div>
+        </div>
+     )
+  }
 
   if (message.type === 'live-call') {
       return <LiveCall content={message.content} />;
@@ -247,10 +275,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser
             ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
             : "bg-white dark:bg-zinc-700 rounded-bl-none",
-          message.type === 'audio' && 'p-2'
         )}
       >
-        <div className="break-words whitespace-pre-wrap">
+        <div className="break-words whitespace-pre-wrap flex flex-col">
             {renderContent()}
         </div>
         <div
