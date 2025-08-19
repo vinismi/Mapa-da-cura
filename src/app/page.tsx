@@ -8,6 +8,16 @@ import type { Message } from "@/lib/types";
 
 const initialMessages: Message[] = [
   {
+    id: "0",
+    sender: "bot",
+    type: "audio",
+    content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder
+    timestamp: new Date(new Date().getTime() - 1000), // Ensure audio is slightly before text
+    meta: {
+      audioText: "Ouça o áudio acima para começarmos..."
+    }
+  },
+  {
     id: "1",
     sender: "bot",
     type: "text",
@@ -223,5 +233,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
