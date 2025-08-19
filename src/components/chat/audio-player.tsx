@@ -21,11 +21,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   useEffect(() => {
     setIsMounted(true);
-    // When component mounts on the client, set the source
-    if (audioRef.current) {
-        audioRef.current.src = audioSrc;
-    }
-  }, [audioSrc]);
+  }, []);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -33,26 +29,15 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
     if (isPlaying) {
       audio.pause();
-      setIsPlaying(false);
     } else {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          // Automatic playback started!
-          setIsPlaying(true);
-        })
-        .catch(error => {
-          // Auto-play was prevented
-          console.error("Audio play failed:", error);
-          setIsPlaying(false);
-        });
-      }
+      audio.play();
     }
+    setIsPlaying(!isPlaying);
   };
   
   const handleTimeUpdate = () => {
     const audio = audioRef.current;
-    if (audio) {
+    if (audio && audio.duration > 0) {
       setProgress((audio.currentTime / audio.duration) * 100);
     }
   };
@@ -67,6 +52,9 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const handleEnded = () => {
     setIsPlaying(false);
     setProgress(0);
+    if(audioRef.current) {
+      audioRef.current.currentTime = 0;
+    }
   };
   
   const handleSliderChange = (value: number[]) => {
@@ -85,16 +73,19 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   }
   
   if (!isMounted) {
-    return null; // Don't render on the server
+    return null; // Don't render on the server, ensuring audioSrc is available on client
   }
 
   return (
     <div className="w-full max-w-xs">
        <audio 
         ref={audioRef}
+        src={audioSrc}
         onLoadedData={handleLoadedData}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
         preload="metadata" 
       />
       <div className="flex items-center gap-3 w-full">
