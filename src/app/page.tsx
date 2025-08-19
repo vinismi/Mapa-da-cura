@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ChatLayout } from "@/components/chat/chat-layout";
 import { generatePersonalizedResponse } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +33,7 @@ export default function Home() {
   const [conversationStep, setConversationStep] = useState(0);
   const { toast } = useToast();
   const [userName, setUserName] = useState("");
+  const [userArea, setUserArea] = useState("");
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -53,6 +54,7 @@ export default function Home() {
     addMessage({ sender: "user", type: "text", content: text });
     setUserInput("");
     
+    // Remove options from previous messages
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
 
     try {
@@ -61,7 +63,7 @@ export default function Home() {
           const name = text.trim();
           setUserName(name);
           
-          await showTypingIndicator(2000);
+          await showTypingIndicator(1500);
           addMessage({
             sender: "bot",
             type: "text",
@@ -73,17 +75,17 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: "Qual área da sua vida você sente que precisa de mais foco e cura agora?",
-            options: ["Saúde física e mental", "Prosperidade financeira", "Relacionamentos", "Energia espiritual"],
+            content: "Para que eu possa te entender melhor, me conta: qual área da sua vida você sente que precisa de mais foco e cura agora?",
           });
           setConversationStep(1);
           break;
 
         case 1: // Asked about area to heal
            const area = text;
+           setUserArea(area);
            
            await showTypingIndicator(2500);
-           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia, dizendo que entende perfeitamente e que também já passou por uma situação parecida nessa área. Seja breve e direto.` });
+           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia e diga que entende, sem mencionar que já passou por isso. Apenas valide o sentimento dele de forma breve.` });
 
            addMessage({
             sender: "bot",
@@ -91,32 +93,53 @@ export default function Home() {
             content: empathyResponse.personalizedResponse
           });
           
-          await showTypingIndicator(2500);
+          await showTypingIndicator(2800);
 
-          addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão. E o primeiro passo que damos juntos é sempre o mais importante." });
+          addMessage({ sender: "bot", type: "text", content: `E dentro dessa área de "${area}", existe algum sentimento ou situação específica que mais te incomoda hoje?` });
           
-          await showTypingIndicator(2200);
-
-          addMessage({
-            sender: "bot",
-            type: "text",
-            content: "Eu acredito tanto no poder da transformação que preparei algo que pode realmente te ajudar. Você me permite te mostrar o caminho?",
-            options: ["Sim, pode mostrar!", "Como assim?", "Não tenho certeza..."]
-          });
+          await showTypingIndicator(2000);
+          addMessage({ sender: "bot", type: "text", content: `Pode ser algo como ansiedade, falta de clareza, um relacionamento complicado... sinta-se à vontade para compartilhar.` });
+          
           setConversationStep(2);
           break;
+        
+        case 2: // Asked about specific feeling
+            const feeling = text;
+            await showTypingIndicator(3000);
+            
+            const deepEmpathyResponse = await generatePersonalizedResponse({
+                userInput: `O usuário ${userName} está buscando cura na área de "${userArea}" e mencionou o sentimento/situação de "${feeling}". Mostre uma empatia profunda, diga que você já se sentiu exatamente assim e que sabe o quão desafiador isso pode ser. Crie uma conexão genuína.`,
+            });
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: deepEmpathyResponse.personalizedResponse,
+            });
+            
+            await showTypingIndicator(2500);
+            addMessage({ sender: "bot", type: "text", content: "Saiba que você não está sozinho(a) nisso. Muitas pessoas chegam até mim com essa mesma questão." });
+            
+            await showTypingIndicator(2200);
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: "Eu acredito tanto no poder da transformação que preparei algo que pode realmente te ajudar. Você me permite te mostrar o caminho?",
+                options: ["Sim, pode mostrar!", "Como assim?", "Não tenho certeza..."]
+            });
+            setConversationStep(3);
+            break;
 
-        case 2: // After permission
+        case 3: // After permission
             await showTypingIndicator(1800);
             addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz com sua abertura." });
             await showTypingIndicator(2200);
             addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho." });
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
-            setConversationStep(3);
+            setConversationStep(4);
             break;
 
-        case 3: // After Status
+        case 4: // After Status
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
             await showTypingIndicator(2500);
@@ -155,12 +178,12 @@ export default function Home() {
                 
                 addMessage({ sender: "bot", type: "text", content: "E o melhor: com nossa garantia de 7 dias, seu risco é zero. Se não ficar satisfeito, basta nos avisar.", options: ["Sim, quero garantir minha jornada!"] });
 
-                setConversationStep(4);
+                setConversationStep(5);
             }, 10000); // Wait 10 seconds to simulate call duration
 
             break;
 
-        case 4: // Final CTA
+        case 5: // Final CTA
             await showTypingIndicator(2000);
             addMessage({ sender: "bot", type: "text", content: "Clique abaixo para garantir sua jornada espiritual e acessar todos os bônus. Sua transformação começa agora." });
             await showTypingIndicator(1500);
@@ -174,7 +197,7 @@ export default function Home() {
                   imageHint: "spiritual map golden light"
                 },
               });
-            setConversationStep(5);
+            setConversationStep(6);
             break;
             
         default:
