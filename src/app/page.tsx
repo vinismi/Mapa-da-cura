@@ -101,11 +101,8 @@ export default function Home() {
             await showTypingIndicator(4000);
             addMessage({
               sender: "bot",
-              type: "audio",
-              content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder
-              meta: {
-                audioText: "Obrigado por compartilhar... Antes de continuarmos, só por curiosidade, qual sua cor favorita?"
-              }
+              type: "text",
+              content: "Obrigado por compartilhar... Antes de continuarmos, só por curiosidade, qual sua cor favorita?",
             });
             
             setConversationStep(3);
