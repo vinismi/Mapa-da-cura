@@ -10,30 +10,19 @@ const initialMessages: Message[] = [
   {
     id: "1",
     sender: "bot",
-    type: "text",
-    content: "Olá! Eu sou João e estou aqui para te guiar nessa jornada de despertar espiritual.",
+    type: "audio",
+    content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder audio
     timestamp: new Date(Date.now() - 1000 * 60 * 2),
+     meta: {
+      audioText: "Olá! Eu sou João, seu guia nesta jornada de despertar espiritual. Preparei algo especial para você. Vamos começar?"
+    }
   },
-   {
+  {
     id: "2",
     sender: "bot",
     type: "text",
-    content: "Em breve, você terá acesso ao Mapa da Cura Espiritual, um material exclusivo que pode transformar sua vida.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 2 + 1000),
-  },
-  {
-    id: "3",
-    sender: "bot",
-    type: "text",
-    content: "Mas antes de qualquer coisa, gostaria de fazer algo diferente e apresentar o conteúdo para você de forma antecipada.",
-    timestamp: new Date(Date.now() - 1000 * 60 * 1),
-  },
-  {
-    id: "4",
-    sender: "bot",
-    type: "text",
     content: "Para começar, como posso te chamar?",
-    timestamp: new Date(Date.now() - 1000 * 60 * 1 + 1000),
+    timestamp: new Date(Date.now() - 1000 * 60 * 1),
   }
 ];
 
