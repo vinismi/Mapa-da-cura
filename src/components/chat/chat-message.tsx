@@ -113,13 +113,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   useEffect(() => {
     // This check prevents hydration errors by ensuring `new Date()` is only used client-side
-    if (typeof window !== "undefined") {
-      try {
-         setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
-      } catch(e) {
-        // Invalid date, do nothing
-      }
-    }
+    setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
   }, [message.timestamp]);
 
 
@@ -192,7 +186,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
                         <CircleUserRound className="h-8 w-8 text-white"/>
                     </div>
                     <div className="text-left">
-                        <p className="font-bold">ZapSales Status</p>
+                        <p className="font-bold">Status de João</p>
                         <p className="text-sm">{message.content}</p>
                     </div>
                 </div>

@@ -9,13 +9,13 @@ export function ChatHeader() {
         <Avatar className="h-10 w-10 border-2 border-background">
           <AvatarImage
             src="https://placehold.co/100x100.png"
-            alt="ZapSales"
-            data-ai-hint="logo monogram"
+            alt="João"
+            data-ai-hint="person portrait"
           />
-          <AvatarFallback>ZS</AvatarFallback>
+          <AvatarFallback>J</AvatarFallback>
         </Avatar>
         <div>
-          <h2 className="font-bold text-lg">ZapSales</h2>
+          <h2 className="font-bold text-lg">João | Terapeuta Holístico</h2>
           <p className="text-sm text-muted-foreground">online</p>
         </div>
       </div>
