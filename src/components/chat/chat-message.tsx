@@ -4,14 +4,14 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound, MicOff, VideoOff } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { AudioPlayer } from "./audio-player";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 type ChatMessageProps = {
@@ -26,14 +26,19 @@ function BonusList() {
         { icon: Sparkles, text: "Desconto especial em futuros produtos espirituais" },
     ];
     return (
-        <div className="space-y-3">
-            {bonuses.map((bonus, index) => (
-                 <div key={index} className="flex items-start gap-3 text-foreground">
-                    <bonus.icon className="h-5 w-5 mt-0.5 text-primary shrink-0" />
-                    <span>{bonus.text}</span>
-                 </div>
-            ))}
-        </div>
+        <Card className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border-primary/20 shadow-lg w-full">
+            <CardHeader>
+                <CardTitle className="text-lg text-primary">Seus Bônus Exclusivos</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 !pt-0">
+                {bonuses.map((bonus, index) => (
+                    <div key={index} className="flex items-start gap-3 text-foreground">
+                        <bonus.icon className="h-5 w-5 mt-0.5 text-primary shrink-0" />
+                        <span>{bonus.text}</span>
+                    </div>
+                ))}
+            </CardContent>
+        </Card>
     )
 }
 
@@ -50,12 +55,21 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 
 function LiveCall({ content }: { content: string }) {
      const [callAccepted, setCallAccepted] = useState(false);
+     const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         // Simulate auto-accepting the call
-        const timer = setTimeout(() => setCallAccepted(true), 2000);
+        const timer = setTimeout(() => {
+            setCallAccepted(true);
+        }, 2500);
         return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        if (callAccepted && videoRef.current) {
+            videoRef.current.play();
+        }
+    }, [callAccepted]);
 
 
     if (!callAccepted) {
@@ -64,11 +78,11 @@ function LiveCall({ content }: { content: string }) {
                  <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
                     <CardContent className="p-4 flex items-center gap-4">
                          <Avatar className="h-12 w-12 border-2 border-background">
-                            <AvatarImage src="https://placehold.co/100x100.png" alt="Especialista" data-ai-hint="person friendly expert"/>
-                            <AvatarFallback>E</AvatarFallback>
+                            <AvatarImage src="https://placehold.co/100x100.png" alt="Ana" data-ai-hint="person friendly"/>
+                            <AvatarFallback>A</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                            <p className="font-bold">{content}</p>
+                            <p className="font-bold">Ana</p>
                             <p className="text-sm text-green-500">Chamada de vídeo recebida...</p>
                         </div>
                         <Button variant="ghost" size="icon" className="rounded-full bg-green-500 hover:bg-green-600 text-white h-12 w-12">
@@ -82,11 +96,15 @@ function LiveCall({ content }: { content: string }) {
 
     return (
         <div className="fixed inset-0 bg-zinc-800/90 backdrop-blur-sm z-50 flex flex-col animate-in fade-in">
-            <div className="flex-1 flex items-center justify-center p-4">
+             <div className="flex-1 flex items-center justify-center p-4 relative">
+                 <div className="absolute top-4 left-4 text-white bg-black/30 p-2 rounded-lg">
+                    <p className="font-bold">Ana</p>
+                    <p className="text-sm">01:15</p>
+                 </div>
                  <video 
+                    ref={videoRef}
                     src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
                     className="aspect-video w-full max-w-4xl rounded-lg" 
-                    autoPlay 
                     muted 
                 />
             </div>
@@ -113,7 +131,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   useEffect(() => {
     // This check prevents hydration errors by ensuring `new Date()` is only used client-side
-    setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
+    if (message.timestamp) {
+      setFormattedTime(format(new Date(message.timestamp), "HH:mm", { locale: ptBR }));
+    }
   }, [message.timestamp]);
 
 
@@ -168,12 +188,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
               poster={message.content}
             />
              {message.meta?.videoTitle && (
-              <p className="font-semibold text-foreground mt-2">{message.meta.videoTitle}</p>
+              <p className="font-semibold text-foreground mt-2 p-1">{message.meta.videoTitle}</p>
             )}
           </div>
         );
       case "audio":
-        return <AudioPlayer audioSrc={message.content} />;
+        return <AudioPlayer audioSrc={message.content} audioText={message.meta?.audioText} />;
       case "bonuses":
         return <BonusList />;
        case "testimonial":
@@ -221,10 +241,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
     }
   };
 
-  if (message.type === 'button') {
+  if (message.type === 'button' || message.type === 'bonuses') {
     return (
       <div className={cn("flex w-full my-4", isUser ? "justify-end" : "justify-center")}>
-        <div className="animate-in fade-in zoom-in-95">
+        <div className="animate-in fade-in zoom-in-95 w-full max-w-md">
           {renderContent()}
         </div>
       </div>
@@ -235,12 +255,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
      return (
         <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
             <div className={cn(
-                "relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg shadow-sm animate-in fade-in zoom-in-95 p-2",
+                "relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg shadow-sm animate-in fade-in zoom-in-95",
                  isUser
                     ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
                     : "bg-white dark:bg-zinc-700 rounded-bl-none"
             )}>
-                 <div className="flex items-end gap-2">
+                 <div className="flex flex-col gap-2 p-2">
                     {renderContent()}
                     <div className={cn(
                         "text-xs self-end",
@@ -269,6 +289,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser
             ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
             : "bg-white dark:bg-zinc-700 rounded-bl-none",
+           message.type === 'video' || message.type === 'image' ? "p-1" : "p-3"
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col">
@@ -289,3 +310,5 @@ export function ChatMessage({ message }: ChatMessageProps) {
     </div>
   );
 }
+
+    

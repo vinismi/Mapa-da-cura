@@ -9,9 +9,10 @@ import { cn } from "@/lib/utils";
 
 type AudioPlayerProps = {
   audioSrc: string;
+  audioText?: string;
 };
 
-export function AudioPlayer({ audioSrc }: AudioPlayerProps) {
+export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -74,33 +75,6 @@ export function AudioPlayer({ audioSrc }: AudioPlayerProps) {
     <div className="w-full max-w-xs">
       <div className="flex items-center gap-3 w-full">
         <audio ref={audioRef} src={audioSrc} preload="metadata" />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-12 w-12 shrink-0 bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary"
-          onClick={togglePlay}
-        >
-          {isPlaying ? (
-            <Pause className="h-6 w-6" />
-          ) : (
-            <Play className="h-6 w-6 ml-1" />
-          )}
-        </Button>
-        <div className="flex-1 flex flex-col justify-center gap-1">
-          <Slider
-            value={[progress]}
-            onValueChange={handleSliderChange}
-            max={100}
-            step={1}
-            className={cn(
-              "[&>span]:h-1 [&>span>span]:bg-primary [&>span>span]:h-1 [&>span>button]:h-3 [&>span>button]:w-3 [&>span>button]:border-primary"
-            )}
-          />
-          <div className="flex justify-between items-center">
-             <span className="text-xs text-muted-foreground">{formatTime(duration)}</span>
-             <Headphones className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
         <Avatar className="h-10 w-10">
           <AvatarImage
             src="https://placehold.co/100x100.png"
@@ -109,7 +83,39 @@ export function AudioPlayer({ audioSrc }: AudioPlayerProps) {
           />
           <AvatarFallback>JS</AvatarFallback>
         </Avatar>
+        <div className="flex-1 flex flex-col justify-center gap-1">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-8 w-8 shrink-0 bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary"
+              onClick={togglePlay}
+            >
+              {isPlaying ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4 ml-0.5" />
+              )}
+            </Button>
+            <Slider
+              value={[progress]}
+              onValueChange={handleSliderChange}
+              max={100}
+              step={1}
+              className={cn(
+                "[&>span]:h-1 [&>span>span]:bg-primary [&>span>span]:h-1 [&>span>button]:h-3 [&>span>button]:w-3 [&>span>button]:border-primary"
+              )}
+            />
+          </div>
+          <div className="flex justify-between items-center pl-10">
+             <span className="text-xs text-muted-foreground">{formatTime(duration)}</span>
+             <Headphones className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
       </div>
+      {audioText && <p className="text-foreground mt-2">{audioText}</p>}
     </div>
   );
 }
+
+    

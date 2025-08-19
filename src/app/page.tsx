@@ -10,19 +10,9 @@ const initialMessages: Message[] = [
   {
     id: "1",
     sender: "bot",
-    type: "audio",
-    content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder audio
-    timestamp: new Date(Date.now() - 1000 * 60 * 2),
-     meta: {
-      audioText: "Olá! Eu sou João, seu guia nesta jornada de despertar espiritual. Preparei algo especial para você. Vamos começar?"
-    }
-  },
-  {
-    id: "2",
-    sender: "bot",
     type: "text",
-    content: "Para começar, como posso te chamar?",
-    timestamp: new Date(Date.now() - 1000 * 60 * 1),
+    content: "Olá! Antes de te mostrar como posso ajudar na sua jornada, me diga seu nome, por favor.",
+    timestamp: new Date(),
   }
 ];
 
@@ -33,8 +23,8 @@ export default function Home() {
   const [conversationStep, setConversationStep] = useState(0);
   const { toast } = useToast();
   const [userName, setUserName] = useState("");
-  const [userArea, setUserArea] = useState("");
-  const [userFeeling, setUserFeeling] = useState("");
+  const [userMotivation, setUserMotivation] = useState("");
+  const [userPainDuration, setUserPainDuration] = useState("");
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -59,7 +49,7 @@ export default function Home() {
 
     try {
       switch (conversationStep) {
-        case 0: // Welcome, asked for name
+        case 0: // Asked for name
           const name = text.trim();
           setUserName(name);
           
@@ -67,84 +57,81 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: `Que bom ter você aqui, ${name}!`,
+            content: `Que bom ter você aqui, ${name}! E o que mais te motiva a querer buscar essa cura espiritual?`,
           });
           
-          await showTypingIndicator(3000);
-
-          addMessage({
-            sender: "bot",
-            type: "text",
-            content: "Para que eu possa te entender melhor, me conta: qual área da sua vida você sente que precisa de mais foco e cura agora?",
-          });
           setConversationStep(1);
           break;
 
-        case 1: // Asked about area to heal
-           const area = text;
-           setUserArea(area);
+        case 1: // Asked about motivation
+           const motivation = text;
+           setUserMotivation(motivation);
            
            await showTypingIndicator(3500);
-           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia e valide o sentimento dele de forma breve e genuína, dizendo que entende como essa área pode ser desafiadora.` });
-
            addMessage({
-            sender: "bot",
-            type: "text",
-            content: empathyResponse.personalizedResponse
-          });
-          
-          await showTypingIndicator(3800);
+             sender: "bot",
+             type: "text",
+             content: `Entendi, ${name}. Vi que você está interessado em alcançar ${motivation}.`
+           });
 
-          addMessage({ sender: "bot", type: "text", content: `E dentro de "${area}", existe algum sentimento ou situação específica que mais te incomoda hoje?` });
+           await showTypingIndicator(3000);
+           addMessage({
+             sender: "bot",
+             type: "text",
+             content: "Com a orientação certa, você pode sentir mais paz interior, alinhar sua energia e encontrar clareza no seu caminho."
+           })
+
+           await showTypingIndicator(3800);
+            addMessage({ sender: "bot", type: "text", content: "Há quanto tempo você sente que essa área da sua vida precisa de atenção?" });
           
           setConversationStep(2);
           break;
         
-        case 2: // Asked about specific feeling
-            const feeling = text;
-            setUserFeeling(feeling);
+        case 2: // Asked about pain duration
+            const duration = text;
+            setUserPainDuration(duration);
 
             await showTypingIndicator(4000);
-            
-            const deepEmpathyResponse = await generatePersonalizedResponse({
-                userInput: `O usuário ${userName} está buscando cura na área de "${userArea}" e mencionou o sentimento/situação de "${feeling}". Mostre uma empatia profunda. Diga que você já passou por algo muito parecido e que sabe o quão desafiador isso pode ser. Crie uma conexão genuína e pessoal.`,
-            });
             addMessage({
-                sender: "bot",
-                type: "text",
-                content: deepEmpathyResponse.personalizedResponse,
+              sender: "bot",
+              type: "audio",
+              content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder
+              meta: {
+                audioText: "Obrigado por compartilhar... Antes de continuarmos, só por curiosidade, qual sua cor favorita?"
+              }
             });
             
-            await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "text", content: "Saiba que você não está sozinho(a) nisso. Muitas pessoas chegam até mim com essa mesma questão." });
-            
-            await showTypingIndicator(3200);
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: "Eu acredito tanto no poder da transformação que preparei algo que pode realmente te ajudar. Você me permite te mostrar o caminho?",
-                options: ["Sim, pode mostrar!", "Como assim?", "Não tenho certeza..."]
-            });
             setConversationStep(3);
             break;
 
-        case 3: // After permission
-            await showTypingIndicator(2800);
-            addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz com sua abertura." });
-            await showTypingIndicator(3200);
-            addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho." });
+        case 3: // After random question
             await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
+            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${userPainDuration}. Mostre empatia e diga que entende que carregar isso por tanto tempo pode ser desgastante. Diga que você já passou por algo parecido.` });
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: empathyResponse.personalizedResponse,
+            });
+            
+            await showTypingIndicator(3200);
+            addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão, você não está sozinho(a)." });
+            
+            await showTypingIndicator(3800);
+            addMessage({
+                sender: "bot",
+                type: "status",
+                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
+                options: ["Já vi os status!", "O que é isso?"]
+            });
             setConversationStep(4);
             break;
 
         case 4: // After Status
             await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
-            await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "text", content: `Fico feliz que tenha se inspirado, ${userName}.` });
+            
             await showTypingIndicator(4000);
-            addMessage({ sender: "bot", type: "text", content: "Agora, prepare-se. Senti uma forte conexão com sua energia e nosso especialista vai te ligar agora para uma conversa rápida e esclarecedora." });
+            addMessage({ sender: "bot", type: "text", content: `Agora, prepare-se. Senti que seria importante para você e uma pessoa que passou pela mesma situação que a sua vai te ligar. Ela vai te apresentar os benefícios do que a ajudou.` });
             
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
@@ -152,48 +139,44 @@ export default function Home() {
             setTimeout(async () => {
                 setMessages(prev => prev.filter(m => m.type !== 'live-call'));
                 await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com nosso especialista tenha clareado seu caminho.` });
+                addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com a Ana tenha te inspirado.` });
 
                 await showTypingIndicator(4000);
-                addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
-                
+                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
+
                 await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: `O depoimento da Ana é poderoso, não acha, ${userName}? Isso é o que o Mapa da Cura faz.`});
+                addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança. Por isso, vou te dar acesso a tudo ANTES de você pagar.`});
                 
                 await showTypingIndicator(4000);
-                 const finalOffer = await generatePersonalizedResponse({
-                    userInput: `O usuário ${userName} acabou de falar com um especialista e viu um depoimento sobre a sua dificuldade com "${userFeeling}". Crie uma mensagem curta de oferta final. Diga que agora ele está pronto para o primeiro passo para resolver "${userFeeling}". Mencione o preço de R$39,99 e convide-o a finalizar a compra.`,
-                });
-                
-                addMessage({
+                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: finalOffer.personalizedResponse,
+                    content: "Você receberá o Mapa da Cura Espiritual completo e todos os bônus. Se sentir no coração que é o caminho certo, você realiza o pagamento.",
                 });
 
                 await showTypingIndicator(3500);
                 
-                addMessage({ sender: "bot", type: "text", content: "E o melhor: com nossa garantia de 7 dias, seu risco é zero. Se não ficar satisfeito, basta nos avisar.", options: ["Sim, quero garantir minha jornada!"] });
+                addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
                 setConversationStep(5);
             }, 10000); 
 
             break;
 
-        case 5: // Final CTA
+        case 5: // Access before payment
             await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "text", content: "Clique abaixo para garantir sua jornada espiritual e acessar todos os bônus. Sua transformação começa agora." });
-            await showTypingIndicator(2500);
+            addMessage({ sender: "bot", type: "bonuses", content: "Esses são os bônus que você recebe:" });
+            await showTypingIndicator(3500);
+            addMessage({ sender: "bot", type: "image", content: "https://placehold.co/600x400.png", dataAiHint:"spiritual map golden light", meta: { title: "Seu Mapa da Cura Espiritual" }});
+            await showTypingIndicator(4000);
             addMessage({
                 sender: "bot",
-                type: "button",
-                content: "Sim, quero garantir minha jornada espiritual!",
-                 meta: {
-                  text: "Você acaba de garantir seu acesso ao Mapa da Cura Espiritual e todos os bônus. Prepare-se para uma transformação profunda! Em breve, você receberá todas as informações para acessar seu conteúdo.",
-                  image: "https://placehold.co/600x400.png",
-                  imageHint: "spiritual map golden light"
-                },
-              });
+                type: "text",
+                content: `Todo o material foi enviado para você. Sinta a energia, explore o conteúdo. Quando estiver pronto, pode finalizar com o pagamento de R$39,99 via PIX.`,
+            });
+            await showTypingIndicator(2500);
+            addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
+            addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará completa. Estou aqui para o que precisar." });
             setConversationStep(6);
             break;
             
@@ -240,3 +223,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
