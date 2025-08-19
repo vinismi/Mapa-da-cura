@@ -78,10 +78,11 @@ export default function Home() {
            setUserMotivation(motivation);
            
            await showTypingIndicator(3500);
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Demonstre que você entende o que ele(a) busca de forma breve e empática.` });
            addMessage({
              sender: "bot",
              type: "text",
-             content: `Entendi, ${userName}. Buscar clareza sobre o futuro é uma jornada profunda e reveladora.`
+             content: empathyResponseForMotivation.personalizedResponse
            });
 
            await showTypingIndicator(3800);
