@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
 import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
+import { ChevronRight, Send, Sparkles } from "lucide-react";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -323,20 +323,28 @@ export default function Home() {
 
   if (!conversationStarted) {
     return (
-      <div className="flex h-screen flex-col">
+      <div className="flex h-screen w-full flex-col">
         <div 
-          className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-repeat bg-center"
+          className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-cover bg-center"
           style={{ 
             backgroundImage: "url('/spiritual-bg.png')",
-            backgroundSize: '300px 300px' 
           }}
         >
-            <div className="bg-background/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl max-w-md">
-                <h1 className="text-3xl font-bold text-primary mb-2">Jornada do Despertar Espiritual</h1>
-                <p className="text-foreground/80 mb-6">Receba orientação personalizada e encontre o caminho para a sua cura interior.</p>
-                <Button size="lg" className="w-full text-lg h-14 rounded-full" onClick={startConversation}>
-                    Iniciar Conversa
-                    <Send className="ml-2 h-5 w-5"/>
+          <div className="absolute inset-0 bg-black/50" />
+            <div className="relative bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10">
+                <div className="flex justify-center items-center mb-4">
+                  <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
+                  <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
+                      Jornada do Despertar Espiritual
+                  </h1>
+                  <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
+                </div>
+                <p className="text-foreground/80 mb-8 text-base md:text-lg">
+                    Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
+                </p>
+                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary" onClick={startConversation}>
+                    Iniciar Conversa Agora
+                    <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
                 </Button>
             </div>
         </div>
