@@ -55,7 +55,7 @@ export default function Home() {
     addMessage({
       sender: "bot",
       type: "audio",
-      content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
+      content: "https://storage.googleapis.com/studiopublic/initial_audio.mp3",
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
@@ -256,7 +256,8 @@ export default function Home() {
                 await showTypingIndicator(3000);
                 addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Desbravando seu Mapa da Cura" } });
 
-                await showTypingIndicator(6000);
+                // Wait for a simulated video watch time + typing
+                await showTypingIndicator(12000); 
                 addMessage({ sender: "bot", type: "text", content: "Pensa nesse mapa como seu GPS para a alma. Ele é o resultado de anos de estudo e vivências, tudo mastigadinho pra você redescobrir sua força, alinhar sua energia e manifestar a vida espetacular que você merece." });
                 
                 await showTypingIndicator(5000);
@@ -274,6 +275,8 @@ export default function Home() {
 
                 await showTypingIndicator(3500);
                 addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
+                
+                await showTypingIndicator(3000);
                 addMessage({ sender: "bot", type: "text", content: "Depois disso, sua jornada de transformação estará selada e eu estarei aqui vibrando por cada conquista sua." });
 
                 setConversationStep(10);
@@ -372,11 +375,5 @@ export default function Home() {
     </main>
   );
 }
-
-    
-
-    
-
-    
 
     
