@@ -129,14 +129,30 @@ export default function Home() {
             await showTypingIndicator(3800);
             addMessage({
                 sender: "bot",
-                type: "status",
-                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
-                options: ["Ver status"]
+                type: "text",
+                content: "Entendo... Para eu ter uma ideia, qual foi a última vez que você se sentiu verdadeiramente conectado(a) e em paz consigo mesmo(a)?",
             });
             setConversationStep(4);
             break;
 
-        case 4: // After Status
+        case 4: // Answered last time felt connected
+            await showTypingIndicator(3800);
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: `Obrigado por compartilhar isso. É importante reconhecer esses momentos. Tenho algo que pode te inspirar.`
+            });
+            await showTypingIndicator(2500);
+            addMessage({
+                sender: "bot",
+                type: "status",
+                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
+                options: ["Ver status"]
+            });
+            setConversationStep(5);
+            break;
+
+        case 5: // After Status
             if (text === "Ver status") {
                 setIsViewingStatus(true);
                 return; // Wait for user to close status view
@@ -173,12 +189,12 @@ export default function Home() {
                 
                 addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
-                setConversationStep(5);
+                setConversationStep(6);
             }, 10000); 
 
             break;
 
-        case 5: // Access before payment
+        case 6: // Access before payment
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "bonuses", content: "Esses são os bônus que você recebe:" });
             await showTypingIndicator(3500);
@@ -192,7 +208,7 @@ export default function Home() {
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
             addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará completa. Estou aqui para o que precisar." });
-            setConversationStep(6);
+            setConversationStep(7);
             break;
             
         default:
