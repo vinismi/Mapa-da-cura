@@ -42,9 +42,11 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     }
 
     const setAudioTime = () => {
-        const newProgress = (audio.currentTime / audio.duration) * 100;
-        setProgress(newProgress);
-        setCurrentTime(audio.currentTime);
+        if (audio.duration > 0) {
+            const newProgress = (audio.currentTime / audio.duration) * 100;
+            setProgress(newProgress);
+            setCurrentTime(audio.currentTime);
+        }
     }
 
     const handlePlay = () => setIsPlaying(true);
@@ -66,7 +68,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   }, []);
 
   const handleSliderChange = (value: number[]) => {
-    if(audioRef.current) {
+    if(audioRef.current && duration > 0) {
         const newTime = (value[0] / 100) * duration;
         audioRef.current.currentTime = newTime;
         setProgress(value[0]);
@@ -80,6 +82,10 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
+  if (!audioSrc) {
+    return null;
+  }
+  
   return (
     <div className="w-full max-w-xs">
       <div className="flex items-center gap-3 w-full">
