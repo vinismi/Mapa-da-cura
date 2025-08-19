@@ -81,7 +81,7 @@ export default function Home() {
            addMessage({
              sender: "bot",
              type: "text",
-             content: `Entendi, ${name}. Vi que você está interessado em alcançar ${motivation}.`
+             content: `Entendi, ${userName}. Vi que você está interessado em alcançar ${motivation}.`
            });
 
            await showTypingIndicator(3000);
