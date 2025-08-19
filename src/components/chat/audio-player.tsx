@@ -22,24 +22,22 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const togglePlay = () => {
     if (!audioRef.current) return;
     
-    if (audioRef.current.paused) {
-      audioRef.current.play().then(() => {
-        setIsPlaying(true);
-      }).catch(e => console.error("Audio play failed:", e));
-    } else {
-      audioRef.current.pause();
-      setIsPlaying(false);
+    // Check if audio is ready to be played
+    if (audioRef.current.readyState >= 2) {
+        if (audioRef.current.paused) {
+          audioRef.current.play().then(() => {
+            setIsPlaying(true);
+          }).catch(e => console.error("Audio play failed:", e));
+        } else {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
     }
   };
   
    useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    // Set the src only on the client side
-    if(audioSrc && audio.src !== audioSrc) {
-        audio.src = audioSrc;
-    }
 
     const setAudioData = () => {
       setDuration(audio.duration);
@@ -62,6 +60,12 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handlePause);
+
+    // Set the src and load it only on the client side
+    if(audioSrc && audio.src !== window.location.origin + audioSrc) {
+        audio.src = audioSrc;
+        audio.load(); // Force the audio element to load the new source
+    }
 
     return () => {
       audio.removeEventListener('loadeddata', setAudioData);
