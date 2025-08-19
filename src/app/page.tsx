@@ -59,7 +59,7 @@ export default function Home() {
         audioText: "Olá! Que bom que você veio. Tudo bem com você?",
       },
     });
-    setConversationStep(1); // Move to next step which is asking for name
+    setConversationStep(1); // Move to next step which is waiting for the user's response on how they are.
   };
 
 
@@ -312,7 +312,8 @@ export default function Home() {
   const handleStatusFinish = () => {
     setIsViewingStatus(false);
     if (conversationStep === 7) {
-      handleSendMessage("Já vi os status!");
+      // Use a timeout to ensure state update happens after render cycle
+      setTimeout(() => handleSendMessage("Já vi os status!"), 0);
     }
   };
 
