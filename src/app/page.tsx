@@ -67,7 +67,7 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: `Que bom ter você aqui, ${name}! E o que mais te motiva a querer buscar essa cura espiritual?`,
+            content: `Que bom ter você aqui, ${name}! queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
           });
           
           setConversationStep(1);
