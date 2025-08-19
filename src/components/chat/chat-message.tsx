@@ -27,7 +27,7 @@ function BonusList() {
         { icon: Sparkles, text: "Desconto especial em futuros produtos espirituais" },
     ];
     return (
-        <Card className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border-primary/20 shadow-lg w-full">
+        <Card className="bg-background/80 dark:bg-zinc-800/80 backdrop-blur-sm border-primary/20 shadow-lg w-full">
             <CardHeader>
                 <CardTitle className="text-lg text-primary">Seus Bônus Exclusivos</CardTitle>
             </CardHeader>
@@ -45,7 +45,7 @@ function BonusList() {
 
 function Testimonial({ content, author }: { content: string, author?: string }) {
     return (
-        <Card className="bg-white/70 backdrop-blur-sm border-primary/20 shadow-lg">
+        <Card className="bg-background/70 backdrop-blur-sm border-primary/20 shadow-lg">
             <CardContent className="p-4">
                 <p className="italic text-foreground/80">"{content}"</p>
                 {author && <p className="text-right font-bold text-primary mt-2">- {author}</p>}
@@ -230,7 +230,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         return <Testimonial content={message.content} author={message.meta?.author} />;
        case "status":
          return (
-             <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95 h-auto py-2" onClick={() => onSendMessage('Ver status')}>
+             <Button variant="outline" className="bg-green-100/80 border-green-300/80 text-green-900 hover:bg-green-200/80 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95 h-auto py-2" onClick={() => onSendMessage('Ver status')}>
                 <div className="flex items-center gap-3">
                     <div className="p-1.5 rounded-full bg-gradient-to-b from-green-400 to-green-600">
                          <PlayCircle className="h-8 w-8 text-white shrink-0"/>
@@ -288,7 +288,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
                 "relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg shadow-sm animate-in fade-in zoom-in-95",
                  isUser
                     ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
-                    : "bg-white dark:bg-zinc-700 rounded-bl-none"
+                    : "bg-background/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-bl-none"
             )}>
                  <div className="flex flex-col gap-2 p-2">
                     {renderContent()}
@@ -323,7 +323,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg shadow-sm animate-in fade-in zoom-in-95",
           isUser
             ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
-            : "bg-white dark:bg-zinc-700 rounded-bl-none",
+            : "bg-background/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-bl-none",
            message.type === 'video' || message.type === 'image' ? "p-1" : "p-3"
         )}
       >

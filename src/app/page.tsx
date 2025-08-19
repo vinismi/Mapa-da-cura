@@ -55,7 +55,7 @@ export default function Home() {
     addMessage({
       sender: "bot",
       type: "audio",
-      content: "https://storage.googleapis.com/studiopublic/initial_audio.mp3",
+      content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
@@ -338,11 +338,11 @@ export default function Home() {
         <div 
           className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-cover bg-center"
           style={{ 
-            backgroundImage: "url('/spiritual-bg.png')",
+            backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
           }}
         >
           <div className="absolute inset-0 bg-black/50" />
-            <div className="relative bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10">
+            <div className="relative bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
                 <div className="flex justify-center items-center mb-4">
                   <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
                   <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
@@ -353,7 +353,7 @@ export default function Home() {
                 <p className="text-foreground/80 mb-8 text-base md:text-lg">
                     Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
                 </p>
-                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary" onClick={startConversation}>
+                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300" onClick={startConversation}>
                     Iniciar Conversa Agora
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
                 </Button>
@@ -375,5 +375,3 @@ export default function Home() {
     </main>
   );
 }
-
-    

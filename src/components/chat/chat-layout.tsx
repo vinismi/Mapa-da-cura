@@ -24,13 +24,14 @@ export function ChatLayout({
     <div className="flex flex-col h-full w-full">
       <ChatHeader />
       <div 
-        className="flex-1 overflow-y-auto bg-repeat bg-center" 
+        className="flex-1 overflow-y-auto bg-cover bg-center" 
         style={{ 
-          backgroundImage: "url('/spiritual-bg.png')",
-          backgroundSize: '300px 300px' 
+          backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
         }}
       >
-        <ChatMessages messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
+        <div className="h-full bg-black/10 backdrop-blur-[2px]">
+          <ChatMessages messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
+        </div>
       </div>
       <ChatInput
         userInput={userInput}
