@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound, MicOff, VideoOff } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound, MicOff, VideoOff, PlayCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -16,6 +16,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 type ChatMessageProps = {
   message: Message;
+  onSendMessage: (text: string) => void;
 };
 
 function BonusList() {
@@ -124,7 +125,7 @@ function LiveCall({ content }: { content: string }) {
 }
 
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   const { toast } = useToast();
   const isUser = message.sender === "user";
   const [formattedTime, setFormattedTime] = useState("");
@@ -145,15 +146,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
     // Here you would typically redirect to a checkout URL
     // window.location.href = 'https://checkout.example.com';
   };
-
-  const handleStatusClick = () => {
-    // Simulate opening WhatsApp status
-    toast({
-        title: "Abrindo Status...",
-        description: "Você será redirecionado para a conversa em breve."
-    })
-    // In a real scenario, this would be a deep link to WhatsApp
-  }
 
   const renderContent = () => {
     switch (message.type) {
@@ -200,10 +192,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
         return <Testimonial content={message.content} author={message.meta?.author} />;
        case "status":
          return (
-            <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95" onClick={handleStatusClick}>
+             <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95" onClick={() => onSendMessage('Ver status')}>
                 <div className="flex items-center gap-3">
                     <div className="p-1.5 rounded-full bg-gradient-to-b from-green-400 to-green-600">
-                        <CircleUserRound className="h-8 w-8 text-white"/>
+                         <PlayCircle className="h-8 w-8 text-white"/>
                     </div>
                     <div className="text-left">
                         <p className="font-bold">Status de João</p>
@@ -251,7 +243,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
     );
   }
   
-  if (message.type === 'audio') {
+  if (message.type === 'audio' || message.type === 'status') {
      return (
         <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
             <div className={cn(
@@ -310,5 +302,3 @@ export function ChatMessage({ message }: ChatMessageProps) {
     </div>
   );
 }
-
-    

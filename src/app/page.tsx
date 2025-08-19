@@ -5,6 +5,7 @@ import { ChatLayout } from "@/components/chat/chat-layout";
 import { generatePersonalizedResponse } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
+import { StatusView } from "@/components/chat/status-view";
 
 const initialMessages: Message[] = [
   {
@@ -32,6 +33,7 @@ export default function Home() {
   const [userName, setUserName] = useState("");
   const [userMotivation, setUserMotivation] = useState("");
   const [userPainDuration, setUserPainDuration] = useState("");
+  const [isViewingStatus, setIsViewingStatus] = useState(false);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -98,19 +100,8 @@ export default function Home() {
             const duration = text;
             setUserPainDuration(duration);
 
-            await showTypingIndicator(4000);
-            addMessage({
-              sender: "bot",
-              type: "text",
-              content: "Obrigado por compartilhar... Antes de continuarmos, só por curiosidade, qual sua cor favorita?",
-            });
-            
-            setConversationStep(3);
-            break;
-
-        case 3: // After random question
             await showTypingIndicator(3500);
-            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${userPainDuration}. Mostre empatia e diga que entende que carregar isso por tanto tempo pode ser desgastante. Diga que você já passou por algo parecido.` });
+            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} sente essa dor há ${userPainDuration}. Mostre empatia de forma breve, dizendo que entende o quão desgastante isso pode ser.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -125,12 +116,17 @@ export default function Home() {
                 sender: "bot",
                 type: "status",
                 content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
-                options: ["Já vi os status!", "O que é isso?"]
+                options: ["Ver status"] // Changed from text options to a single action
             });
-            setConversationStep(4);
+            setConversationStep(3);
             break;
 
-        case 4: // After Status
+        case 3: // After Status
+            if (text === "Ver status") {
+                setIsViewingStatus(true);
+                return; // Wait for user to close status view
+            }
+            
             await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
             
@@ -162,12 +158,12 @@ export default function Home() {
                 
                 addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
-                setConversationStep(5);
+                setConversationStep(4);
             }, 10000); 
 
             break;
 
-        case 5: // Access before payment
+        case 4: // Access before payment
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "bonuses", content: "Esses são os bônus que você recebe:" });
             await showTypingIndicator(3500);
@@ -181,7 +177,7 @@ export default function Home() {
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
             addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará completa. Estou aqui para o que precisar." });
-            setConversationStep(6);
+            setConversationStep(5);
             break;
             
         default:
@@ -215,6 +211,20 @@ export default function Home() {
     }
   };
 
+  const handleCloseStatus = () => {
+    setIsViewingStatus(false);
+    
+    // This will trigger the next step in the conversation after closing the status.
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.type === 'status') {
+      handleSendMessage("Já vi os status!");
+    }
+  };
+
+  if (isViewingStatus) {
+    return <StatusView onClose={handleCloseStatus} />;
+  }
+  
   return (
     <main className="h-screen max-h-screen">
       <ChatLayout

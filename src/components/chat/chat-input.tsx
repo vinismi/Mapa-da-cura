@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Send } from "lucide-react";
+import { Mic, Send, CircleUserRound } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type ChatInputProps = {
@@ -29,10 +29,12 @@ export function ChatInput({
   const handleOptionClick = (option: string) => {
     onSendMessage(option);
   };
+  
+  const hasOnlyStatusOption = options && options.length === 1 && options[0] === 'Ver status';
 
   return (
     <div className="p-2 md:p-4 bg-secondary/50 border-t">
-       {options && options.length > 0 && (
+       {options && options.length > 0 && !hasOnlyStatusOption && (
         <ScrollArea className="w-full whitespace-nowrap pb-2">
             <div className="flex gap-2">
                 {options.map((option) => (
@@ -78,5 +80,3 @@ export function ChatInput({
     </div>
   );
 }
-
-    
