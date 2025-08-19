@@ -171,7 +171,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(6000);
-             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} já tentou o seguinte para resolver seu problema: "${attempts}". Mostre que você entende e que muitas tentativas podem ser frustrantes, mas que há um caminho. Use uma linguagem amigável e um pouco de humor, como se estivesse conversando com uma amiga.` });
+             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} disse que já tentou algumas coisas para resolver seu problema. A resposta dele foi: "${attempts}". Mostre empatia de forma breve e natural, sem repetir a frase dele. Reconheça que tentativas podem ser frustrantes, mas que há esperança. Use uma linguagem amigável, como se falasse com uma amiga.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -379,3 +379,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
