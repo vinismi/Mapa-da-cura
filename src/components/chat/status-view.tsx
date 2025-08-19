@@ -37,6 +37,13 @@ type StatusViewProps = {
 export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isFinished, setIsFinished] = useState(false);
+
+  useEffect(() => {
+    if (isFinished) {
+      onFinish();
+    }
+  }, [isFinished, onFinish]);
 
   useEffect(() => {
     const currentStory = stories[currentStoryIndex];
@@ -48,7 +55,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
             return 0;
           } else {
             clearInterval(interval);
-            onFinish();
+            setIsFinished(true);
             return 100;
           }
         }
@@ -57,7 +64,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [currentStoryIndex, onFinish]);
+  }, [currentStoryIndex]);
   
   const goToPrevious = () => {
     setCurrentStoryIndex((prev) => {
@@ -72,7 +79,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
         setCurrentStoryIndex((prev) => prev + 1);
         setProgress(0);
     } else {
-        onFinish();
+        setIsFinished(true);
     }
   };
 
