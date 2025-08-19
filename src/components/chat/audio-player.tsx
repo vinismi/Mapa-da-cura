@@ -16,66 +16,38 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-    
-    // Check if audio is ready to be played
-    if (audioRef.current.readyState >= 2) {
-        if (audioRef.current.paused) {
-          audioRef.current.play().then(() => {
-            setIsPlaying(true);
-          }).catch(e => console.error("Audio play failed:", e));
-        } else {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
-    }
-  };
-  
-   useEffect(() => {
+  const togglePlayPause = () => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    const setAudioData = () => {
-      setDuration(audio.duration);
-      setCurrentTime(audio.currentTime);
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play().catch(e => console.error("Audio play failed:", e));
     }
-
-    const setAudioTime = () => {
-        if (audio.duration > 0) {
-            const newProgress = (audio.currentTime / audio.duration) * 100;
-            setProgress(newProgress);
-            setCurrentTime(audio.currentTime);
-        }
+    setIsPlaying(!isPlaying);
+  };
+  
+  const handleTimeUpdate = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      setProgress((audio.currentTime / audio.duration) * 100);
     }
+  };
 
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-
-    audio.addEventListener('loadeddata', setAudioData);
-    audio.addEventListener('timeupdate', setAudioTime);
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
-    audio.addEventListener('ended', handlePause);
-
-    // Set the src and load it only on the client side
-    if(audioSrc && audio.src !== window.location.origin + audioSrc) {
-        audio.src = audioSrc;
-        audio.load(); // Force the audio element to load the new source
+  const handleLoadedData = () => {
+    const audio = audioRef.current;
+    if (audio) {
+        setDuration(audio.duration);
     }
+  };
 
-    return () => {
-      audio.removeEventListener('loadeddata', setAudioData);
-      audio.removeEventListener('timeupdate', setAudioTime);
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
-      audio.removeEventListener('ended', handlePause);
-    };
-  }, [audioSrc]);
-
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setProgress(0);
+  };
+  
   const handleSliderChange = (value: number[]) => {
     if(audioRef.current && duration > 0) {
         const newTime = (value[0] / 100) * duration;
@@ -90,15 +62,20 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
-
-  if (!audioSrc) {
-    return null;
-  }
   
   return (
     <div className="w-full max-w-xs">
+       <audio 
+        ref={audioRef}
+        src={audioSrc}
+        onLoadedData={handleLoadedData}
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={handleEnded}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+        preload="metadata" 
+      />
       <div className="flex items-center gap-3 w-full">
-        <audio ref={audioRef} preload="metadata" />
         <Avatar className="h-10 w-10">
           <AvatarImage
             src="https://placehold.co/100x100.png"
@@ -113,7 +90,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
               variant="ghost"
               size="icon"
               className="rounded-full h-8 w-8 shrink-0 bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary"
-              onClick={togglePlay}
+              onClick={togglePlayPause}
             >
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
