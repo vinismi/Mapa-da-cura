@@ -134,7 +134,11 @@ export default function Home() {
            });
 
            await showTypingIndicator(4800);
-           addMessage({ sender: "bot", type: "text", content: "E me diga uma coisa, há quanto tempo você sente que essa área da sua vida precisa de um carinho especial?" });
+           addMessage({ 
+            sender: "bot", 
+            type: "audio", 
+            content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3" 
+           });
           
           setConversationStep(4);
           break;
@@ -375,3 +379,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
