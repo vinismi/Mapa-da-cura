@@ -62,13 +62,10 @@ export default function Home() {
           setUserName(name);
           
           await showTypingIndicator(2000);
-          const welcomeResponse = await generatePersonalizedResponse({
-              userInput: `O nome do usuário é ${name}. Dê as boas-vindas de forma calorosa e pergunte qual área da vida dele(a) mais precisa de cura espiritual. Crie uma conexão, talvez dizendo que você também já se sentiu assim. Seja breve.`,
-          });
           addMessage({
             sender: "bot",
             type: "text",
-            content: welcomeResponse.personalizedResponse,
+            content: `Que bom ter você aqui, ${name}!`,
           });
           
           await showTypingIndicator(2200);
@@ -76,7 +73,7 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: "Qual área você sente que precisa de mais foco agora?",
+            content: "Qual área da sua vida você sente que precisa de mais foco e cura agora?",
             options: ["Saúde física e mental", "Prosperidade financeira", "Relacionamentos", "Energia espiritual"],
           });
           setConversationStep(1);
@@ -86,7 +83,7 @@ export default function Home() {
            const area = text;
            
            await showTypingIndicator(2500);
-           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia, diga que entende perfeitamente e que o Mapa da Cura Espiritual foi fundamental para você nessa mesma área. Seja breve e direto.` });
+           const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia, dizendo que entende perfeitamente e que também já passou por uma situação parecida nessa área. Seja breve e direto.` });
 
            addMessage({
             sender: "bot",
@@ -96,14 +93,14 @@ export default function Home() {
           
           await showTypingIndicator(2500);
 
-          addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão. E o primeiro passo é sempre o mais importante." });
+          addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão. E o primeiro passo que damos juntos é sempre o mais importante." });
           
           await showTypingIndicator(2200);
 
           addMessage({
             sender: "bot",
             type: "text",
-            content: "Eu acredito tanto no poder da transformação que quero te mostrar algo que pode realmente te ajudar. Você me permite?",
+            content: "Eu acredito tanto no poder da transformação que preparei algo que pode realmente te ajudar. Você me permite te mostrar o caminho?",
             options: ["Sim, pode mostrar!", "Como assim?", "Não tenho certeza..."]
           });
           setConversationStep(2);
@@ -113,13 +110,7 @@ export default function Home() {
             await showTypingIndicator(1800);
             addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz com sua abertura." });
             await showTypingIndicator(2200);
-            addMessage({ sender: "bot", type: "text", content: "Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
-            await showTypingIndicator(2200);
-            addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
-            await showTypingIndicator(2500);
-            addMessage({ sender: "bot", type: "text", content: `O depoimento da Ana é poderoso, não acha, ${userName}?`});
-            await showTypingIndicator(2200);
-            addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver mais histórias como a dela." });
+            addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho." });
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
             setConversationStep(3);
@@ -127,13 +118,11 @@ export default function Home() {
 
         case 3: // After Status
             await showTypingIndicator(2500);
-            addMessage({ sender: "bot", type: "text", content: `Incrível, não é? A jornada de cada um é única, mas a transformação é sempre profunda.` });
+            addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: `Fico feliz que tenha se inspirado, ${userName}.` });
             await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "text", content: "Agora, prepare-se. Tenho uma surpresa..." });
-            await showTypingIndicator(2500);
-            addMessage({ sender: "bot", type: "text", content: "Nosso especialista sentiu uma forte conexão com sua energia e está te ligando agora." });
+            addMessage({ sender: "bot", type: "text", content: "Agora, prepare-se. Senti uma forte conexão com sua energia e nosso especialista vai te ligar agora para uma conversa rápida e esclarecedora." });
             
             // Trigger the live call
             await showTypingIndicator(3000);
@@ -146,9 +135,14 @@ export default function Home() {
                 addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com nosso especialista tenha clareado seu caminho.` });
 
                 await showTypingIndicator(3000);
-
+                addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
+                
+                await showTypingIndicator(2500);
+                addMessage({ sender: "bot", type: "text", content: `O depoimento da Ana é poderoso, não acha, ${userName}? Isso é o que o Mapa da Cura faz.`});
+                
+                await showTypingIndicator(3000);
                  const finalOffer = await generatePersonalizedResponse({
-                    userInput: `O usuário ${userName} acabou de falar com um especialista. Crie uma mensagem curta de oferta final. Diga que agora ele está pronto para o primeiro passo. Mencione o preço de R$39,99 e convide-o a finalizar a compra.`,
+                    userInput: `O usuário ${userName} acabou de falar com um especialista e viu um depoimento. Crie uma mensagem curta de oferta final. Diga que agora ele está pronto para o primeiro passo. Mencione o preço de R$39,99 e convide-o a finalizar a compra.`,
                 });
                 
                 addMessage({
