@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 import Image from "next/image";
-import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const stories = [
@@ -31,42 +30,40 @@ const stories = [
 ];
 
 type StatusViewProps = {
-  onClose: () => void;
+  onFinish: () => void;
 };
 
-export function StatusView({ onClose }: StatusViewProps) {
+export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    if (finished) {
-      onClose();
-    }
-  }, [finished, onClose]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress >= 100) {
+    const currentStory = stories[currentStoryIndex];
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
           if (currentStoryIndex < stories.length - 1) {
             setCurrentStoryIndex(currentStoryIndex + 1);
+            return 0;
           } else {
-            setFinished(true); // Auto-close when all stories are finished
+            clearInterval(interval);
+            onFinish();
+            return 100;
           }
-          return 0;
         }
-        const duration = stories[currentStoryIndex].duration;
-        return oldProgress + (100 / (duration / 100));
+        return prev + 100 / (currentStory.duration / 100);
       });
     }, 100);
 
-    return () => clearInterval(timer);
-  }, [currentStoryIndex]);
+    return () => clearInterval(interval);
+  }, [currentStoryIndex, onFinish]);
   
   const goToPrevious = () => {
-    setCurrentStoryIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    setProgress(0);
+    setCurrentStoryIndex((prev) => {
+       const newIndex = prev > 0 ? prev - 1 : 0;
+       if (prev !== newIndex) setProgress(0);
+       return newIndex;
+    });
   };
   
   const goToNext = () => {
@@ -74,7 +71,7 @@ export function StatusView({ onClose }: StatusViewProps) {
         setCurrentStoryIndex((prev) => prev + 1);
         setProgress(0);
     } else {
-        onClose();
+        onFinish();
     }
   };
 
@@ -89,7 +86,7 @@ export function StatusView({ onClose }: StatusViewProps) {
             {stories.map((_, index) => (
                 <div key={index} className="flex-1 h-1 bg-white/30 rounded-full">
                     <div 
-                        className="h-1 bg-white rounded-full"
+                        className="h-1 bg-white rounded-full transition-all duration-100 linear"
                         style={{ width: `${index === currentStoryIndex ? progress : index < currentStoryIndex ? 100 : 0}%` }}
                     />
                 </div>
@@ -106,7 +103,7 @@ export function StatusView({ onClose }: StatusViewProps) {
                     <p className="text-white/80 text-sm">agora mesmo</p>
                 </div>
             </div>
-          <button onClick={onClose} className="text-white p-2">
+          <button onClick={onFinish} className="text-white p-2">
             <X size={24} />
           </button>
         </div>

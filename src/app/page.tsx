@@ -81,7 +81,7 @@ export default function Home() {
            setUserMotivation(motivation);
            
            await showTypingIndicator(5500);
-           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Demonstre que você entende o que ele(a) busca de forma breve e empática, sem repetir o que ele disse.` });
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Gere uma resposta de empatia que seja verdadeiramente personalizada e relevante para o que foi dito, sem repetir as palavras do usuário.` });
            addMessage({
              sender: "bot",
              type: "text",
@@ -256,20 +256,16 @@ export default function Home() {
     }
   };
 
-  const handleCloseStatus = () => {
-    // This now only sets the state to close the view
+  const handleStatusFinish = () => {
     setIsViewingStatus(false);
-    
-    // The logic to continue the conversation is now triggered from StatusView's onFinish
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage.type === 'status' && conversationStep === 5) {
+    // Automatically trigger the next step in the conversation
+    if (conversationStep === 5) {
       handleSendMessage("Já vi os status!");
     }
   };
 
-
   if (isViewingStatus) {
-    return <StatusView onClose={handleCloseStatus} />;
+    return <StatusView onFinish={handleStatusFinish} />;
   }
   
   return (
