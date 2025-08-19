@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { ChatLayout } from "@/components/chat/chat-layout";
-import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrectionCheckOutput } from "@/ai/flows/personalized-response-flow";
+import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrectionCheckOutput, extractNameFromFirstMessage } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
@@ -56,9 +56,6 @@ export default function Home() {
       sender: "bot",
       type: "audio",
       content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
-      meta: {
-        audioText: "",
-      },
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
@@ -78,21 +75,10 @@ export default function Home() {
     try {
       switch (conversationStep) {
         case 1: // Asked for name in audio
-            const name = text.trim();
-            const lowerCaseText = text.toLowerCase();
+            const nameAnalysis = await extractNameFromFirstMessage({ userInput: text });
 
-            // Handle if user says "I'm fine" or similar, then ask for name again.
-            if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
-                await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber. 😊" });
-                await showTypingIndicator(2500);
-                addMessage({
-                    sender: "bot",
-                    type: "text",
-                    content: "E para a gente se conhecer melhor, como posso te chamar?",
-                });
-                // Keep conversationStep at 1 to wait for the name
-            } else {
+            if (nameAnalysis.isNamePresent && nameAnalysis.extractedName) {
+                const name = nameAnalysis.extractedName;
                 setUserName(name);
                 await showTypingIndicator(4500);
                 addMessage({
@@ -101,6 +87,31 @@ export default function Home() {
                     content: `É um prazer te conhecer, ${name}! Fico super curiosa... o que te trouxe até aqui? Me conta qual a sua maior motivação para buscar essa cura espiritual.`,
                 });
                 setConversationStep(3);
+            } else {
+                // Handle if user says "I'm fine" or similar, then ask for name again.
+                const lowerCaseText = text.toLowerCase();
+                 if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
+                    await showTypingIndicator(2000);
+                    addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber. 😊" });
+                    await showTypingIndicator(2500);
+                    addMessage({
+                        sender: "bot",
+                        type: "text",
+                        content: "E para a gente se conhecer melhor, como posso te chamar?",
+                    });
+                    // Keep conversationStep at 1 to wait for the name
+                } else {
+                    // Fallback if AI can't detect name and it's not a "tudo bem" response, assume it's the name.
+                    const name = text.trim();
+                    setUserName(name);
+                    await showTypingIndicator(4500);
+                    addMessage({
+                        sender: "bot",
+                        type: "text",
+                        content: `É um prazer te conhecer, ${name}! Fico super curiosa... o que te trouxe até aqui? Me conta qual a sua maior motivação para buscar essa cura espiritual.`,
+                    });
+                    setConversationStep(3);
+                }
             }
             break;
 

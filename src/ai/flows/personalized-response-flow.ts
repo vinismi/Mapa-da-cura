@@ -93,3 +93,44 @@ const nameCorrectionCheckFlow = ai.defineFlow(
         return output!;
     }
 );
+
+
+// New flow to extract name from first message
+const ExtractNameInputSchema = z.object({
+  userInput: z.string().describe('The first message from the user.'),
+});
+export type ExtractNameInput = z.infer<typeof ExtractNameInputSchema>;
+
+const ExtractNameOutputSchema = z.object({
+  isNamePresent: z.boolean().describe("True if the user's message likely contains their name, false otherwise."),
+  extractedName: z.string().nullable().describe("The extracted name if isNamePresent is true, otherwise null."),
+});
+export type ExtractNameOutput = z.infer<typeof ExtractNameOutputSchema>;
+
+
+export async function extractNameFromFirstMessage(input: ExtractNameInput): Promise<ExtractNameOutput> {
+    return extractNameFlow(input);
+}
+
+const extractNamePrompt = ai.definePrompt({
+    name: 'extractNamePrompt',
+    input: { schema: ExtractNameInputSchema },
+    output: { schema: ExtractNameOutputSchema },
+    prompt: `The user was asked "how are you?" and "what's your name?".
+    The user's response is: "{{userInput}}".
+    Analyze the response. Common patterns are "My name is [Name]", "I'm [Name]", or just "[Name]". The user might also say "I'm fine, my name is [Name]".
+    If you are confident you have identified a name, set isNamePresent to true and put the extracted name in the extractedName field.
+    If the user only says something like "I'm fine" or "I'm good", then a name is not present, so set isNamePresent to false.`,
+});
+
+const extractNameFlow = ai.defineFlow(
+    {
+        name: 'extractNameFlow',
+        inputSchema: ExtractNameInputSchema,
+        outputSchema: ExtractNameOutputSchema,
+    },
+    async (input) => {
+        const { output } = await extractNamePrompt(input);
+        return output!;
+    }
+);
