@@ -36,6 +36,11 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     const audio = audioRef.current;
     if (!audio) return;
 
+    // Set the src only on the client side
+    if(audioSrc && audio.src !== audioSrc) {
+        audio.src = audioSrc;
+    }
+
     const setAudioData = () => {
       setDuration(audio.duration);
       setCurrentTime(audio.currentTime);
@@ -65,7 +70,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handlePause);
     };
-  }, []);
+  }, [audioSrc]);
 
   const handleSliderChange = (value: number[]) => {
     if(audioRef.current && duration > 0) {
@@ -89,7 +94,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   return (
     <div className="w-full max-w-xs">
       <div className="flex items-center gap-3 w-full">
-        <audio ref={audioRef} src={audioSrc} preload="metadata" />
+        <audio ref={audioRef} preload="metadata" />
         <Avatar className="h-10 w-10">
           <AvatarImage
             src="https://placehold.co/100x100.png"
