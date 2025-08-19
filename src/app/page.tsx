@@ -55,13 +55,13 @@ export default function Home() {
     
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
 
-    await showTypingIndicator(1000);
-
     try {
       switch (conversationStep) {
         case 0: // Welcome, asked for name
           const name = text.trim();
           setUserName(name);
+          
+          await showTypingIndicator(2000);
           const welcomeResponse = await generatePersonalizedResponse({
               userInput: `O nome do usuário é ${name}. Dê as boas-vindas de forma calorosa e pergunte qual área da vida dele(a) mais precisa de cura espiritual. Crie uma conexão, talvez dizendo que você também já se sentiu assim. Seja breve.`,
           });
@@ -71,7 +71,7 @@ export default function Home() {
             content: welcomeResponse.personalizedResponse,
           });
           
-          await showTypingIndicator(1200);
+          await showTypingIndicator(2200);
 
           addMessage({
             sender: "bot",
@@ -84,6 +84,8 @@ export default function Home() {
 
         case 1: // Asked about area to heal
            const area = text;
+           
+           await showTypingIndicator(2500);
            const empathyResponse = await generatePersonalizedResponse({ userInput: `O usuário ${userName} escolheu a área "${area}" para focar. Mostre empatia, diga que entende perfeitamente e que o Mapa da Cura Espiritual foi fundamental para você nessa mesma área. Seja breve e direto.` });
 
            addMessage({
@@ -92,11 +94,11 @@ export default function Home() {
             content: empathyResponse.personalizedResponse
           });
           
-          await showTypingIndicator(1500);
+          await showTypingIndicator(2500);
 
           addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão. E o primeiro passo é sempre o mais importante." });
           
-          await showTypingIndicator(1200);
+          await showTypingIndicator(2200);
 
           addMessage({
             sender: "bot",
@@ -108,40 +110,42 @@ export default function Home() {
           break;
 
         case 2: // After permission
+            await showTypingIndicator(1800);
             addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz com sua abertura." });
-            await showTypingIndicator(1200);
+            await showTypingIndicator(2200);
             addMessage({ sender: "bot", type: "text", content: "Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
-            await showTypingIndicator(1200);
+            await showTypingIndicator(2200);
             addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
-            await showTypingIndicator(1500);
+            await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: `O depoimento da Ana é poderoso, não acha, ${userName}?`});
-            await showTypingIndicator(1200);
+            await showTypingIndicator(2200);
             addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver mais histórias como a dela." });
-            await showTypingIndicator(1500);
+            await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
             setConversationStep(3);
             break;
 
         case 3: // After Status
+            await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: `Incrível, não é? A jornada de cada um é única, mas a transformação é sempre profunda.` });
-            await showTypingIndicator(1500);
+            await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: `Fico feliz que tenha se inspirado, ${userName}.` });
-            await showTypingIndicator(2000);
+            await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "text", content: "Agora, prepare-se. Tenho uma surpresa..." });
-            await showTypingIndicator(1500);
+            await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: "Nosso especialista sentiu uma forte conexão com sua energia e está te ligando agora." });
             
             // Trigger the live call
-            await showTypingIndicator(2500);
+            await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
 
             // Simulate conversation after call ends
             setTimeout(async () => {
                 setMessages(prev => prev.filter(m => m.type !== 'live-call'));
-                await showTypingIndicator(1500);
+                await showTypingIndicator(2500);
                 addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com nosso especialista tenha clareado seu caminho.` });
 
-                await showTypingIndicator(2000);
+                await showTypingIndicator(3000);
 
                  const finalOffer = await generatePersonalizedResponse({
                     userInput: `O usuário ${userName} acabou de falar com um especialista. Crie uma mensagem curta de oferta final. Diga que agora ele está pronto para o primeiro passo. Mencione o preço de R$39,99 e convide-o a finalizar a compra.`,
@@ -153,7 +157,7 @@ export default function Home() {
                     content: finalOffer.personalizedResponse,
                 });
 
-                await showTypingIndicator(1500);
+                await showTypingIndicator(2500);
                 
                 addMessage({ sender: "bot", type: "text", content: "E o melhor: com nossa garantia de 7 dias, seu risco é zero. Se não ficar satisfeito, basta nos avisar.", options: ["Sim, quero garantir minha jornada!"] });
 
@@ -163,8 +167,9 @@ export default function Home() {
             break;
 
         case 4: // Final CTA
+            await showTypingIndicator(2000);
             addMessage({ sender: "bot", type: "text", content: "Clique abaixo para garantir sua jornada espiritual e acessar todos os bônus. Sua transformação começa agora." });
-            await showTypingIndicator(1000);
+            await showTypingIndicator(1500);
             addMessage({
                 sender: "bot",
                 type: "button",
@@ -179,6 +184,7 @@ export default function Home() {
             break;
             
         default:
+          await showTypingIndicator(2000);
           const genericResponse = await generatePersonalizedResponse({
             userInput: text,
           });
