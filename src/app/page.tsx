@@ -33,6 +33,7 @@ export default function Home() {
   const [userName, setUserName] = useState("");
   const [userMotivation, setUserMotivation] = useState("");
   const [userPainDuration, setUserPainDuration] = useState("");
+  const [userAttempts, setUserAttempts] = useState("");
   const [isViewingStatus, setIsViewingStatus] = useState(false);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
@@ -83,15 +84,8 @@ export default function Home() {
              content: `Entendi, ${userName}. Buscar clareza sobre o futuro é uma jornada profunda e reveladora.`
            });
 
-           await showTypingIndicator(3000);
-           addMessage({
-             sender: "bot",
-             type: "text",
-             content: "Com a orientação certa, você pode sentir mais paz interior, alinhar sua energia e encontrar clareza no seu caminho."
-           })
-
            await showTypingIndicator(3800);
-            addMessage({ sender: "bot", type: "text", content: "Há quanto tempo você sente que essa área da sua vida precisa de atenção?" });
+           addMessage({ sender: "bot", type: "text", content: "Há quanto tempo você sente que essa área da sua vida precisa de atenção?" });
           
           setConversationStep(2);
           break;
@@ -113,15 +107,36 @@ export default function Home() {
             
             await showTypingIndicator(3800);
             addMessage({
-                sender: "bot",
-                type: "status",
-                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
-                options: ["Ver status"] // Changed from text options to a single action
+              sender: "bot",
+              type: "text",
+              content: `E ${userName}, você já tentou alguma coisa para resolver isso? Como foi a experiência?`
             });
             setConversationStep(3);
             break;
+            
+        case 3: // Asked about previous attempts
+            const attempts = text;
+            setUserAttempts(attempts);
 
-        case 3: // After Status
+            await showTypingIndicator(4000);
+             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} já tentou o seguinte para resolver seu problema: "${attempts}". Mostre que você entende e que muitas tentativas podem ser frustrantes, mas que há um caminho.` });
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: empathyResponse2.personalizedResponse,
+            });
+
+            await showTypingIndicator(3800);
+            addMessage({
+                sender: "bot",
+                type: "status",
+                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
+                options: ["Ver status"]
+            });
+            setConversationStep(4);
+            break;
+
+        case 4: // After Status
             if (text === "Ver status") {
                 setIsViewingStatus(true);
                 return; // Wait for user to close status view
@@ -158,12 +173,12 @@ export default function Home() {
                 
                 addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
 
-                setConversationStep(4);
+                setConversationStep(5);
             }, 10000); 
 
             break;
 
-        case 4: // Access before payment
+        case 5: // Access before payment
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "bonuses", content: "Esses são os bônus que você recebe:" });
             await showTypingIndicator(3500);
@@ -177,7 +192,7 @@ export default function Home() {
             await showTypingIndicator(2500);
             addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
             addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará completa. Estou aqui para o que precisar." });
-            setConversationStep(5);
+            setConversationStep(6);
             break;
             
         default:
