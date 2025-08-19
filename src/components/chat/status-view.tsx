@@ -37,6 +37,13 @@ type StatusViewProps = {
 export function StatusView({ onClose }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    if (finished) {
+      onClose();
+    }
+  }, [finished, onClose]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,7 +52,7 @@ export function StatusView({ onClose }: StatusViewProps) {
           if (currentStoryIndex < stories.length - 1) {
             setCurrentStoryIndex(currentStoryIndex + 1);
           } else {
-            onClose(); // Auto-close when all stories are finished
+            setFinished(true); // Auto-close when all stories are finished
           }
           return 0;
         }
@@ -55,7 +62,7 @@ export function StatusView({ onClose }: StatusViewProps) {
     }, 100);
 
     return () => clearInterval(timer);
-  }, [currentStoryIndex, onClose]);
+  }, [currentStoryIndex]);
   
   const goToPrevious = () => {
     setCurrentStoryIndex((prev) => (prev > 0 ? prev - 1 : prev));
