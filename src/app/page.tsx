@@ -39,7 +39,7 @@ export default function Home() {
     if (correction.isCorrectingName && correction.newName) {
         setUserName(correction.newName);
         await showTypingIndicator(2000);
-        addMessage({ sender: "bot", type: "text", content: `Entendido, irei te chamar de ${correction.newName} daqui para frente.` });
+        addMessage({ sender: "bot", type: "text", content: `Ops, anotado! Vou te chamar de ${correction.newName} então. 😉` });
         await showTypingIndicator(3000);
         currentQuestion(); // Re-ask the current question
         return true;
@@ -79,16 +79,16 @@ export default function Home() {
         case 1: // Asked how user is
             await showTypingIndicator(2000);
             if (text.toLowerCase().includes("não")) {
-                addMessage({ sender: "bot", type: "text", content: "Sinto muito por isso. Espero que nossa conversa possa trazer um pouco de luz para o seu dia." });
+                addMessage({ sender: "bot", type: "text", content: "Poxa, que pena. Mas quem sabe nosso papo não anima um pouquinho as coisas? ✨" });
             } else {
-                addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber." });
+                addMessage({ sender: "bot", type: "text", content: "Que maravilha! Adoro quando a energia está boa assim. 😊" });
             }
             
             await showTypingIndicator(3000);
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: "Para começar nossa jornada, me diga seu nome, por favor.",
+                content: "Então, para a gente se conhecer melhor, como posso te chamar?",
             });
             setConversationStep(2);
             break;
@@ -101,7 +101,7 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: `Que bom ter você aqui, ${name}! Queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
+            content: `É um prazer te conhecer, ${name}! Fico super curiosa... o que te trouxe até aqui? Me conta qual a sua maior motivação para buscar essa cura espiritual.`,
           });
           
           setConversationStep(3);
@@ -126,7 +126,7 @@ export default function Home() {
            });
 
            await showTypingIndicator(4800);
-           addMessage({ sender: "bot", type: "text", content: "Há quanto tempo você sente que essa área da sua vida precisa de atenção?" });
+           addMessage({ sender: "bot", type: "text", content: "E me diga uma coisa, há quanto tempo você sente que essa área da sua vida precisa de um carinho especial?" });
           
           setConversationStep(4);
           break;
@@ -139,17 +139,17 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Carregar isso por tanto tempo pode ser realmente desgastante.`,
+                content: `Uau, é um tempinho, né? Carregar esse peso todo não é fácil.`,
             });
             
             await showTypingIndicator(4200);
-            addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão, você não está sozinho(a)." });
+            addMessage({ sender: "bot", type: "text", content: "Mas olha, muitas pessoas incríveis que converso sentem o mesmo. Você não está sozinha nessa, de verdade." });
             
             await showTypingIndicator(4800);
             addMessage({
               sender: "bot",
               type: "text",
-              content: `E ${userName}, você já tentou alguma coisa para resolver isso? Como foi a experiência?`
+              content: `E ${userName}, me conta, você já tentou alguma coisa pra dar um jeito nisso? Como foi?`
             });
             setConversationStep(5);
             break;
@@ -159,7 +159,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(6000);
-             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} já tentou o seguinte para resolver seu problema: "${attempts}". Mostre que você entende e que muitas tentativas podem ser frustrantes, mas que há um caminho.` });
+             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} já tentou o seguinte para resolver seu problema: "${attempts}". Mostre que você entende e que muitas tentativas podem ser frustrantes, mas que há um caminho. Use uma linguagem amigável e um pouco de humor, como se estivesse conversando com uma amiga.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -170,7 +170,7 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: "Para eu ter uma ideia, qual foi a última vez que você se sentiu verdadeiramente conectado(a) e em paz consigo mesmo(a)?",
+                content: `Qual foi a última vez que você se sentiu 100% conectada e em paz, daquele jeito que a gente até suspira?`,
             });
             setConversationStep(6);
             break;
@@ -180,13 +180,13 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Obrigado por compartilhar isso. É importante reconhecer esses momentos. Tenho algo que pode te inspirar.`
+                content: `Obrigada por abrir seu coração. É super importante a gente se lembrar desses momentos bons. Tenho uma coisinha que pode te inspirar...`
             });
             await showTypingIndicator(3500);
             addMessage({
                 sender: "bot",
                 type: "status",
-                content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
+                content: "Preparei umas histórias lindas nos meus status, de gente que, como a gente, buscou e achou um novo brilho. Dá uma espiadinha lá e me diz o que achou!",
             });
             setConversationStep(7);
             break;
@@ -199,10 +199,10 @@ export default function Home() {
             
             if (text === "Já vi os status!") {
               await showTypingIndicator(4500);
-              addMessage({ sender: "bot", type: "text", content: `Incrível, não é? Ver a jornada de outras pessoas nos dá força.` });
+              addMessage({ sender: "bot", type: "text", content: `E aí, não é de arrepiar? Ver a história de outras pessoas renova nossas forças, né?` });
               
               await showTypingIndicator(5000);
-              addMessage({ sender: "bot", type: "text", content: `Essas histórias ressoaram com você de alguma forma? Me diga o que achou.` });
+              addMessage({ sender: "bot", type: "text", content: `Alguma daquelas histórias mexeu com você de um jeito especial?` });
               
               setConversationStep(8);
             }
@@ -210,10 +210,10 @@ export default function Home() {
         
         case 8: // User reacts to testimonials
               await showTypingIndicator(5000);
-              addMessage({ sender: "bot", type: "text", content: `Fico feliz em saber. Agora, prepare-se. Senti que seria importante para você e uma pessoa que passou pela mesma situação que a sua vai te ligar.` });
+              addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu essa conexão! Agora, se prepara, que o universo conspira. Senti de te conectar com uma pessoa que viveu algo parecido com você... e ela vai te ligar!` });
               
               await showTypingIndicator(4000);
-              addMessage({ sender: "bot", type: "text", content: `Ela vai te apresentar os benefícios do que a ajudou.` });
+              addMessage({ sender: "bot", type: "text", content: `Ela vai te mostrar um caminho que a ajudou a florescer. Fica atenta!` });
 
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
@@ -221,38 +221,38 @@ export default function Home() {
               setTimeout(async () => {
                   setMessages(prev => prev.filter(m => m.type !== 'live-call'));
                   await showTypingIndicator(4500);
-                  addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com a Ana tenha te inspirado.` });
+                  addMessage({ sender: "bot", type: "text", content: `Que papo incrível! Espero que a energia da Ana tenha te contagiado.` });
 
                   await showTypingIndicator(5000);
-                  addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança. Por isso, vou te dar acesso a tudo ANTES de você pagar.`});
+                  addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança, de amiga para amiga. Por isso, vou te dar acesso a TUDO antes mesmo de você pensar em investir.`});
                   
                   await showTypingIndicator(5000);
                   addMessage({
                       sender: "bot",
                       type: "text",
-                      content: "Você receberá o Mapa da Cura Espiritual completo e todos os bônus. Se sentir no coração que é o caminho certo, você realiza o pagamento.",
+                      content: "Você vai receber o Mapa da Cura Espiritual completo e todos os bônus. Se o seu coração vibrar e disser 'é isso!', aí sim você realiza o pagamento.",
                   });
 
                   await showTypingIndicator(4500);
-                  addMessage({ sender: "bot", type: "text", content: "Você está disposto(a) a seguir com essa confiança mútua?", options: ["Sim, estou disposto!", "Como funciona o pagamento?"] });
+                  addMessage({ sender: "bot", type: "text", content: "Topa seguir nessa base de confiança mútua?", options: ["Com certeza! Eu topo!", "Como funciona o pagamento?"] });
 
                   setConversationStep(9);
               }, 15000); // Increased duration for the call
               break;
 
         case 9: // Access before payment
-            if (text === "Sim, estou disposto!") {
+            if (text.includes("topo")) {
                 await showTypingIndicator(4000);
-                addMessage({ sender: "bot", type: "text", content: `Excelente, ${userName}! Fico muito feliz com sua confiança. Preparei um vídeo rápido para te guiar:` });
+                addMessage({ sender: "bot", type: "text", content: `Maravilha, ${userName}! Sabia que você era das minhas! Preparei um vídeo rapidinho pra te mostrar o tesouro que você vai receber:` });
 
                 await showTypingIndicator(3000);
-                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
+                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Desbravando seu Mapa da Cura" } });
 
                 await showTypingIndicator(6000);
-                addMessage({ sender: "bot", type: "text", content: "Este mapa é o resultado de anos de estudo e prática, condensado em um guia passo a passo para você redescobrir sua força interior, alinhar sua energia e manifestar a vida que você merece." });
+                addMessage({ sender: "bot", type: "text", content: "Pensa nesse mapa como seu GPS para a alma. Ele é o resultado de anos de estudo e vivências, tudo mastigadinho pra você redescobrir sua força, alinhar sua energia e manifestar a vida espetacular que você merece." });
                 
                 await showTypingIndicator(5000);
-                addMessage({ sender: "bot", type: "bonuses", content: "E não é só isso! Para potencializar sua jornada, você recebe acesso imediato a estes bônus exclusivos:" });
+                addMessage({ sender: "bot", type: "bonuses", content: "E como amiga boa não deixa na mão, olha só o que vem junto pra turbinar sua jornada:" });
                 
                 await showTypingIndicator(4500);
                 addMessage({ sender: "bot", type: "image", content: "https://placehold.co/600x400.png", dataAiHint:"spiritual map golden light", meta: { title: "Seu Mapa da Cura Espiritual" }});
@@ -261,19 +261,19 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Todo este material transformador, que já guiou centenas de pessoas, foi enviado para o seu acesso. Sinta a energia, explore cada detalhe. Quando seu coração confirmar que este é o caminho, finalize sua inscrição com o investimento simbólico de R$39,99 via PIX.`,
+                    content: `Todo esse material, que já transformou centenas de vidas, já é seu. Mergulhe, sinta, explore. Quando seu coração der aquele pulinho de 'encontrei!', você finaliza sua inscrição com um investimento simbólico de R$39,99 via PIX. Um valor de cafezinho para uma transformação de vida!`,
                 });
 
                 await showTypingIndicator(3500);
                 addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
-                addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará selada. Estou aqui para te apoiar em cada passo." });
+                addMessage({ sender: "bot", type: "text", content: "Depois disso, sua jornada de transformação estará selada e eu estarei aqui vibrando por cada conquista sua." });
 
                 setConversationStep(10);
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(4500);
-                 addMessage({ sender: "bot", type: "text", content: `É simples! Você recebe acesso a todo o material agora mesmo. Pode explorar, sentir a energia e começar sua transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com. Você só paga se sentir que é o caminho certo para você.` });
+                 addMessage({ sender: "bot", type: "text", content: `Funciona na base da confiança! Você recebe acesso a TUDO agora. Explora, usa, sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que valeu a pena. Sem pressão!` });
                  await showTypingIndicator(4000);
-                 addMessage({ sender: "bot", type: "text", content: `Pronto para começar?`, options: ["Sim, estou disposto!"]});
+                 addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
                  // Keep step at 9 to handle the "Sim" response next.
             }
             break;
@@ -302,7 +302,7 @@ export default function Home() {
         sender: "bot",
         type: "text",
         content:
-          "Desculpe, estou com alguns problemas técnicos no momento. Poderia tentar novamente em um instante?",
+          "Ops, minha bola de cristal tá meio embaçada aqui. A conexão falhou. Poderia tentar de novo em um instante?",
       });
     } finally {
       setIsTyping(false);
@@ -363,5 +363,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
