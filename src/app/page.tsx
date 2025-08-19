@@ -94,47 +94,33 @@ export default function Home() {
           
           await showTypingIndicator(1500);
 
-          addMessage({ sender: "bot", type: "text", content: "Preparei um vídeo curto que explica como o Mapa funciona." });
-
-          addMessage({
-            sender: "bot",
-            type: "video",
-            content: "https://placehold.co/600x400.png",
-            dataAiHint: "spiritual guidance video",
-            meta: {
-              videoTitle: "Um vislumbre do Mapa da Cura Espiritual"
-            }
-          })
+          addMessage({ sender: "bot", type: "text", content: "Muitas pessoas chegam até mim com essa mesma questão. E o primeiro passo é sempre o mais importante." });
           
-          await showTypingIndicator(1000);
+          await showTypingIndicator(1200);
 
           addMessage({
             sender: "bot",
             type: "text",
-            content: "O que você achou? Fez sentido para você?",
-            options: ["Sim, faz todo sentido!", "Preciso ver mais.", "Não tenho certeza."]
+            content: "Eu acredito tanto no poder da transformação que quero te mostrar algo que pode realmente te ajudar. Você me permite?",
+            options: ["Sim, pode mostrar!", "Como assim?", "Não tenho certeza..."]
           });
           setConversationStep(2);
           break;
 
-        case 2: // After video
-          if (text.toLowerCase().includes("preciso ver mais") || text.toLowerCase().includes("não tenho certeza")) {
-              addMessage({ sender: "bot", type: "text", content: "Entendo perfeitamente." });
-              await showTypingIndicator(1200);
-              addMessage({ sender: "bot", type: "text", content: "Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
-              await showTypingIndicator(1200);
-              addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
-              await showTypingIndicator(1500);
-              addMessage({ sender: "bot", type: "text", content: "O depoimento da Ana é poderoso, não acha? Preparei algo nos meus status para você ver mais histórias como a dela." });
-          } else { // "Sim, faz todo sentido!"
-              addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu a conexão, ${userName}!` });
-              await showTypingIndicator(1200);
-              addMessage({ sender: "bot", type: "text", content: "É exatamente esse o primeiro passo. Para você sentir a verdadeira transformação, preparei alguns depoimentos no meu status do WhatsApp. Lá, você verá histórias reais." });
-          }
-          await showTypingIndicator(1500);
-          addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
-          setConversationStep(3);
-          break;
+        case 2: // After permission
+            addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz com sua abertura." });
+            await showTypingIndicator(1200);
+            addMessage({ sender: "bot", type: "text", content: "Às vezes, ver a transformação em outras pessoas nos ajuda a ter mais clareza." });
+            await showTypingIndicator(1200);
+            addMessage({ sender: "bot", type: "testimonial", content: "Eu nunca imaginei que algo simples poderia transformar minha vida! Após usar o Mapa da Cura, senti uma paz interior profunda que nunca tinha experimentado antes.", meta: { author: "Ana S." } });
+            await showTypingIndicator(1500);
+            addMessage({ sender: "bot", type: "text", content: `O depoimento da Ana é poderoso, não acha, ${userName}?`});
+            await showTypingIndicator(1200);
+            addMessage({ sender: "bot", type: "text", content: "Preparei algo nos meus status para você ver mais histórias como a dela." });
+            await showTypingIndicator(1500);
+            addMessage({ sender: "bot", type: "status", content: "Dê uma olhada e volte aqui para me dizer o que achou!", options: ["Vi os status, é inspirador!", "Pronto, e agora?"] });
+            setConversationStep(3);
+            break;
 
         case 3: // After Status
             addMessage({ sender: "bot", type: "text", content: `Incrível, não é? A jornada de cada um é única, mas a transformação é sempre profunda.` });
