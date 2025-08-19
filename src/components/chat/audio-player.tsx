@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -21,25 +22,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   useEffect(() => {
     setIsMounted(true);
-    // We create the audio element here to ensure it only happens on the client
-    audioRef.current = new Audio(audioSrc);
-    audioRef.current.addEventListener('loadeddata', handleLoadedData);
-    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
-    audioRef.current.addEventListener('ended', handleEnded);
-
-    // Cleanup
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('loadeddata', handleLoadedData);
-        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
-        audioRef.current.removeEventListener('ended', handleEnded);
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioSrc]);
-
+  }, []);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -51,7 +34,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     } else {
       audio.play().catch(e => {
         console.error("Audio play failed", e);
-        setIsPlaying(false);
+        setIsPlaying(false); // Ensure UI consistency if play fails
       });
       setIsPlaying(true);
     }
@@ -95,12 +78,20 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   }
   
   if (!isMounted) {
-    return null; // Don't render on the server
+    return null; // Don't render on the server to avoid hydration errors
   }
 
   return (
     <div className="w-full max-w-xs">
-      {/* The <audio> tag is no longer rendered in the DOM, it's managed in memory */}
+      <audio 
+        ref={audioRef}
+        src={audioSrc}
+        onLoadedData={handleLoadedData}
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={handleEnded}
+        preload="metadata"
+        className="hidden"
+      />
       <div className="flex items-center gap-3 w-full">
         <Avatar className="h-10 w-10">
           <AvatarImage
@@ -144,5 +135,3 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     </div>
   );
 }
-
-    
