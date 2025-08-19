@@ -54,25 +54,60 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
     )
 }
 
-function LiveCall({ content }: { content: string }) {
-     const [callAccepted, setCallAccepted] = useState(false);
+function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => void }) {
+     const [callState, setCallState] = useState<'incoming' | 'accepted' | 'ended'>('incoming');
      const videoRef = useRef<HTMLVideoElement>(null);
-     const [showNotification, setShowNotification] = useState(true);
+     const hangupAudioRef = useRef<HTMLAudioElement>(null);
+     const incomingCallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleAcceptCall = () => {
+        if (incomingCallTimeoutRef.current) {
+            clearTimeout(incomingCallTimeoutRef.current);
+            incomingCallTimeoutRef.current = null;
+        }
+        setCallState('accepted');
+    }
+
+    const handleEndCall = () => {
+        setCallState('ended');
+        if (hangupAudioRef.current) {
+            hangupAudioRef.current.play().catch(e => console.error("Hangup sound failed", e));
+        }
+        // Give time for the hangup sound to play before notifying parent
+        setTimeout(() => {
+            if(onCallEnd) onCallEnd();
+        }, 800);
+    }
 
     useEffect(() => {
-        if (callAccepted && videoRef.current) {
+        if (callState === 'incoming') {
+            incomingCallTimeoutRef.current = setTimeout(() => {
+                handleAcceptCall();
+            }, 10000); // 10 seconds to auto-answer
+        }
+
+        return () => {
+            if (incomingCallTimeoutRef.current) {
+                clearTimeout(incomingCallTimeoutRef.current);
+            }
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [callState]);
+
+
+    useEffect(() => {
+        if (callState === 'accepted' && videoRef.current) {
             videoRef.current.play().catch(error => {
                 console.error("Video play failed:", error);
             });
         }
-    }, [callAccepted]);
+    }, [callState]);
 
-    const handleAcceptCall = () => {
-        setShowNotification(false);
-        setCallAccepted(true);
+    if (callState === 'ended') {
+        return null;
     }
-
-    if (showNotification) {
+    
+    if (callState === 'incoming') {
         return (
             <div className="fixed inset-x-0 top-4 z-50 flex justify-center animate-in fade-in-25 slide-in-from-top-10 duration-500">
                  <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
@@ -94,9 +129,10 @@ function LiveCall({ content }: { content: string }) {
         )
     }
 
-    if (callAccepted) {
+    if (callState === 'accepted') {
         return (
             <div className="fixed inset-0 bg-zinc-900/95 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-500">
+                 <audio ref={hangupAudioRef} src="/hangup.mp3" preload="auto" />
                  <div className="flex-1 flex items-center justify-center p-4 relative">
                      <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
                         <p className="font-bold">Ana</p>
@@ -118,7 +154,7 @@ function LiveCall({ content }: { content: string }) {
                     <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
                         <MicOff className="h-6 w-6" />
                     </Button>
-                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16">
+                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={handleEndCall}>
                         <Phone className="h-7 w-7 transform -rotate-[135deg]" />
                     </Button>
                 </div>
@@ -207,7 +243,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             </Button>
          );
        case "live-call":
-            return <LiveCall content={message.content} />;
+            return <LiveCall content={message.content} onCallEnd={() => console.log('Call ended signal received')} />;
       case "button":
         return (
           <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
@@ -272,7 +308,12 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   }
 
   if (message.type === 'live-call') {
-      return <LiveCall content={message.content} />;
+      const handleCallEnd = () => {
+          // This function can be used to trigger actions in the parent page.tsx
+          // For now, we are handling the flow continuation inside page.tsx with a setTimeout.
+          console.log("LiveCall component reported call has ended.");
+      };
+      return <LiveCall content={message.content} onCallEnd={handleCallEnd} />;
   }
 
   return (

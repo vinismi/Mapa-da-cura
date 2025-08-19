@@ -151,7 +151,6 @@ export default function Home() {
                 sender: "bot",
                 type: "status",
                 content: "Preparei algo nos meus status para você ver histórias de pessoas que, como nós, buscaram e encontraram um novo caminho. Dê uma olhada e volte aqui!",
-                options: ["Ver status"]
             });
             setConversationStep(5);
             break;
@@ -189,9 +188,6 @@ export default function Home() {
                   addMessage({ sender: "bot", type: "text", content: `Uau, que conversa! Espero que a conexão com a Ana tenha te inspirado.` });
 
                   await showTypingIndicator(5000);
-                  addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
-
-                  await showTypingIndicator(4500);
                   addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança. Por isso, vou te dar acesso a tudo ANTES de você pagar.`});
                   
                   await showTypingIndicator(5000);
@@ -209,20 +205,41 @@ export default function Home() {
               break;
 
         case 7: // Access before payment
-            await showTypingIndicator(4000);
-            addMessage({ sender: "bot", type: "bonuses", content: "Esses são os bônus que você recebe:" });
-            await showTypingIndicator(4500);
-            addMessage({ sender: "bot", type: "image", content: "https://placehold.co/600x400.png", dataAiHint:"spiritual map golden light", meta: { title: "Seu Mapa da Cura Espiritual" }});
-            await showTypingIndicator(5000);
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: `Todo o material foi enviado para você. Sinta a energia, explore o conteúdo. Quando estiver pronto, pode finalizar com o pagamento de R$39,99 via PIX.`,
-            });
-            await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
-            addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará completa. Estou aqui para o que precisar." });
-            setConversationStep(8);
+            if (text === "Sim, estou disposto!") {
+                await showTypingIndicator(4000);
+                addMessage({ sender: "bot", type: "text", content: `Excelente, ${userName}! Fico muito feliz com sua confiança. Preparei um vídeo rápido para te guiar:` });
+
+                await showTypingIndicator(3000);
+                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Tutorial Rápido: Como usar o Mapa da Cura" } });
+
+                await showTypingIndicator(6000);
+                addMessage({ sender: "bot", type: "text", content: "Este mapa é o resultado de anos de estudo e prática, condensado em um guia passo a passo para você redescobrir sua força interior, alinhar sua energia e manifestar a vida que você merece." });
+                
+                await showTypingIndicator(5000);
+                addMessage({ sender: "bot", type: "bonuses", content: "E não é só isso! Para potencializar sua jornada, você recebe acesso imediato a estes bônus exclusivos:" });
+                
+                await showTypingIndicator(4500);
+                addMessage({ sender: "bot", type: "image", content: "https://placehold.co/600x400.png", dataAiHint:"spiritual map golden light", meta: { title: "Seu Mapa da Cura Espiritual" }});
+                
+                await showTypingIndicator(6000);
+                addMessage({
+                    sender: "bot",
+                    type: "text",
+                    content: `Todo este material transformador, que já guiou centenas de pessoas, foi enviado para o seu acesso. Sinta a energia, explore cada detalhe. Quando seu coração confirmar que este é o caminho, finalize sua inscrição com o investimento simbólico de R$39,99 via PIX.`,
+                });
+
+                await showTypingIndicator(3500);
+                addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
+                addMessage({ sender: "bot", type: "text", content: "Após o pagamento, sua jornada de transformação estará selada. Estou aqui para te apoiar em cada passo." });
+
+                setConversationStep(8);
+            } else { // "Como funciona o pagamento?"
+                 await showTypingIndicator(4500);
+                 addMessage({ sender: "bot", type: "text", content: `É simples! Você recebe acesso a todo o material agora mesmo. Pode explorar, sentir a energia e começar sua transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com. Você só paga se sentir que é o caminho certo para você.` });
+                 await showTypingIndicator(4000);
+                 addMessage({ sender: "bot", type: "text", content: `Pronto para começar?`, options: ["Sim, estou disposto!"]});
+                 // Keep step at 7 to handle the "Sim" response next.
+            }
             break;
             
         default:
