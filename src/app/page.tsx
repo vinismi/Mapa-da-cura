@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatLayout } from "@/components/chat/chat-layout";
 import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrectionCheckOutput } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
