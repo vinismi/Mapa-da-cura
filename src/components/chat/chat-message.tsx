@@ -57,7 +57,6 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => void }) {
      const [callState, setCallState] = useState<'incoming' | 'accepted' | 'ended'>('incoming');
      const videoRef = useRef<HTMLVideoElement>(null);
-     const hangupAudioRef = useRef<HTMLAudioElement>(null);
      const incomingCallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleAcceptCall = () => {
@@ -70,9 +69,6 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
 
     const handleEndCall = () => {
         setCallState('ended');
-        if (hangupAudioRef.current) {
-            hangupAudioRef.current.play().catch(e => console.error("Hangup sound failed", e));
-        }
         // Give time for the hangup sound to play before notifying parent
         setTimeout(() => {
             if(onCallEnd) onCallEnd();
@@ -132,7 +128,6 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
     if (callState === 'accepted') {
         return (
             <div className="fixed inset-0 bg-zinc-900/95 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-500">
-                 <audio ref={hangupAudioRef} src="/hangup.mp3" preload="auto" />
                  <div className="flex-1 flex items-center justify-center p-4 relative">
                      <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
                         <p className="font-bold">Ana</p>
