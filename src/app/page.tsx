@@ -137,7 +137,7 @@ export default function Home() {
            addMessage({ 
             sender: "bot", 
             type: "audio", 
-            content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3" 
+            content: "https://unrivaled-gelato-f313ef.netlify.app/audio2.mp3" 
            });
           
           setConversationStep(4);
@@ -379,5 +379,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
