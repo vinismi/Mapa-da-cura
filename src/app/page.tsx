@@ -53,9 +53,11 @@ export default function Home() {
     await showTypingIndicator(2500);
     addMessage({
         sender: "bot",
-        type: "text",
-        content: "Olá! Que bom que você veio. Tudo bem com você?",
-        options: ["Tudo bem!", "Não muito bem."]
+        type: "audio",
+        content: "/initial_audio.mp3",
+        meta: {
+            audioText: "Olá! Que bom que você veio. Tudo bem com você?"
+        }
     });
     setConversationStep(1); // Move to next step which is asking for name
   };
@@ -85,11 +87,8 @@ export default function Home() {
             await showTypingIndicator(3000);
             addMessage({
                 sender: "bot",
-                type: "audio",
-                content: "/initial_audio.mp3",
-                meta: {
-                audioText: "Para começar nossa jornada, me diga seu nome, por favor."
-                },
+                type: "text",
+                content: "Para começar nossa jornada, me diga seu nome, por favor.",
             });
             setConversationStep(2);
             break;
@@ -364,3 +363,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
