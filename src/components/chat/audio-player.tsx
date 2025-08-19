@@ -17,6 +17,11 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -63,6 +68,10 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
   
+  if (!isMounted) {
+    return null; // Don't render on the server
+  }
+
   return (
     <div className="w-full max-w-xs">
        <audio 
