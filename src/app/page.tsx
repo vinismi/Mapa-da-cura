@@ -50,14 +50,14 @@ export default function Home() {
   const startConversation = async () => {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Olá! Vi sobre a Jornada e quero saber mais." });
-    await showTypingIndicator(2500);
+    await showTypingIndicator(5000); // Simulates recording audio
     addMessage({
-        sender: "bot",
-        type: "audio",
-        content: "/initial_audio.mp3",
-        meta: {
-            audioText: "Olá! Que bom que você veio. Tudo bem com você?"
-        }
+      sender: "bot",
+      type: "audio",
+      content: "/initial_audio.mp3",
+      meta: {
+        audioText: "Olá! Que bom que você veio. Tudo bem com você?",
+      },
     });
     setConversationStep(1); // Move to next step which is asking for name
   };
@@ -363,3 +363,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
