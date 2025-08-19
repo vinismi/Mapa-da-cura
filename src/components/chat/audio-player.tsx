@@ -24,7 +24,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     setIsMounted(true);
   }, []);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -32,11 +32,13 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
       audio.pause();
       setIsPlaying(false);
     } else {
-      audio.play().catch(e => {
-        console.error("Audio play failed", e);
-        setIsPlaying(false); // Ensure UI consistency if play fails
-      });
-      setIsPlaying(true);
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Audio play failed:", error);
+        setIsPlaying(false); // Revert state if play fails
+      }
     }
   };
   
