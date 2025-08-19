@@ -16,12 +16,30 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // We create the audio element here to ensure it only happens on the client
+    audioRef.current = new Audio(audioSrc);
+    audioRef.current.addEventListener('loadeddata', handleLoadedData);
+    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    audioRef.current.addEventListener('ended', handleEnded);
+
+    // Cleanup
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener('loadeddata', handleLoadedData);
+        audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+        audioRef.current.removeEventListener('ended', handleEnded);
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioSrc]);
+
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -29,10 +47,14 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
     if (isPlaying) {
       audio.pause();
+      setIsPlaying(false);
     } else {
-      audio.play();
+      audio.play().catch(e => {
+        console.error("Audio play failed", e);
+        setIsPlaying(false);
+      });
+      setIsPlaying(true);
     }
-    setIsPlaying(!isPlaying);
   };
   
   const handleTimeUpdate = () => {
@@ -73,21 +95,12 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   }
   
   if (!isMounted) {
-    return null; // Don't render on the server, ensuring audioSrc is available on client
+    return null; // Don't render on the server
   }
 
   return (
     <div className="w-full max-w-xs">
-       <audio 
-        ref={audioRef}
-        src={audioSrc}
-        onLoadedData={handleLoadedData}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleEnded}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        preload="metadata" 
-      />
+      {/* The <audio> tag is no longer rendered in the DOM, it's managed in memory */}
       <div className="flex items-center gap-3 w-full">
         <Avatar className="h-10 w-10">
           <AvatarImage
@@ -131,3 +144,5 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     </div>
   );
 }
+
+    
