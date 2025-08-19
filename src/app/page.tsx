@@ -51,16 +51,16 @@ export default function Home() {
   const startConversation = async () => {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Olá! Vi sobre a Jornada e quero saber mais." });
-    await showTypingIndicator(5000); // Simulates recording audio
+    await showTypingIndicator(3000);
     addMessage({
       sender: "bot",
       type: "audio",
       content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
       meta: {
-        audioText: "Olá! Que bom que você veio. Tudo bem com você?",
+        audioText: "Olá! Que bom que você veio, tudo bem? Para que a gente se conheça um pouquinho melhor, como eu posso te chamar?",
       },
     });
-    setConversationStep(1); // Move to next step which is waiting for the user's response on how they are.
+    setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
 
 
@@ -77,36 +77,32 @@ export default function Home() {
 
     try {
       switch (conversationStep) {
-        case 1: // Asked how user is
-            await showTypingIndicator(2000);
-            if (text.toLowerCase().includes("não")) {
-                addMessage({ sender: "bot", type: "text", content: "Poxa, que pena. Mas quem sabe nosso papo não anima um pouquinho as coisas? ✨" });
-            } else {
-                addMessage({ sender: "bot", type: "text", content: "Que maravilha! Adoro quando a energia está boa assim. 😊" });
-            }
-            
-            await showTypingIndicator(3000);
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: "Então, para a gente se conhecer melhor, como posso te chamar?",
-            });
-            setConversationStep(2);
-            break;
+        case 1: // Asked for name in audio
+            const name = text.trim();
+            const lowerCaseText = text.toLowerCase();
 
-        case 2: // Asked for name
-          const name = text.trim();
-          setUserName(name);
-          
-          await showTypingIndicator(4500);
-          addMessage({
-            sender: "bot",
-            type: "text",
-            content: `É um prazer te conhecer, ${name}! Fico super curiosa... o que te trouxe até aqui? Me conta qual a sua maior motivação para buscar essa cura espiritual.`,
-          });
-          
-          setConversationStep(3);
-          break;
+            // Handle if user says "I'm fine" or similar, then ask for name again.
+            if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
+                await showTypingIndicator(2000);
+                addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber. 😊" });
+                await showTypingIndicator(2500);
+                addMessage({
+                    sender: "bot",
+                    type: "text",
+                    content: "E para a gente se conhecer melhor, como posso te chamar?",
+                });
+                // Keep conversationStep at 1 to wait for the name
+            } else {
+                setUserName(name);
+                await showTypingIndicator(4500);
+                addMessage({
+                    sender: "bot",
+                    type: "text",
+                    content: `É um prazer te conhecer, ${name}! Fico super curiosa... o que te trouxe até aqui? Me conta qual a sua maior motivação para buscar essa cura espiritual.`,
+                });
+                setConversationStep(3);
+            }
+            break;
 
         case 3: // Asked about motivation
            const motivation = text;
