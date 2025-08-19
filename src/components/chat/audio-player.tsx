@@ -30,6 +30,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
   const togglePlayPause = () => {
     const audio = audioRef.current;
     if (!audio) return;
+
     if (isPlaying) {
       audio.pause();
     } else {
@@ -83,8 +84,6 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
         onLoadedData={handleLoadedData}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
-        onPause={() => setIsPlaying(false)}
-        onPlay={() => setIsPlaying(true)}
         preload="metadata" 
       />
       <div className="flex items-center gap-3 w-full">
