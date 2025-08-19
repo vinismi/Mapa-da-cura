@@ -13,9 +13,6 @@ const initialMessages: Message[] = [
     type: "audio",
     content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", // Placeholder
     timestamp: new Date(new Date().getTime() - 1000), // Ensure audio is slightly before text
-    meta: {
-      audioText: "Ouça o áudio acima para começarmos..."
-    }
   },
   {
     id: "1",
@@ -67,7 +64,7 @@ export default function Home() {
           addMessage({
             sender: "bot",
             type: "text",
-            content: `Que bom ter você aqui, ${name}! queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
+            content: `Que bom ter você aqui, ${name}! Queria saber o que mais te motiva a querer buscar essa cura espiritual, poderia me dizer?`,
           });
           
           setConversationStep(1);
@@ -81,7 +78,7 @@ export default function Home() {
            addMessage({
              sender: "bot",
              type: "text",
-             content: `Entendi, ${userName}. Vi que você está interessado em alcançar ${motivation}.`
+             content: `Entendi, ${userName}. Buscar clareza sobre o futuro é uma jornada profunda e reveladora.`
            });
 
            await showTypingIndicator(3000);
