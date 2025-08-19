@@ -257,13 +257,16 @@ export default function Home() {
   };
 
   const handleCloseStatus = () => {
+    // This now only sets the state to close the view
     setIsViewingStatus(false);
     
+    // The logic to continue the conversation is now triggered from StatusView's onFinish
     const lastMessage = messages[messages.length - 1];
     if (lastMessage.type === 'status' && conversationStep === 5) {
-        handleSendMessage("Já vi os status!");
+      handleSendMessage("Já vi os status!");
     }
   };
+
 
   if (isViewingStatus) {
     return <StatusView onClose={handleCloseStatus} />;
