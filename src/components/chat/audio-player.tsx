@@ -33,10 +33,21 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
     if (isPlaying) {
       audio.pause();
+      setIsPlaying(false);
     } else {
-      audio.play().catch(e => console.error("Audio play failed:", e));
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(_ => {
+          // Automatic playback started!
+          setIsPlaying(true);
+        })
+        .catch(error => {
+          // Auto-play was prevented
+          console.error("Audio play failed:", error);
+          setIsPlaying(false);
+        });
+      }
     }
-    setIsPlaying(!isPlaying);
   };
   
   const handleTimeUpdate = () => {
