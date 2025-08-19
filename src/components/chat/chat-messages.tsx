@@ -24,7 +24,7 @@ export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessages
     <div ref={scrollAreaRef} className="h-full overflow-y-auto">
       <div className="p-4 md:p-6 space-y-4">
         {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
+          <ChatMessage key={message.id} message={message} onSendMessage={onSendMessage} />
         ))}
         {isTyping && <TypingIndicator />}
       </div>
