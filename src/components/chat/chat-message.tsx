@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -231,7 +232,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
                          <PlayCircle className="h-8 w-8 text-white shrink-0"/>
                     </div>
                     <div className="text-left whitespace-normal">
-                        <p className="font-bold">Status de João</p>
+                        <p className="font-bold">Status de Luz</p>
                         <p className="text-sm">{message.content}</p>
                     </div>
                 </div>

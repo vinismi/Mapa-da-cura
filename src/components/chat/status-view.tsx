@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -95,11 +96,11 @@ export function StatusView({ onFinish }: StatusViewProps) {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
                  <Avatar className="h-10 w-10 border-2 border-background">
-                    <AvatarImage src="https://placehold.co/100x100.png" alt="João" data-ai-hint="person portrait"/>
-                    <AvatarFallback>J</AvatarFallback>
+                    <AvatarImage src="https://placehold.co/100x100.png" alt="Luz" data-ai-hint="person portrait"/>
+                    <AvatarFallback>L</AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="text-white font-bold">João | Terapeuta Holístico</p>
+                    <p className="text-white font-bold">Luz | Mentora do Despertar</p>
                     <p className="text-white/80 text-sm">agora mesmo</p>
                 </div>
             </div>
