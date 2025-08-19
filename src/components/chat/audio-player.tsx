@@ -21,7 +21,11 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // When component mounts on the client, set the source
+    if (audioRef.current) {
+        audioRef.current.src = audioSrc;
+    }
+  }, [audioSrc]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -76,7 +80,6 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
     <div className="w-full max-w-xs">
        <audio 
         ref={audioRef}
-        src={audioSrc}
         onLoadedData={handleLoadedData}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
