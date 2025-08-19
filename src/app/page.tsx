@@ -50,14 +50,14 @@ export default function Home() {
   
   const startConversation = async () => {
     setConversationStarted(true);
-    addMessage({ sender: "user", type: "text", content: "Olá! Vi sobre a Jornada e quero saber mais." });
+    addMessage({ sender: "user", type: "text", content: "Olá! Vi que estava interessado no mapa e quero saber mais." });
     await showTypingIndicator(3000);
     addMessage({
       sender: "bot",
       type: "audio",
       content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
       meta: {
-        audioText: "Olá! Que bom que você veio, tudo bem? Para que a gente se conheça um pouquinho melhor, como eu posso te chamar?",
+        audioText: "",
       },
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
@@ -361,6 +361,8 @@ export default function Home() {
     </main>
   );
 }
+
+    
 
     
 
