@@ -8,7 +8,7 @@ export function ChatHeader() {
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 border-2 border-background">
           <AvatarImage
-            src="https://placehold.co/100x100.png"
+            src="https://i.imgur.com/WNYMiGs.png"
             alt="Luz"
             data-ai-hint="person portrait"
           />

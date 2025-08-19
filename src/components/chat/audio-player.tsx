@@ -95,11 +95,11 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
       <div className="flex items-center gap-3 w-full">
         <Avatar className="h-10 w-10">
           <AvatarImage
-            src="https://placehold.co/100x100.png"
-            alt="Sales Rep"
+            src="https://i.imgur.com/WNYMiGs.png"
+            alt="Luz"
             data-ai-hint="person portrait"
           />
-          <AvatarFallback>JS</AvatarFallback>
+          <AvatarFallback>L</AvatarFallback>
         </Avatar>
         <div className="flex-1 flex flex-col justify-center gap-1">
           <div className="flex items-center gap-2">
