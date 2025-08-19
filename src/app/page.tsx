@@ -134,7 +134,7 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: "Entendo... Para eu ter uma ideia, qual foi a última vez que você se sentiu verdadeiramente conectado(a) e em paz consigo mesmo(a)?",
+                content: "Para eu ter uma ideia, qual foi a última vez que você se sentiu verdadeiramente conectado(a) e em paz consigo mesmo(a)?",
             });
             setConversationStep(4);
             break;
