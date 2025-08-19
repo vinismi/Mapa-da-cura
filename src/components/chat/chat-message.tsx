@@ -192,12 +192,12 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         return <Testimonial content={message.content} author={message.meta?.author} />;
        case "status":
          return (
-             <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95" onClick={() => onSendMessage('Ver status')}>
+             <Button variant="outline" className="bg-green-100 border-green-300 text-green-800 hover:bg-green-200 hover:text-green-900 w-full justify-start animate-in fade-in zoom-in-95 h-auto py-2" onClick={() => onSendMessage('Ver status')}>
                 <div className="flex items-center gap-3">
                     <div className="p-1.5 rounded-full bg-gradient-to-b from-green-400 to-green-600">
-                         <PlayCircle className="h-8 w-8 text-white"/>
+                         <PlayCircle className="h-8 w-8 text-white shrink-0"/>
                     </div>
-                    <div className="text-left">
+                    <div className="text-left whitespace-normal">
                         <p className="font-bold">Status de João</p>
                         <p className="text-sm">{message.content}</p>
                     </div>
