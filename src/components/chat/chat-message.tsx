@@ -148,7 +148,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                      </div>
                      <video 
                         ref={videoRef}
-                        src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+                        src="https://frizerziin.wistia.com/medias/lvss8iarc9" 
                         className="aspect-video w-full max-w-4xl rounded-lg shadow-2xl" 
                         autoPlay 
                         loop={false}
@@ -250,7 +250,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             </Button>
          );
        case "live-call":
-            return <LiveCall content={message.content} onCallEnd={() => console.log('Call ended signal received')} />;
+            return <LiveCall content={message.content} onCallEnd={(message.meta as any)?.onCallEnd} />;
       case "button":
         return (
           <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
@@ -319,6 +319,9 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           // This function can be used to trigger actions in the parent page.tsx
           // For now, we are handling the flow continuation inside page.tsx with a setTimeout.
           console.log("LiveCall component reported call has ended.");
+          if ((message.meta as any)?.onCallEnd) {
+            (message.meta as any).onCallEnd();
+          }
       };
       return <LiveCall content={message.content} onCallEnd={handleCallEnd} />;
   }
@@ -352,3 +355,5 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
     </div>
   );
 }
+
+    
