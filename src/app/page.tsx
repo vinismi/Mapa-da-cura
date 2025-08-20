@@ -9,6 +9,7 @@ import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Send, Sparkles } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -287,7 +288,7 @@ export default function Home() {
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(4500);
                  addMessage({ sender: "bot", type: "text", content: `Funciona na base da confiança! Você recebe acesso a TUDO agora. Explora, usa, sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que valeu a pena. Sem pressão!` });
-                 await showTypingIndicator(4000);
+                 await showTyp-ingIndicator(4000);
                  addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
                  // Keep step at 9 to handle the "Sim" response next.
             }
@@ -338,15 +339,24 @@ export default function Home() {
 
   if (!conversationStarted) {
     return (
-      <div className="flex h-screen w-full flex-col">
-        <div 
-          className="flex-1 flex flex-col items-center justify-center text-center p-4 bg-cover bg-center"
-          style={{ 
-            backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
-          }}
+      <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+          poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <div className="absolute inset-0 bg-black/50" />
-            <div className="relative bg-gradient-to-br from-background/90 to-background/70 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
+          <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+            <div className="bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
+                <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-background/50 shadow-lg">
+                  <AvatarImage src="https://i.imgur.com/WNYMiGs.png" alt="Luz" />
+                  <AvatarFallback>L</AvatarFallback>
+                </Avatar>
                 <div className="flex justify-center items-center mb-4">
                   <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
                   <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
@@ -354,10 +364,10 @@ export default function Home() {
                   </h1>
                   <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
                 </div>
-                <p className="text-foreground/80 mb-8 text-base md:text-lg">
+                <p className="text-foreground/90 mb-8 text-base md:text-lg">
                     Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
                 </p>
-                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300" onClick={startConversation}>
+                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" onClick={startConversation}>
                     Iniciar Conversa Agora
                     <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
                 </Button>
@@ -379,5 +389,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
