@@ -86,7 +86,7 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Chega de se sentir assim. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
+                    content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
                 });
                 setConversationStep(3);
             } else {
@@ -110,7 +110,7 @@ export default function Home() {
                     addMessage({
                         sender: "bot",
                         type: "text",
-                        content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Chega de se sentir assim. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
+                        content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
                     });
                     setConversationStep(3);
                 }
@@ -424,3 +424,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
