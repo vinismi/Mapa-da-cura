@@ -120,15 +120,15 @@ export default function Home() {
         case 3: // Asked about motivation
            const motivation = text;
            
-           const nameCorrection = await checkForNameCorrection({ previousName: userName, currentInput: text });
-           if (await handleNameCorrection(nameCorrection, text, () => {
-               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrection.newName}! E qual seria a sua maior motivação para buscar a cura espiritual?` });
+           const nameCorrectionCheck = await checkForNameCorrection({ previousName: userName, currentInput: text });
+           if (await handleNameCorrection(nameCorrectionCheck, text, () => {
+               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E qual seria a sua maior motivação para buscar a cura espiritual?` });
            })) return;
 
            setUserMotivation(motivation);
            
            await showTypingIndicator(3500);
-           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} tem a seguinte motivação: "${motivation}". Gere uma resposta de empatia que seja verdadeiramente personalizada e relevante para o que foi dito, sem repetir as palavras do usuário.` });
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} disse que sua motivação é: "${motivation}". Crie uma resposta curta, poderosa e empática. Valide o sentimento dele(a) de forma direta, sem repetir o que foi dito. Use uma linguagem forte e inspiradora. Ex: "Eu entendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
            addMessage({
              sender: "bot",
              type: "text",
@@ -323,8 +323,7 @@ export default function Home() {
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(3500);
                  addMessage({ sender: "bot", type: "text", content: `É simples: funciona na base da confiança total. Você recebe acesso IMEDIATO a tudo. Usa, explora e sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que este é o divisor de águas da sua vida. Sem letras miúdas.` });
-                 await showTyp
-ingIndicator(3000);
+                 await showTypingIndicator(3000);
                  addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
                  // Keep step at 9 to handle the "Sim" response next.
             }
@@ -425,5 +424,7 @@ ingIndicator(3000);
     </main>
   );
 }
+
+    
 
     
