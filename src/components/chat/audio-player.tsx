@@ -97,7 +97,7 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
       <div className="flex items-center gap-3 w-full">
         <Avatar className="h-10 w-10">
           <AvatarImage
-            src="https://i.imgur.com/WNYMiGs.png"
+            src="https://i.imgur.com/IhZA0Ke.png"
             alt="Luz"
             data-ai-hint="person portrait"
           />

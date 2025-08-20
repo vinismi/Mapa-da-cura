@@ -46,25 +46,32 @@ export function StatusView({ onFinish }: StatusViewProps) {
   }, [isFinished, onFinish]);
 
   useEffect(() => {
-    const currentStory = stories[currentStoryIndex];
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          if (currentStoryIndex < stories.length - 1) {
-            setCurrentStoryIndex(currentStoryIndex + 1);
-            return 0;
-          } else {
-            clearInterval(interval);
-            setIsFinished(true);
-            return 100;
+    let interval: NodeJS.Timeout | null = null;
+    if (!isFinished) {
+      const currentStory = stories[currentStoryIndex];
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            if (currentStoryIndex < stories.length - 1) {
+              setCurrentStoryIndex(currentStoryIndex + 1);
+              return 0;
+            } else {
+              if(interval) clearInterval(interval);
+              setIsFinished(true);
+              return 100;
+            }
           }
-        }
-        return prev + 100 / (currentStory.duration / 100);
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [currentStoryIndex]);
+          return prev + 100 / (currentStory.duration / 100);
+        });
+      }, 100);
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    };
+  }, [currentStoryIndex, isFinished]);
   
   const goToPrevious = () => {
     setCurrentStoryIndex((prev) => {
@@ -103,7 +110,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
                  <Avatar className="h-10 w-10 border-2 border-background">
-                    <AvatarImage src="https://i.imgur.com/WNYMiGs.png" alt="Luz" data-ai-hint="person portrait"/>
+                    <AvatarImage src="https://i.imgur.com/IhZA0Ke.png" alt="Luz" data-ai-hint="person portrait"/>
                     <AvatarFallback>L</AvatarFallback>
                 </Avatar>
                 <div>

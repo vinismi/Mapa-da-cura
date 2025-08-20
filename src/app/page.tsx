@@ -354,7 +354,7 @@ export default function Home() {
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
             <div className="bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
                 <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-background/50 shadow-lg">
-                  <AvatarImage src="https://i.imgur.com/WNYMiGs.png" alt="Luz" />
+                  <AvatarImage src="https://i.imgur.com/IhZA0Ke.png" alt="Luz" />
                   <AvatarFallback>L</AvatarFallback>
                 </Avatar>
                 <div className="flex justify-center items-center mb-4">
