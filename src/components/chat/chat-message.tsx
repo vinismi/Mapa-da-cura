@@ -154,7 +154,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                      <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
                         <p className="font-bold">Ana</p>
                      </div>
-                     <div className="w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden aspect-[9/16] md:aspect-video">
+                     <div className="w-full max-w-sm mx-auto rounded-lg shadow-2xl overflow-hidden aspect-[9/16]">
                         <div
                             className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 autoPlay=true controlsVisibleOnLoad=false`}
                             style={{ height: "100%", position: "relative", width: "100%" }}
