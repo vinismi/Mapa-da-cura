@@ -10,6 +10,7 @@ import { StatusView } from "@/components/chat/status-view";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Send, Sparkles } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { ChatMessage } from "@/components/chat/chat-message";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -93,7 +94,6 @@ export default function Home() {
         // Since the component is rendered via ChatMessage, we need a way to communicate back.
         // A simple way is to use a state and a setTimeout matching the video duration if direct prop passing is complex.
         // A more robust way is needed if the video length is dynamic.
-        // For now, let's assume the video is of a known length or the component handles it internally.
         // Let's modify the LiveCall component to call a global function or a passed prop.
         // Let's add an effect to handle call end
     }
