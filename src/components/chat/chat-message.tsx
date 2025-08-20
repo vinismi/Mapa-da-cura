@@ -55,22 +55,26 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
     )
 }
 
-function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => void }) {
+function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
      const [callState, setCallState] = useState<'incoming' | 'accepted' | 'ended'>('incoming');
-     const incomingCallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
      const wistiaVideoId = 'lvss8iarc9';
      const [isMounted, setIsMounted] = useState(false);
+     const ringtoneRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
+        // Preload ringtone on mount
+        ringtoneRef.current = new Audio('https://unrivaled-gelato-f313ef.netlify.app/ring.mp3');
+        ringtoneRef.current.loop = true;
     }, []);
 
     const handleAcceptCall = () => {
-        if (incomingCallTimeoutRef.current) {
-            clearTimeout(incomingCallTimeoutRef.current);
-            incomingCallTimeoutRef.current = null;
-        }
         setCallState('accepted');
+    }
+    
+    const handleDeclineCall = () => {
+        setCallState('ended');
+        if (onCallEnd) onCallEnd();
     }
 
     const handleEndCall = () => {
@@ -79,41 +83,33 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
     }
 
     useEffect(() => {
-        if (callState === 'incoming') {
-            const audio = new Audio('https://unrivaled-gelato-f313ef.netlify.app/ring.mp3');
-            audio.loop = true;
-            audio.play().catch(e => console.log("Ringtone play failed", e));
-
-            incomingCallTimeoutRef.current = setTimeout(() => {
-                handleAcceptCall();
-            }, 2000); 
-
-            return () => {
-                audio.pause();
-                if (incomingCallTimeoutRef.current) {
-                    clearTimeout(incomingCallTimeoutRef.current);
-                }
+        const ringtone = ringtoneRef.current;
+        if (callState === 'incoming' && ringtone) {
+            ringtone.play().catch(e => console.log("Ringtone play failed", e));
+        } else if (ringtone) {
+            ringtone.pause();
+            ringtone.currentTime = 0;
+        }
+        return () => {
+            if (ringtone) {
+              ringtone.pause();
+              ringtone.currentTime = 0;
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callState]);
 
 
     useEffect(() => {
         if (callState === 'accepted') {
           const videoInterval = setInterval(() => {
-            // Wistia's API might take a moment to be available. We check for a function we know should exist.
             if (typeof window.Wistia?.api === 'function') {
               clearInterval(videoInterval);
               
               const video = window.Wistia.api(wistiaVideoId);
               if (video) {
-                // Ensure video is ready before playing
                 video.ready(() => {
                     video.play();
-                    video.bind('end', () => {
-                      handleEndCall();
-                    });
+                    video.bind('end', handleEndCall);
                 });
               } else {
                  console.error("Wistia video not found for ID:", wistiaVideoId);
@@ -132,39 +128,55 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
     
     if (callState === 'incoming') {
         return (
-            <div className="fixed inset-x-0 top-4 z-50 flex justify-center animate-in fade-in-25 slide-in-from-top-10 duration-500">
-                 <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
-                    <CardContent className="p-4 flex items-center gap-4">
-                         <Avatar className="h-12 w-12 border-2 border-background">
-                            <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
-                            <AvatarFallback>A</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                            <p className="font-bold">Ana</p>
-                            <p className="text-sm text-green-500 animate-pulse">Chamada de vídeo recebida...</p>
-                        </div>
-                        <Button variant="ghost" size="icon" className="rounded-full bg-green-500 hover:bg-green-600 text-white h-12 w-12" onClick={handleAcceptCall}>
-                            <Phone className="h-6 w-6" />
-                        </Button>
-                    </CardContent>
-                 </Card>
+            <div className="fixed inset-0 bg-zinc-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-500">
+                <div className="flex flex-col items-center gap-4 mt-20 animate-in fade-in slide-in-from-bottom-10 duration-700">
+                    <Avatar className="h-28 w-28 border-4 border-white/50 ring-4 ring-white/20">
+                        <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
+                        <AvatarFallback>A</AvatarFallback>
+                    </Avatar>
+                    <h2 className="text-3xl font-bold">Ana</h2>
+                    <p className="text-lg text-white/80 animate-pulse">Chamada de vídeo...</p>
+                </div>
+                <div className="flex flex-col items-center gap-6 w-full animate-in fade-in slide-in-from-bottom-10 duration-700 delay-200">
+                     <Button 
+                        size="lg" 
+                        className="w-full max-w-xs h-16 rounded-full bg-green-500 hover:bg-green-600 text-white text-xl font-bold flex items-center gap-3 transform transition-transform hover:scale-105"
+                        onClick={handleAcceptCall}
+                    >
+                        <Phone className="h-6 w-6" />
+                        Atender
+                    </Button>
+                    <Button 
+                        size="lg" 
+                        variant="destructive" 
+                        className="w-full max-w-xs h-16 rounded-full bg-red-600/80 hover:bg-red-600 text-white text-xl font-bold flex items-center gap-3 transform transition-transform hover:scale-105"
+                        onClick={handleDeclineCall}
+                    >
+                        <Phone className="h-6 w-6 transform -rotate-[135deg]" />
+                        Recusar
+                    </Button>
+                </div>
             </div>
         )
     }
 
     if (callState === 'accepted') {
         return (
-            <div className="fixed inset-0 bg-zinc-900/95 backdrop-blur-sm z-50 flex flex-col animate-in fade-in duration-500">
-                 <div className="flex-1 flex items-center justify-center p-4 relative">
-                     <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
-                        <p className="font-bold">Ana</p>
-                     </div>
-                     <div className="w-full max-w-sm mx-auto rounded-lg shadow-2xl overflow-hidden aspect-[9/16]">
-                        <div
-                            className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 autoPlay=true controlsVisibleOnLoad=false`}
-                            style={{ height: "100%", position: "relative", width: "100%" }}
-                        >&nbsp;</div>
-                     </div>
+            <div className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in duration-300">
+                 <div className="flex-1 w-full h-full relative">
+                    {/* Main video */}
+                    <div
+                        className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 autoPlay=true controlsVisibleOnLoad=false`}
+                        style={{ height: "100%", position: "absolute", width: "100%", top: 0, left: 0 }}
+                    >&nbsp;</div>
+                    
+                    {/* "My" camera view */}
+                    <div className="absolute top-4 right-4 h-36 w-28 bg-zinc-800 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg">
+                        <Image src="https://i.imgur.com/IhZA0Ke.png" alt="Sua câmera" layout="fill" objectFit="cover" />
+                        <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded">
+                           Você
+                        </div>
+                    </div>
                 </div>
                 <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
                     <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
@@ -267,7 +279,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             </Button>
          );
        case "live-call":
-            return <LiveCall content={message.content} onCallEnd={(message.meta as any)?.onCallEnd} />;
+            return <LiveCall onCallEnd={(message.meta as any)?.onCallEnd} />;
       case "button":
         return (
           <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
@@ -296,6 +308,10 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   };
 
   if (!isMounted) return null;
+
+  if (message.type === 'live-call') {
+     return <LiveCall onCallEnd={(message.meta as any)?.onCallEnd} />;
+  }
 
   if (message.type === 'button' || message.type === 'bonuses') {
     return (
@@ -331,18 +347,6 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             </div>
         </div>
      )
-  }
-
-  if (message.type === 'live-call') {
-      const handleCallEnd = () => {
-          // This function can be used to trigger actions in the parent page.tsx
-          // For now, we are handling the flow continuation inside page.tsx with a setTimeout.
-          console.log("LiveCall component reported call has ended.");
-          if ((message.meta as any)?.onCallEnd) {
-            (message.meta as any).onCallEnd();
-          }
-      };
-      return <LiveCall content={message.content} onCallEnd={handleCallEnd} />;
   }
 
   return (

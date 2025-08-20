@@ -1,9 +1,10 @@
+
 "use client";
 
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Send, CircleUserRound } from "lucide-react";
+import { Mic, Send } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type ChatInputProps = {
@@ -33,7 +34,7 @@ export function ChatInput({
   const hasOnlyStatusOption = options && options.length === 1 && options[0] === 'Ver status';
 
   return (
-    <div className="p-2 md:p-4 bg-secondary/50 border-t">
+    <div className="p-2 md:p-4 bg-background/80 backdrop-blur-sm border-t">
        {options && options.length > 0 && !hasOnlyStatusOption && (
         <ScrollArea className="w-full whitespace-nowrap pb-2">
             <div className="flex gap-2">

@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@/lib/types";
 import { StatusView } from "@/components/chat/status-view";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Send, Sparkles } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChatMessage } from "@/components/chat/chat-message";
 
@@ -93,16 +93,10 @@ export default function Home() {
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.type === 'live-call') {
+    if (lastMessage?.type === 'live-call' && !isCallActive) {
         setIsCallActive(true);
-        // Find the LiveCall component and attach the end handler
-        // Since the component is rendered via ChatMessage, we need a way to communicate back.
-        // A simple way is to use a state and a setTimeout matching the video duration if direct prop passing is complex.
-        // A more robust way is needed if the video length is dynamic.
-        // Let's modify the LiveCall component to call a global function or a passed prop.
-        // Let's add an effect to handle call end
     }
-  }, [messages]);
+  }, [messages, isCallActive]);
 
 
   const handleSendMessage = async (text: string) => {
@@ -378,19 +372,23 @@ export default function Home() {
     return <StatusView onFinish={handleStatusFinish} />;
   }
   
-  if (isCallActive) {
-      const callMessage = messages.find(m => m.type === 'live-call');
-      if (callMessage) {
-        // The LiveCall component from chat-message will be rendered.
-        // We need a way for it to signal back that the call has ended.
-        // A prop `onCallEnd` would be ideal. I will modify ChatMessage to pass it down.
-      }
+  const renderCallScreen = () => {
+     if (!isCallActive) return null;
+     const callMessage = messages.find(m => m.type === 'live-call');
+     if (callMessage) {
+        return (
+          <div className="fixed inset-0 z-50">
+             <ChatMessage key={callMessage.id} message={{ ...callMessage, meta: { ...callMessage.meta, onCallEnd: handleCallEnd } as any }} onSendMessage={handleSendMessage} />
+          </div>
+        )
+     }
+     return null;
   }
 
 
   if (!conversationStarted) {
     return (
-      <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex h-dvh w-full flex-col items-center justify-center overflow-hidden">
         <video
           autoPlay
           loop
@@ -428,28 +426,16 @@ export default function Home() {
     );
   }
   
-  // This is a bit of a hacky way to pass down the call end handler.
-  // Ideally, this would be managed through a more robust state management solution or context.
-  const handleMessageRender = (message: Message) => {
-    if (message.type === 'live-call') {
-        return <ChatMessage key={message.id} message={{ ...message, meta: { ...message.meta, onCallEnd: handleCallEnd } as any }} onSendMessage={handleSendMessage} />;
-    }
-    return <ChatMessage key={message.id} message={message} onSendMessage={handleSendMessage} />;
-  }
-
   return (
-    <main className="h-screen max-h-screen">
-       {isCallActive && 
-          <div className="fixed inset-0 z-50">
-              {messages.filter(m => m.type === 'live-call').map(handleMessageRender)}
-          </div>
-       }
+    <main className="h-dvh max-h-dvh">
+      {renderCallScreen()}
       <ChatLayout
-        messages={messages.filter(m => !isCallActive || m.type !== 'live-call')}
+        messages={messages}
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         userInput={userInput}
         onUserInput={setUserInput}
+        hide={isCallActive}
       />
     </main>
   );

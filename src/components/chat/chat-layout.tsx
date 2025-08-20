@@ -2,6 +2,7 @@ import type { Message } from "@/lib/types";
 import { ChatHeader } from "./chat-header";
 import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
+import { cn } from "@/lib/utils";
 
 type ChatLayoutProps = {
   messages: Message[];
@@ -9,6 +10,7 @@ type ChatLayoutProps = {
   userInput: string;
   onUserInput: (text: string) => void;
   onSendMessage: (text: string) => void;
+  hide?: boolean;
 };
 
 export function ChatLayout({
@@ -17,14 +19,15 @@ export function ChatLayout({
   userInput,
   onUserInput,
   onSendMessage,
+  hide = false,
 }: ChatLayoutProps) {
   const lastMessageWithOptions = messages.slice().reverse().find(m => m.options && m.options.length > 0);
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className={cn("flex flex-col h-full w-full", hide && "invisible")}>
       <ChatHeader />
       <div 
-        className="flex-1 overflow-y-auto bg-cover bg-center" 
+        className="flex-1 overflow-hidden bg-cover bg-center" 
         style={{ 
           backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
         }}
