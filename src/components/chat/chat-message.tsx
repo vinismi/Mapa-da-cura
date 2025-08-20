@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, Video, Eye, CircleUserRound, MicOff, VideoOff, PlayCircle } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -28,14 +28,14 @@ function BonusList() {
         { icon: Sparkles, text: "Desconto especial em futuros produtos espirituais" },
     ];
     return (
-        <Card className="bg-background/80 dark:bg-zinc-800/80 backdrop-blur-sm border-primary/20 shadow-lg w-full">
+        <Card className="bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-lg border-primary/20 shadow-lg w-full">
             <CardHeader>
-                <CardTitle className="text-lg text-primary">Seus Bônus Exclusivos</CardTitle>
+                <CardTitle className="text-lg font-bold text-primary flex items-center gap-2"><Sparkles className="h-5 w-5"/>Seus Presentes Exclusivos</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 !pt-0">
                 {bonuses.map((bonus, index) => (
                     <div key={index} className="flex items-start gap-3 text-foreground">
-                        <bonus.icon className="h-5 w-5 mt-0.5 text-primary shrink-0" />
+                        <bonus.icon className="h-5 w-5 mt-1 text-primary shrink-0" />
                         <span>{bonus.text}</span>
                     </div>
                 ))}
@@ -70,24 +70,26 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
 
     const handleEndCall = () => {
         setCallState('ended');
-        // Give time for the hangup sound to play before notifying parent
-        setTimeout(() => {
-            if(onCallEnd) onCallEnd();
-        }, 800);
+         if(onCallEnd) onCallEnd();
     }
 
     useEffect(() => {
         if (callState === 'incoming') {
+            const audio = new Audio('https://unrivaled-gelato-f313ef.netlify.app/ring.mp3');
+            audio.loop = true;
+            audio.play().catch(e => console.log("Ringtone play failed", e));
+
             incomingCallTimeoutRef.current = setTimeout(() => {
                 handleAcceptCall();
             }, 10000); // 10 seconds to auto-answer
-        }
 
-        return () => {
-            if (incomingCallTimeoutRef.current) {
-                clearTimeout(incomingCallTimeoutRef.current);
+            return () => {
+                audio.pause();
+                if (incomingCallTimeoutRef.current) {
+                    clearTimeout(incomingCallTimeoutRef.current);
+                }
             }
-        };
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callState]);
 
@@ -203,7 +205,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         );
       case "video":
         return (
-          <div className="relative">
+          <div className="relative group">
             <video
               src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
               width={600}
@@ -281,16 +283,16 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
      return (
         <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
             <div className={cn(
-                "relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg shadow-sm animate-in fade-in zoom-in-95",
+                "relative max-w-xs md:max-w-md lg:max-w-lg rounded-xl shadow-md animate-in fade-in zoom-in-95",
                  isUser
-                    ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
-                    : "bg-background/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-bl-none"
+                    ? "bg-[#DCF8C6] dark:bg-green-900/80 rounded-br-none"
+                    : "bg-background dark:bg-zinc-800/90 rounded-bl-none"
             )}>
                  <div className="flex flex-col gap-2 p-2">
                     {renderContent()}
                     <div className={cn(
-                        "text-xs self-end",
-                        isUser ? "text-green-800/70" : "text-muted-foreground"
+                        "text-xs self-end -mb-1 -mr-1",
+                        isUser ? "text-green-800/70 dark:text-green-300/60" : "text-muted-foreground"
                     )}>
                         {formattedTime}
                          {isUser && (
@@ -316,11 +318,11 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-lg shadow-sm animate-in fade-in zoom-in-95",
+          "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-xl shadow-md animate-in fade-in zoom-in-95",
           isUser
-            ? "bg-[#D9FDD3] dark:bg-green-900 rounded-br-none"
-            : "bg-background/90 dark:bg-zinc-800/90 backdrop-blur-sm rounded-bl-none",
-           message.type === 'video' || message.type === 'image' ? "p-1" : "p-3"
+            ? "bg-[#DCF8C6] dark:bg-green-900/80 rounded-br-none"
+            : "bg-background dark:bg-zinc-800/90 rounded-bl-none",
+           message.type === 'video' || message.type === 'image' ? "p-1 bg-transparent dark:bg-transparent shadow-none" : "p-3"
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col">
@@ -328,8 +330,8 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         </div>
         <div
           className={cn(
-            "text-xs text-right mt-1.5",
-            isUser ? "text-green-800/70" : "text-muted-foreground"
+            "text-xs text-right mt-1 -mb-1 -mr-1",
+            isUser ? "text-green-800/70 dark:text-green-300/60" : "text-muted-foreground"
           )}
         >
           {formattedTime}
