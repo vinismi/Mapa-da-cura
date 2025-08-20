@@ -110,7 +110,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                  <Card className="bg-background/90 backdrop-blur-sm border-primary/20 shadow-xl w-full max-w-sm">
                     <CardContent className="p-4 flex items-center gap-4">
                          <Avatar className="h-12 w-12 border-2 border-background">
-                            <AvatarImage src="https://placehold.co/100x100.png" alt="Ana" data-ai-hint="person friendly"/>
+                            <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
                             <AvatarFallback>A</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
