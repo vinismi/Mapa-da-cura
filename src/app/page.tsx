@@ -52,11 +52,11 @@ export default function Home() {
   const startConversation = async () => {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Olá! Vi que estava interessado no mapa e quero saber mais." });
-    await showTypingIndicator(3000);
+    await showTypingIndicator(2500);
     addMessage({
       sender: "bot",
       type: "audio",
-      content: "https://darling-otter-f7bf47.netlify.app/audio.mp3",
+      content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3",
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
@@ -348,7 +348,7 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover -z-10"
           poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <source src="https://videos.pexels.com/video-files/3129957/3129957-hd_1920_1080_25fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/8343131/8343131-uhd_3840_2160_25fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
@@ -389,3 +389,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
