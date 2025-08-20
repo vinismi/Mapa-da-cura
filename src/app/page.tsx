@@ -246,11 +246,11 @@ export default function Home() {
                   addMessage({
                       sender: "bot",
                       type: "text",
-                      content: "Por isso, vou te dar ACESSO IMEDIATO a TUDO, antes mesmo de você investir um único centavo.",
+                      content: "Por isso, vou te dar ACESSO IMEDIATO aos BÔNUS COMPLETOS, antes mesmo de você investir um único centavo. É um presente meu pra você.",
                   });
 
                   await showTypingIndicator(3500);
-                  addMessage({ sender: "bot", type: "text", content: "Isso mesmo. Você recebe o Mapa da Cura Espiritual completo e todos os bônus. Se você sentir no seu coração que é a sua virada de chave, aí sim você efetua o pagamento. Confiança total.", options: ["Eu topo! Confio em você!", "Como funciona o pagamento?"] });
+                  addMessage({ sender: "bot", type: "text", content: "Isso mesmo. Você recebe os bônus, e se sentir no seu coração que quer o mapa completo para a sua virada de chave, aí sim você efetua o pagamento. Confiança total.", options: ["Eu quero os bônus!", "Como funciona o pagamento?"] });
 
                   setConversationStep(9);
               }, 15000); // Increased duration for the call
@@ -289,43 +289,43 @@ export default function Home() {
               }, 15000);
               break;
 
-        case 9: // Access before payment
-            if (text.includes("topo") || text.includes("confio")) {
+        case 9: // Access to bonuses before payment
+            if (text.includes("quero") || text.includes("topo")) {
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: `Perfeito, ${userName}! Sabia que nossa conexão era real! Preparei um vídeo rápido para te mostrar o tesouro que vai transformar sua vida:` });
-
-                await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Seu Acesso Imediato à Transformação" } });
-
-                await showTypingIndicator(12000); 
-                addMessage({ sender: "bot", type: "text", content: "Este mapa é o seu GPS para a alma. Ele vai te guiar para redescobrir sua força, alinhar sua energia e despertar a sua versão mais poderosa e iluminada. Chega de se sentir perdida." });
+                addMessage({ sender: "bot", type: "text", content: `Perfeito, ${userName}! Para te provar o poder dessa jornada, liberei SEUS PRESENTES. São ferramentas poderosas para você já começar sua transformação HOJE.` });
                 
                 await showTypingIndicator(3000);
-                addMessage({ sender: "bot", type: "bonuses", content: "E para acelerar sua jornada, preparei esses presentes para você:" });
-                
+                addMessage({ sender: "bot", type: "bonuses", content: "Sinta um gostinho da sua nova vida:" });
+
                 await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "image", content: "https://placehold.co/600x400.png", dataAiHint:"spiritual map golden light", meta: { title: "Seu Mapa da Cura Espiritual" }});
+                addMessage({ sender: "bot", type: "text", content: "Agora, para ter acesso ao tesouro principal, o seu GPS para a alma, preparei este vídeo que demonstra o mapa e como você vai acessá-lo após o pagamento." });
+
+                await showTypingIndicator(2000);
+                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Demonstração e Acesso ao Mapa da Cura" } });
+
+                await showTypingIndicator(12000); 
+                addMessage({ sender: "bot", type: "text", content: "Viu só? Este mapa é a chave para redescobrir sua força, alinhar sua energia e despertar sua versão mais poderosa. Chega de se sentir perdida." });
                 
                 await showTypingIndicator(4000);
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `O Mapa da Cura Espiritual é seu AGORA. Explore, sinta, comece a sua cura. Os bônus exclusivos serão liberados assim que você completar o mapa, como uma recompensa pela sua jornada. Para selar seu compromisso, o investimento simbólico é de R$39,99 via PIX.`,
+                    content: `Os bônus já são seus, como prometido. Para ter o mapa completo e selar seu compromisso com a sua cura, o investimento simbólico é de R$39,99 via PIX.`,
                 });
 
                 await showTypingIndicator(2500);
                 addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
                 
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: "Faça o PIX e sele sua jornada. Estarei aqui vibrando por cada conquista sua." });
+                addMessage({ sender: "bot", type: "text", content: "Faça o PIX para receber seu acesso vitalício e iniciar sua transformação definitiva. Estarei aqui vibrando por cada conquista sua." });
 
                 setConversationStep(10);
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(3500);
-                 addMessage({ sender: "bot", type: "text", content: `É simples: funciona na base da confiança total. Você recebe acesso IMEDIATO a tudo. Usa, explora e sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que este é o divisor de águas da sua vida. Sem letras miúdas.` });
+                 addMessage({ sender: "bot", type: "text", content: `É simples: você já recebeu o acesso gratuito aos bônus como prova da minha confiança em você. O pagamento de R$39,99 via PIX (chave: contato@curaespritual.com) é para liberar o acesso ao Mapa da Cura Espiritual completo. Assim que o pagamento for confirmado, você recebe seu acesso vitalício.` });
                  await showTypingIndicator(3000);
-                 addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
-                 // Keep step at 9 to handle the "Sim" response next.
+                 addMessage({ sender: "bot", type: "text", content: `Pronta para dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
+                 // Keep step at 9 to handle the "Sim" response next, mapping it to the "quero" condition.
             }
             break;
             
@@ -383,7 +383,7 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover -z-10"
           poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <source src="https://videos.pexels.com/video-files/4784323/4784323-hd_1920_1080_25fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/8064838/8064838-hd_1920_1080_30fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
@@ -424,5 +424,7 @@ export default function Home() {
     </main>
   );
 }
+
+    
 
     
