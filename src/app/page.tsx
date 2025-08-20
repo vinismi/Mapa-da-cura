@@ -310,7 +310,7 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Tudo isso, que já transformou centenas de vidas, é seu AGORA. Explore, sinta, comece a sua cura. Quando seu coração confirmar que este é o seu caminho, você finaliza sua inscrição com o investimento simbólico de R$39,99 via PIX.`,
+                    content: `O Mapa da Cura Espiritual é seu AGORA. Explore, sinta, comece a sua cura. Os bônus exclusivos serão liberados assim que você completar o mapa, como uma recompensa pela sua jornada. Para selar seu compromisso, o investimento simbólico é de R$39,99 via PIX.`,
                 });
 
                 await showTypingIndicator(2500);
@@ -424,6 +424,8 @@ export default function Home() {
     </main>
   );
 }
+
+    
 
     
 
