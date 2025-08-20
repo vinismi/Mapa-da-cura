@@ -31,7 +31,7 @@ export default function RootLayout({
       <body className={cn("font-body antialiased")}>
         {children}
         <Toaster />
-        <Script src="https://fast.wistia.com/player.js" strategy="lazyOnload" />
+        <Script src="https://fast.wistia.com/assets/external/E-v1.js" strategy="lazyOnload" />
       </body>
     </html>
   );

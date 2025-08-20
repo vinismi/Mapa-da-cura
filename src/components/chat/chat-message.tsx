@@ -97,17 +97,23 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
     useEffect(() => {
         if (callState === 'accepted') {
           const videoInterval = setInterval(() => {
-            if (window.Wistia) {
+            // Wistia's API might take a moment to be available. We check for a function we know should exist.
+            if (window.Wistia && typeof window.Wistia.api === 'function') {
               clearInterval(videoInterval);
-              window.Wistia.ready(() => {
-                const video = window.Wistia.api(wistiaVideoId);
-                if (video) {
-                  video.play();
-                  video.bind('end', () => {
-                    handleEndCall();
-                  });
-                }
-              });
+              
+              const video = window.Wistia.api(wistiaVideoId);
+              if (video) {
+                // Ensure video is ready before playing
+                video.ready(() => {
+                    video.play();
+                    video.bind('end', () => {
+                      handleEndCall();
+                    });
+                });
+              } else {
+                 console.error("Wistia video not found for ID:", wistiaVideoId);
+                 handleEndCall(); // End call if video can't be loaded.
+              }
             }
           }, 100);
           return () => clearInterval(videoInterval);
@@ -150,7 +156,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                      </div>
                      <div className="w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden aspect-[9/16] md:aspect-video">
                         <div
-                            className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787`}
+                            className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 autoPlay=true controlsVisibleOnLoad=false`}
                             style={{ height: "100%", position: "relative", width: "100%" }}
                         >&nbsp;</div>
                      </div>
