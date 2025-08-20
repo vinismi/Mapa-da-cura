@@ -79,9 +79,10 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
             audio.loop = true;
             audio.play().catch(e => console.log("Ringtone play failed", e));
 
+            // Auto-answer after 2 seconds
             incomingCallTimeoutRef.current = setTimeout(() => {
                 handleAcceptCall();
-            }, 10000); // 10 seconds to auto-answer
+            }, 2000); 
 
             return () => {
                 audio.pause();
@@ -99,7 +100,17 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
             videoRef.current.play().catch(error => {
                 console.error("Video play failed:", error);
             });
+            // Add event listener for when the video ends
+            videoRef.current.onended = handleEndCall;
         }
+        
+        return () => {
+            if (videoRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                videoRef.current.onended = null; // Clean up listener
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callState]);
 
     if (callState === 'ended') {
@@ -134,22 +145,20 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                  <div className="flex-1 flex items-center justify-center p-4 relative">
                      <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
                         <p className="font-bold">Ana</p>
-                        <p className="text-xs">01:15</p>
                      </div>
                      <video 
                         ref={videoRef}
                         src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
                         className="aspect-video w-full max-w-4xl rounded-lg shadow-2xl" 
-                        muted
                         autoPlay 
-                        loop
+                        loop={false}
                     />
                 </div>
                 <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
-                    <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                    <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
                         <VideoOff className="h-6 w-6" />
                     </Button>
-                    <Button variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                    <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
                         <MicOff className="h-6 w-6" />
                     </Button>
                     <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={handleEndCall}>

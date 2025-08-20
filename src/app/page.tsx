@@ -23,6 +23,7 @@ export default function Home() {
   const [userAttempts, setUserAttempts] = useState("");
   const [isViewingStatus, setIsViewingStatus] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
+  const [isCallActive, setIsCallActive] = useState(false);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -61,6 +62,42 @@ export default function Home() {
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
+
+  const handleCallEnd = async () => {
+      setIsCallActive(false);
+      setMessages(prev => prev.filter(m => m.type !== 'live-call'));
+      await showTypingIndicator(2500);
+      addMessage({ sender: "bot", type: "text", content: `Que energia! A Ana é a prova viva da transformação que estou te propondo.` });
+
+      await showTypingIndicator(3000);
+      addMessage({ sender: "bot", type: "text", content: `${userName}, quero ser 100% transparente com você. Minha missão é a sua cura, não o seu dinheiro.`});
+      
+      await showTypingIndicator(3000);
+      addMessage({
+          sender: "bot",
+          type: "text",
+          content: "Por isso, vou te dar ACESSO IMEDIATO aos BÔNUS COMPLETOS, antes mesmo de você investir um único centavo. É um presente meu pra você.",
+      });
+
+      await showTypingIndicator(3500);
+      addMessage({ sender: "bot", type: "text", content: "Isso mesmo. Você recebe os bônus, e se sentir no seu coração que quer o mapa completo para a sua virada de chave, aí sim você efetua o pagamento. Confiança total.", options: ["Eu quero os bônus!", "Como funciona o pagamento?"] });
+
+      setConversationStep(9);
+  }
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.type === 'live-call') {
+        setIsCallActive(true);
+        // Find the LiveCall component and attach the end handler
+        // Since the component is rendered via ChatMessage, we need a way to communicate back.
+        // A simple way is to use a state and a setTimeout matching the video duration if direct prop passing is complex.
+        // A more robust way is needed if the video length is dynamic.
+        // For now, let's assume the video is of a known length or the component handles it internally.
+        // Let's modify the LiveCall component to call a global function or a passed prop.
+        // Let's add an effect to handle call end
+    }
+  }, [messages]);
 
 
   const handleSendMessage = async (text: string) => {
@@ -233,27 +270,7 @@ export default function Home() {
 
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
-
-              setTimeout(async () => {
-                  setMessages(prev => prev.filter(m => m.type !== 'live-call'));
-                  await showTypingIndicator(2500);
-                  addMessage({ sender: "bot", type: "text", content: `Que energia! A Ana é a prova viva da transformação que estou te propondo.` });
-
-                  await showTypingIndicator(3000);
-                  addMessage({ sender: "bot", type: "text", content: `${userName}, quero ser 100% transparente com você. Minha missão é a sua cura, não o seu dinheiro.`});
-                  
-                  await showTypingIndicator(3000);
-                  addMessage({
-                      sender: "bot",
-                      type: "text",
-                      content: "Por isso, vou te dar ACESSO IMEDIATO aos BÔNUS COMPLETOS, antes mesmo de você investir um único centavo. É um presente meu pra você.",
-                  });
-
-                  await showTypingIndicator(3500);
-                  addMessage({ sender: "bot", type: "text", content: "Isso mesmo. Você recebe os bônus, e se sentir no seu coração que quer o mapa completo para a sua virada de chave, aí sim você efetua o pagamento. Confiança total.", options: ["Eu quero os bônus!", "Como funciona o pagamento?"] });
-
-                  setConversationStep(9);
-              }, 15000); // Increased duration for the call
+              // The flow will now be continued by handleCallEnd
               break;
             }
         
@@ -266,31 +283,11 @@ export default function Home() {
 
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
-
-              setTimeout(async () => {
-                  setMessages(prev => prev.filter(m => m.type !== 'live-call'));
-                  await showTypingIndicator(2500);
-                  addMessage({ sender: "bot", type: "text", content: `Que papo incrível! Espero que a energia da Ana tenha te contagiado.` });
-
-                  await showTypingIndicator(3000);
-                  addMessage({ sender: "bot", type: "text", content: `${userName}, quero que nossa relação seja de total confiança, de amiga para amiga. Por isso, vou te dar acesso a TUDO antes mesmo de você pensar em investir.`});
-                  
-                  await showTypingIndicator(3000);
-                  addMessage({
-                      sender: "bot",
-                      type: "text",
-                      content: "Você vai receber o Mapa da Cura Espiritual completo e todos os bônus. Se o seu coração vibrar e disser 'é isso!', aí sim você realiza o pagamento.",
-                  });
-
-                  await showTypingIndicator(2500);
-                  addMessage({ sender: "bot", type: "text", content: "Topa seguir nessa base de confiança mútua?", options: ["Com certeza! Eu topo!", "Como funciona o pagamento?"] });
-
-                  setConversationStep(9);
-              }, 15000);
+              // The flow will now be continued by handleCallEnd
               break;
 
         case 9: // Access to bonuses before payment
-            if (text.includes("quero") || text.includes("topo")) {
+            if (text.includes("quero") || text.includes("topo") || text.includes("Sim")) {
                 await showTypingIndicator(2000);
                 addMessage({ sender: "bot", type: "text", content: `Perfeito, ${userName}! Para te provar o poder dessa jornada, liberei SEUS PRESENTES. São ferramentas poderosas para você já começar sua transformação HOJE.` });
                 
@@ -371,6 +368,16 @@ export default function Home() {
   if (isViewingStatus) {
     return <StatusView onFinish={handleStatusFinish} />;
   }
+  
+  if (isCallActive) {
+      const callMessage = messages.find(m => m.type === 'live-call');
+      if (callMessage) {
+        // The LiveCall component from chat-message will be rendered.
+        // We need a way for it to signal back that the call has ended.
+        // A prop `onCallEnd` would be ideal. I will modify ChatMessage to pass it down.
+      }
+  }
+
 
   if (!conversationStarted) {
     return (
@@ -383,7 +390,7 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover -z-10"
           poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <source src="https://videos.pexels.com/video-files/8064838/8064838-hd_1920_1080_30fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/3253459/3253459-hd_1920_1080_30fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
@@ -412,10 +419,24 @@ export default function Home() {
     );
   }
   
+  // This is a bit of a hacky way to pass down the call end handler.
+  // Ideally, this would be managed through a more robust state management solution or context.
+  const handleMessageRender = (message: Message) => {
+    if (message.type === 'live-call') {
+        return <ChatMessage key={message.id} message={{ ...message, meta: { ...message.meta, onCallEnd: handleCallEnd } as any }} onSendMessage={handleSendMessage} />;
+    }
+    return <ChatMessage key={message.id} message={message} onSendMessage={handleSendMessage} />;
+  }
+
   return (
     <main className="h-screen max-h-screen">
+       {isCallActive && 
+          <div className="fixed inset-0 z-50">
+              {messages.filter(m => m.type === 'live-call').map(handleMessageRender)}
+          </div>
+       }
       <ChatLayout
-        messages={messages}
+        messages={messages.filter(m => !isCallActive || m.type !== 'live-call')}
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         userInput={userInput}
@@ -424,7 +445,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
-
-    
