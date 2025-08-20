@@ -59,6 +59,11 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
      const [callState, setCallState] = useState<'incoming' | 'accepted' | 'ended'>('incoming');
      const incomingCallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
      const wistiaVideoId = 'lvss8iarc9';
+     const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const handleAcceptCall = () => {
         if (incomingCallTimeoutRef.current) {
@@ -98,7 +103,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
         if (callState === 'accepted') {
           const videoInterval = setInterval(() => {
             // Wistia's API might take a moment to be available. We check for a function we know should exist.
-            if (window.Wistia && typeof window.Wistia.api === 'function') {
+            if (typeof window.Wistia?.api === 'function') {
               clearInterval(videoInterval);
               
               const video = window.Wistia.api(wistiaVideoId);
@@ -121,7 +126,7 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callState]);
 
-    if (callState === 'ended') {
+    if (!isMounted || callState === 'ended') {
         return null;
     }
     
@@ -184,6 +189,11 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   const { toast } = useToast();
   const isUser = message.sender === "user";
   const [formattedTime, setFormattedTime] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+      setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (message.timestamp) {
@@ -284,6 +294,8 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         ));
     }
   };
+
+  if (!isMounted) return null;
 
   if (message.type === 'button' || message.type === 'bonuses') {
     return (

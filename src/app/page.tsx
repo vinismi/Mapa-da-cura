@@ -25,6 +25,11 @@ export default function Home() {
   const [isViewingStatus, setIsViewingStatus] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -365,6 +370,10 @@ export default function Home() {
     }
   };
 
+  if (!isMounted) {
+    return null;
+  }
+  
   if (isViewingStatus) {
     return <StatusView onFinish={handleStatusFinish} />;
   }

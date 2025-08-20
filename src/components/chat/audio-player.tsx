@@ -22,7 +22,21 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Create audio element only on client
+    audioRef.current = new Audio(audioSrc);
+    audioRef.current.addEventListener('loadeddata', handleLoadedData);
+    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    audioRef.current.addEventListener('ended', handleEnded);
+
+    return () => {
+        if (audioRef.current) {
+            audioRef.current.removeEventListener('loadeddata', handleLoadedData);
+            audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+            audioRef.current.removeEventListener('ended', handleEnded);
+        }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioSrc]);
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -85,15 +99,6 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
 
   return (
     <div className="w-full max-w-xs">
-      <audio 
-        ref={audioRef}
-        src={audioSrc}
-        onLoadedData={handleLoadedData}
-        onTimeUpdate={handleTimeUpdate}
-        onEnded={handleEnded}
-        preload="metadata"
-        className="hidden"
-      />
       <div className="flex items-center gap-3 w-full">
         <Avatar className="h-10 w-10">
           <AvatarImage
