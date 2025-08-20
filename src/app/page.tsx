@@ -86,7 +86,7 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `É um prazer te conhecer, ${name}! Para eu entender seu momento, me conta: qual a sua maior motivação para buscar essa transformação espiritual?`,
+                    content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Chega de se sentir assim. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
                 });
                 setConversationStep(3);
             } else {
@@ -110,7 +110,7 @@ export default function Home() {
                     addMessage({
                         sender: "bot",
                         type: "text",
-                        content: `É um prazer te conhecer, ${name}! Para eu entender seu momento, me conta: qual a sua maior motivação para buscar essa transformação espiritual?`,
+                        content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Chega de se sentir assim. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
                     });
                     setConversationStep(3);
                 }
@@ -323,7 +323,8 @@ export default function Home() {
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(3500);
                  addMessage({ sender: "bot", type: "text", content: `É simples: funciona na base da confiança total. Você recebe acesso IMEDIATO a tudo. Usa, explora e sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que este é o divisor de águas da sua vida. Sem letras miúdas.` });
-                 await showTypingIndicator(3000);
+                 await showTyp
+ingIndicator(3000);
                  addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
                  // Keep step at 9 to handle the "Sim" response next.
             }
@@ -383,7 +384,7 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover -z-10"
           poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <source src="https://videos.pexels.com/video-files/8343131/8343131-uhd_3840_2160_25fps.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/4784323/4784323-hd_1920_1080_25fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
@@ -424,3 +425,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
