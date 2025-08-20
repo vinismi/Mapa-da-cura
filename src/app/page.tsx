@@ -288,7 +288,7 @@ export default function Home() {
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(4500);
                  addMessage({ sender: "bot", type: "text", content: `Funciona na base da confiança! Você recebe acesso a TUDO agora. Explora, usa, sente a transformação. O pagamento de R$39,99 é feito por PIX para a chave contato@curaespritual.com, mas só depois que você sentir que valeu a pena. Sem pressão!` });
-                 await showTyp-ingIndicator(4000);
+                 await showTypingIndicator(4000);
                  addMessage({ sender: "bot", type: "text", content: `Pronta pra começar essa revolução interior?`, options: ["Com certeza! Eu topo!"]});
                  // Keep step at 9 to handle the "Sim" response next.
             }
@@ -348,7 +348,7 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover -z-10"
           poster="https://i.imgur.com/G2Fa071.jpeg"
         >
-          <source src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4" />
+          <source src="https://videos.pexels.com/video-files/3129957/3129957-hd_1920_1080_25fps.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
