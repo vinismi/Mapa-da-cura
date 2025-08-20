@@ -57,8 +57,8 @@ function Testimonial({ content, author }: { content: string, author?: string }) 
 
 function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => void }) {
      const [callState, setCallState] = useState<'incoming' | 'accepted' | 'ended'>('incoming');
-     const videoRef = useRef<HTMLVideoElement>(null);
      const incomingCallTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+     const wistiaVideoId = 'lvss8iarc9';
 
     const handleAcceptCall = () => {
         if (incomingCallTimeoutRef.current) {
@@ -79,7 +79,6 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
             audio.loop = true;
             audio.play().catch(e => console.log("Ringtone play failed", e));
 
-            // Auto-answer after 2 seconds
             incomingCallTimeoutRef.current = setTimeout(() => {
                 handleAcceptCall();
             }, 2000); 
@@ -96,19 +95,22 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
 
 
     useEffect(() => {
-        if (callState === 'accepted' && videoRef.current) {
-            videoRef.current.play().catch(error => {
-                console.error("Video play failed:", error);
-            });
-            // Add event listener for when the video ends
-            videoRef.current.onended = handleEndCall;
-        }
-        
-        return () => {
-            if (videoRef.current) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                videoRef.current.onended = null; // Clean up listener
+        if (callState === 'accepted') {
+          const videoInterval = setInterval(() => {
+            if (window.Wistia) {
+              clearInterval(videoInterval);
+              window.Wistia.ready(() => {
+                const video = window.Wistia.api(wistiaVideoId);
+                if (video) {
+                  video.play();
+                  video.bind('end', () => {
+                    handleEndCall();
+                  });
+                }
+              });
             }
+          }, 100);
+          return () => clearInterval(videoInterval);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callState]);
@@ -146,13 +148,12 @@ function LiveCall({ content, onCallEnd }: { content: string, onCallEnd?: () => v
                      <div className="absolute top-4 left-4 text-white bg-black/40 p-2 rounded-lg text-sm">
                         <p className="font-bold">Ana</p>
                      </div>
-                     <video 
-                        ref={videoRef}
-                        src="https://frizerziin.wistia.com/medias/lvss8iarc9" 
-                        className="aspect-video w-full max-w-4xl rounded-lg shadow-2xl" 
-                        autoPlay 
-                        loop={false}
-                    />
+                     <div className="w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden aspect-[9/16] md:aspect-video">
+                        <div
+                            className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787`}
+                            style={{ height: "100%", position: "relative", width: "100%" }}
+                        >&nbsp;</div>
+                     </div>
                 </div>
                 <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
                     <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
@@ -356,4 +357,9 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   );
 }
 
+declare global {
+  interface Window {
+    Wistia: any;
+  }
+}
     
