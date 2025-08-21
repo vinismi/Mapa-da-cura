@@ -34,7 +34,7 @@ export function ChatInput({
   const hasOnlyStatusOption = options && options.length === 1 && options[0] === 'Ver status';
 
   return (
-    <div className="p-2 md:p-4 bg-background/80 backdrop-blur-sm border-t">
+    <div className="p-2 md:p-4 bg-background/80 backdrop-blur-sm border-t shrink-0">
        {options && options.length > 0 && !hasOnlyStatusOption && (
         <ScrollArea className="w-full whitespace-nowrap pb-2">
             <div className="flex gap-2">

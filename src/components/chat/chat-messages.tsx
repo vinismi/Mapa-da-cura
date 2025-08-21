@@ -17,10 +17,12 @@ export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessages
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
+    // Only scroll down automatically for messages from the bot
     if (scrollAreaRef.current && lastMessage?.sender === "bot") {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
 
   return (
     <div ref={scrollAreaRef} className="h-full overflow-y-auto">

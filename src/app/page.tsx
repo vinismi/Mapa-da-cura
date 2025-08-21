@@ -429,7 +429,7 @@ export default function Home() {
   }
   
   return (
-    <main className="h-dvh max-h-dvh">
+    <main className="h-dvh max-h-dvh bg-background">
       {renderCallScreen()}
       <ChatLayout
         messages={messages}

@@ -4,7 +4,7 @@ import { Video, Phone, MoreVertical, BadgeCheck } from "lucide-react";
 
 export function ChatHeader() {
   return (
-    <header className="flex items-center justify-between p-2 md:p-3 border-b bg-background shadow-sm">
+    <header className="flex items-center justify-between p-2 md:p-3 border-b bg-background shadow-sm shrink-0">
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 border-2 border-green-500/50">
           <AvatarImage
@@ -15,8 +15,8 @@ export function ChatHeader() {
           <AvatarFallback>L</AvatarFallback>
         </Avatar>
         <div>
-          <div className="flex items-center gap-1.5">
-            <h2 className="font-bold text-lg text-foreground">Luz | Mentora do Despertar</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-bold text-base md:text-lg text-foreground">Luz | Mentora do Despertar</h2>
             <BadgeCheck className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-sm text-green-500 font-medium">online</p>
