@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -71,11 +71,6 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
     const handleAcceptCall = () => {
         setCallState('accepted');
     }
-    
-    const handleDeclineCall = () => {
-        setCallState('ended');
-        if (onCallEnd) onCallEnd();
-    }
 
     const handleEndCall = () => {
         setCallState('ended');
@@ -128,33 +123,25 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
     
     if (callState === 'incoming') {
         return (
-            <div className="fixed inset-0 bg-zinc-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-500">
+            <div 
+                className="fixed inset-0 bg-zinc-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-500 cursor-pointer"
+                onClick={handleAcceptCall}
+            >
                 <div className="flex flex-col items-center gap-4 mt-20 animate-in fade-in slide-in-from-bottom-10 duration-700">
                     <Avatar className="h-28 w-28 border-4 border-white/50 ring-4 ring-white/20">
                         <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
                         <AvatarFallback>A</AvatarFallback>
                     </Avatar>
                     <h2 className="text-3xl font-bold">Ana</h2>
-                    <p className="text-lg text-white/80 animate-pulse">Chamada de vídeo...</p>
+                    <p className="text-lg text-white/80 animate-pulse">Chamada de vídeo recebida...</p>
                 </div>
                 <div className="flex flex-col items-center gap-6 w-full animate-in fade-in slide-in-from-bottom-10 duration-700 delay-200">
-                     <Button 
-                        size="lg" 
-                        className="w-full max-w-xs h-16 rounded-full bg-green-500 hover:bg-green-600 text-white text-xl font-bold flex items-center gap-3 transform transition-transform hover:scale-105"
-                        onClick={handleAcceptCall}
+                     <div 
+                        className="w-full max-w-xs h-20 rounded-full bg-green-500/80 text-white text-xl font-bold flex items-center justify-center gap-3"
                     >
-                        <Phone className="h-6 w-6" />
-                        Atender
-                    </Button>
-                    <Button 
-                        size="lg" 
-                        variant="destructive" 
-                        className="w-full max-w-xs h-16 rounded-full bg-red-600/80 hover:bg-red-600 text-white text-xl font-bold flex items-center gap-3 transform transition-transform hover:scale-105"
-                        onClick={handleDeclineCall}
-                    >
-                        <Phone className="h-6 w-6 transform -rotate-[135deg]" />
-                        Recusar
-                    </Button>
+                        <Hand className="h-7 w-7 animate-pulse" />
+                        Toque para atender
+                    </div>
                 </div>
             </div>
         )
@@ -164,27 +151,12 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
         return (
             <div className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in duration-300">
                  <div className="flex-1 w-full h-full relative">
-                    {/* Main video */}
                     <div
-                        className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 autoPlay=true controlsVisibleOnLoad=false`}
+                        className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 controlsVisibleOnLoad=false`}
                         style={{ height: "100%", position: "absolute", width: "100%", top: 0, left: 0 }}
                     >&nbsp;</div>
-                    
-                    {/* "My" camera view */}
-                    <div className="absolute top-4 right-4 h-36 w-28 bg-zinc-800 rounded-lg overflow-hidden border-2 border-white/20 shadow-lg">
-                        <Image src="https://i.imgur.com/IhZA0Ke.png" alt="Sua câmera" layout="fill" objectFit="cover" />
-                        <div className="absolute bottom-1 left-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded">
-                           Você
-                        </div>
-                    </div>
                 </div>
                 <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
-                    <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
-                        <VideoOff className="h-6 w-6" />
-                    </Button>
-                    <Button disabled variant="secondary" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white cursor-not-allowed">
-                        <MicOff className="h-6 w-6" />
-                    </Button>
                     <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={handleEndCall}>
                         <Phone className="h-7 w-7 transform -rotate-[135deg]" />
                     </Button>
