@@ -16,7 +16,7 @@ export function ChatHeader() {
         </Avatar>
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-bold text-base md:text-lg text-foreground">Luz | Mentora do Despertar</h2>
+            <h2 className="font-bold text-base md:text-lg text-foreground">Luz | Mentora</h2>
             <BadgeCheck className="h-5 w-5 text-green-500" />
           </div>
           <p className="text-sm text-green-500 font-medium">online</p>
