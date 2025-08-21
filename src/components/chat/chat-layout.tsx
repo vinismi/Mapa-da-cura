@@ -1,3 +1,4 @@
+
 import type { Message } from "@/lib/types";
 import { ChatHeader } from "./chat-header";
 import { ChatMessages } from "./chat-messages";
@@ -24,7 +25,7 @@ export function ChatLayout({
   const lastMessageWithOptions = messages.slice().reverse().find(m => m.options && m.options.length > 0);
 
   return (
-    <div className={cn("flex flex-col h-full w-full", hide && "invisible")}>
+    <div className={cn("relative flex flex-col h-full w-full", hide && "invisible")}>
       <ChatHeader />
       <div 
         className="flex-1 overflow-hidden bg-cover bg-center" 
