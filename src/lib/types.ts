@@ -14,6 +14,8 @@ export type Message = {
     author?: string;
     audioText?: string;
     videoTitle?: string;
+    posterUrl?: string;
     buttonText?: string;
+    buttonUrl?: string;
   };
 };

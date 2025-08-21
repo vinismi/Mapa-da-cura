@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -15,7 +16,8 @@ export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessages
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
+    const lastMessage = messages[messages.length - 1];
+    if (scrollAreaRef.current && lastMessage?.sender === "bot") {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages, isTyping]);

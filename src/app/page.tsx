@@ -306,19 +306,21 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Os bônus já são seus, como prometido. Para ter o mapa completo e selar seu compromisso com a sua cura, o investimento simbólico é de R$39,99 via PIX.`,
+                    content: `Os bônus já são seus, como prometido. Para ter o mapa completo e selar seu compromisso com a sua cura, o investimento simbólico é de R$19,00.`,
                 });
 
                 await showTypingIndicator(2500);
-                addMessage({ sender: "bot", type: "text", content: "Chave PIX (E-mail): contato@curaespritual.com" });
-                
+                 addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+
+
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: "Faça o PIX para receber seu acesso vitalício e iniciar sua transformação definitiva. Estarei aqui vibrando por cada conquista sua." });
+                addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
+
 
                 setConversationStep(10);
             } else { // "Como funciona o pagamento?"
                  await showTypingIndicator(3500);
-                 addMessage({ sender: "bot", type: "text", content: `É simples: você já recebeu o acesso gratuito aos bônus como prova da minha confiança em você. O pagamento de R$39,99 via PIX (chave: contato@curaespritual.com) é para liberar o acesso ao Mapa da Cura Espiritual completo. Assim que o pagamento for confirmado, você recebe seu acesso vitalício.` });
+                 addMessage({ sender: "bot", type: "text", content: `É simples: você já recebeu o acesso gratuito aos bônus como prova da minha confiança em você. O pagamento de R$19,00 é para liberar o acesso ao Mapa da Cura Espiritual completo. Assim que o pagamento for confirmado, você recebe seu acesso vitalício.` });
                  await showTypingIndicator(3000);
                  addMessage({ sender: "bot", type: "text", content: `Pronta para dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
                  // Keep step at 9 to handle the "Sim" response next, mapping it to the "quero" condition.

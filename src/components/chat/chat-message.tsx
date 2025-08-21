@@ -69,7 +69,9 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
     }, []);
 
     const handleAcceptCall = () => {
-        setCallState('accepted');
+        if (callState === 'incoming') {
+            setCallState('accepted');
+        }
     }
 
     const handleEndCall = () => {
@@ -149,15 +151,15 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
 
     if (callState === 'accepted') {
         return (
-            <div className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in duration-300">
-                 <div className="flex-1 w-full h-full relative">
+            <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center animate-in fade-in duration-300" onClick={() => window.Wistia.api(wistiaVideoId)?.play()}>
+                 <div className="w-full h-full max-w-md aspect-[9/16] relative">
                     <div
-                        className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 controlsVisibleOnLoad=false`}
+                        className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 controlsVisibleOnLoad=false playButton=false`}
                         style={{ height: "100%", position: "absolute", width: "100%", top: 0, left: 0 }}
                     >&nbsp;</div>
                 </div>
-                <div className="bg-black/40 p-4 flex justify-center items-center gap-4">
-                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={handleEndCall}>
+                <div className="absolute bottom-5 p-4 flex justify-center items-center gap-4">
+                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={(e) => { e.stopPropagation(); handleEndCall(); }}>
                         <Phone className="h-7 w-7 transform -rotate-[135deg]" />
                     </Button>
                 </div>
@@ -187,10 +189,14 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
 
 
   const onButtonClick = () => {
-    toast({
-      title: "Jornada Iniciada!",
-      description: message.meta?.text,
-    });
+    if (message.meta?.buttonUrl) {
+        window.open(message.meta.buttonUrl, "_blank", "noopener,noreferrer");
+    } else {
+        toast({
+            title: "Ação",
+            description: "Botão clicado!",
+        });
+    }
   };
 
   const renderContent = () => {
@@ -217,13 +223,13 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         return (
           <div className="relative group">
             <video
-              src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+              src={message.content}
               width={600}
               height={400}
               className="rounded-md object-cover bg-black"
               data-ai-hint={message.dataAiHint}
               controls
-              poster={message.content}
+              poster={message.meta?.posterUrl}
             />
              {message.meta?.videoTitle && (
               <p className="font-semibold text-foreground mt-2 p-1">{message.meta.videoTitle}</p>
@@ -255,7 +261,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
       case "button":
         return (
           <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
-              <p className="text-foreground mb-4">Sua transformação começa agora!</p>
+              <p className="text-foreground mb-4">{message.meta?.text || "Sua transformação começa agora!"}</p>
               <Button onClick={onButtonClick} className="w-full bg-primary hover:bg-primary/90 text-lg font-bold py-6">
                 {message.content}
               </Button>
