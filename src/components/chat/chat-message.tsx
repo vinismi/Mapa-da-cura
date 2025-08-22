@@ -247,7 +247,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           </div>
         );
       case "audio":
-        return <AudioPlayer audioSrc={message.content} audioText={message.meta?.audioText} />;
+        return <AudioPlayer audioSrc={message.content} />;
       case "bonuses":
         return <BonusList />;
        case "testimonial":
@@ -328,7 +328,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
                     )}>
                         {formattedTime}
                          {isUser && (
-                            <CheckCheck className="inline-block ml-1 h-4 w-4 text-accent" />
+                            <CheckCheck className="inline-block ml-1 h-4 w-4 text-blue-500" />
                         )}
                     </div>
                  </div>
@@ -359,7 +359,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         >
           {formattedTime}
           {isUser && (
-            <CheckCheck className="inline-block ml-1 h-4 w-4 text-accent" />
+            <CheckCheck className="inline-block ml-1 h-4 w-4 text-blue-500" />
           )}
         </div>
       </div>
@@ -372,5 +372,3 @@ declare global {
     Wistia: any;
   }
 }
-
-    
