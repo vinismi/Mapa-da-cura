@@ -28,12 +28,12 @@ export function ChatLayout({
     <div className={cn("flex h-dvh flex-col", hide && "invisible")}>
       <ChatHeader />
       <div 
-        className="flex-1 overflow-hidden bg-cover bg-center" 
+        className="flex-1 flex flex-col overflow-hidden bg-cover bg-center" 
         style={{ 
           backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
         }}
       >
-        <div className="h-full bg-black/10 backdrop-blur-[2px]">
+        <div className="flex-1 overflow-y-auto bg-black/10 backdrop-blur-[2px]">
           <ChatMessages messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
         </div>
       </div>
