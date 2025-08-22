@@ -30,6 +30,7 @@ export default function Home() {
   const callEndRef = useRef(handleCallEnd);
   const chatLayoutRef = useRef<{ scrollToBottom: () => void }>(null);
   const [inputPlaceholder, setInputPlaceholder] = useState("Digite uma mensagem...");
+  const [typingPrompt, setTypingPrompt] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function Home() {
 
     // Wait 10 seconds then change placeholder
     setTimeout(() => {
-        setInputPlaceholder("Digite seu nome aqui...");
+        setTypingPrompt("Digite seu nome aqui...");
     }, 10000);
   };
 
@@ -116,10 +117,18 @@ export default function Home() {
     }
   }, [messages, isCallActive]);
 
+  const handleUserInput = (text: string) => {
+      setUserInput(text);
+      if (text.trim() !== '' && typingPrompt) {
+          setTypingPrompt(null);
+      }
+  }
+
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
+    setTypingPrompt(null);
     // Don't add automatic messages as user messages
     if (text !== "Já vi os status!") {
         addMessage({ sender: "user", type: "text", content: text });
@@ -156,7 +165,7 @@ export default function Home() {
                         type: "text",
                         content: "Como devo te chamar?",
                     });
-                     setInputPlaceholder("Digite seu nome aqui...");
+                     setTypingPrompt("Digite seu nome aqui...");
                 } else {
                     const name = text.trim();
                     setUserName(name);
@@ -196,7 +205,7 @@ export default function Home() {
             type: "audio", 
             content: "https://unrivaled-gelato-f313ef.netlify.app/audio2.mp3" 
            });
-           setInputPlaceholder("Diga aqui há quanto tempo...");
+           setTypingPrompt("Diga aqui há quanto tempo...");
           
           setConversationStep(4);
           break;
@@ -460,11 +469,10 @@ export default function Home() {
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
         userInput={userInput}
-        onUserInput={setUserInput}
+        onUserInput={handleUserInput}
         hide={isCallActive}
         inputPlaceholder={inputPlaceholder}
+        typingPrompt={typingPrompt}
       />
   );
 }
-
-    
