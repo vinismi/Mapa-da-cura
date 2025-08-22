@@ -30,7 +30,6 @@ export default function Home() {
   const callEndRef = useRef(handleCallEnd);
   const chatLayoutRef = useRef<{ scrollToBottom: () => void }>(null);
   const [inputPlaceholder, setInputPlaceholder] = useState("Digite uma mensagem...");
-  const [typingPrompt, setTypingPrompt] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -82,9 +81,11 @@ export default function Home() {
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
 
-    // Wait 10 seconds then change placeholder
-    setTimeout(() => {
-        setTypingPrompt("Digite seu nome aqui...");
+    // After 10 seconds, send a text message asking for the name
+    setTimeout(async () => {
+      await showTypingIndicator(2000);
+      addMessage({ sender: "bot", type: "text", content: "Como devo te chamar?" });
+      setInputPlaceholder("Digite seu nome aqui...");
     }, 10000);
   };
 
@@ -119,16 +120,12 @@ export default function Home() {
 
   const handleUserInput = (text: string) => {
       setUserInput(text);
-      if (text.trim() !== '' && typingPrompt) {
-          setTypingPrompt(null);
-      }
   }
 
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
-    setTypingPrompt(null);
     // Don't add automatic messages as user messages
     if (text !== "Já vi os status!") {
         addMessage({ sender: "user", type: "text", content: text });
@@ -165,7 +162,7 @@ export default function Home() {
                         type: "text",
                         content: "Como devo te chamar?",
                     });
-                     setTypingPrompt("Digite seu nome aqui...");
+                     setInputPlaceholder("Digite seu nome aqui...");
                 } else {
                     const name = text.trim();
                     setUserName(name);
@@ -205,7 +202,12 @@ export default function Home() {
             type: "audio", 
             content: "https://unrivaled-gelato-f313ef.netlify.app/audio2.mp3" 
            });
-           setTypingPrompt("Diga aqui há quanto tempo...");
+
+           setTimeout(async () => {
+                await showTypingIndicator(2000);
+                addMessage({ sender: "bot", type: "text", content: "Me diga, há quanto tempo esse sentimento te acompanha?" });
+                setInputPlaceholder("Diga aqui há quanto tempo...");
+           }, 8000);
           
           setConversationStep(4);
           break;
@@ -472,7 +474,7 @@ export default function Home() {
         onUserInput={handleUserInput}
         hide={isCallActive}
         inputPlaceholder={inputPlaceholder}
-        typingPrompt={typingPrompt}
       />
   );
 }
+

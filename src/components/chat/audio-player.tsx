@@ -10,10 +10,9 @@ import { cn } from "@/lib/utils";
 
 type AudioPlayerProps = {
   audioSrc: string;
-  audioText?: string;
 };
 
-export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
+export function AudioPlayer({ audioSrc }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -138,7 +137,6 @@ export function AudioPlayer({ audioSrc, audioText }: AudioPlayerProps) {
           </div>
         </div>
       </div>
-      {audioText && <p className="text-foreground mt-2">{audioText}</p>}
     </div>
   );
 }

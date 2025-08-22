@@ -7,7 +7,6 @@ import { ChatMessages } from "./chat-messages";
 import { ChatInput } from "./chat-input";
 import { cn } from "@/lib/utils";
 import { forwardRef, useImperativeHandle, useRef } from "react";
-import { TypingPrompt } from "./typing-prompt";
 
 type ChatLayoutProps = {
   messages: Message[];
@@ -17,7 +16,6 @@ type ChatLayoutProps = {
   onSendMessage: (text: string) => void;
   hide?: boolean;
   inputPlaceholder?: string;
-  typingPrompt?: string | null;
 };
 
 export const ChatLayout = forwardRef<
@@ -33,7 +31,6 @@ export const ChatLayout = forwardRef<
       onSendMessage,
       hide = false,
       inputPlaceholder,
-      typingPrompt,
     },
     ref
   ) => {
@@ -62,7 +59,6 @@ export const ChatLayout = forwardRef<
           <div className="flex-1 overflow-y-auto bg-black/10 backdrop-blur-[2px]">
             <ChatMessages ref={messagesRef} messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
           </div>
-          <TypingPrompt prompt={typingPrompt} />
           <ChatInput
             userInput={userInput}
             onUserInput={onUserInput}
