@@ -81,9 +81,9 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
 
     useEffect(() => {
         const ringtone = ringtoneRef.current;
-        if (callState === 'incoming' && ringtone) {
+        if (callState === 'incoming' && ringtone && ringtone.paused) {
             ringtone.play().catch(e => console.log("Ringtone play failed", e));
-        } else if (ringtone) {
+        } else if (callState !== 'incoming' && ringtone && !ringtone.paused) {
             ringtone.pause();
             ringtone.currentTime = 0;
         }
@@ -117,9 +117,9 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
           return () => clearInterval(videoInterval);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [callState]);
+    }, [callState, wistiaVideoId]);
 
-    if (!isMounted || callState === 'ended') {
+    if (!isMounted) {
         return null;
     }
     
@@ -372,3 +372,5 @@ declare global {
     Wistia: any;
   }
 }
+
+    

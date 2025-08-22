@@ -27,7 +27,6 @@ export default function Home() {
   const [conversationStarted, setConversationStarted] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const callEndRef = useRef(handleCallEnd);
   const chatLayoutRef = useRef<{ scrollToBottom: () => void }>(null);
   const [inputPlaceholder, setInputPlaceholder] = useState("Digite uma mensagem...");
 
@@ -35,11 +34,6 @@ export default function Home() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    callEndRef.current = handleCallEnd;
-  }, [userName]); // Re-create handleCallEnd when userName changes
-
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -79,7 +73,7 @@ export default function Home() {
       type: "audio",
       content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3",
     });
-    setConversationStep(1); // Move to next step which is waiting for the user's name.
+    setConversationStep(1);
 
     // After 10 seconds, send a text message asking for the name
     setTimeout(async () => {
@@ -91,7 +85,6 @@ export default function Home() {
 
   async function handleCallEnd() {
       setIsCallActive(false);
-      setMessages(prev => prev.filter(m => m.type !== 'live-call'));
       await showTypingIndicator(3500);
       addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
 
@@ -110,13 +103,6 @@ export default function Home() {
 
       setConversationStep(9);
   }
-
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage?.type === 'live-call' && !isCallActive) {
-        setIsCallActive(true);
-    }
-  }, [messages, isCallActive]);
 
   const handleUserInput = (text: string) => {
       setUserInput(text);
@@ -291,7 +277,7 @@ export default function Home() {
               addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
               await new Promise(resolve => setTimeout(resolve, 5000));
-              addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
+              setIsCallActive(true);
               break;
             }
             break;
@@ -304,7 +290,7 @@ export default function Home() {
               addMessage({ sender: "bot", type: "text", content: `Ela vai te mostrar um caminho que a ajudou a florescer. Fica atenta!` });
 
               await showTypingIndicator(4000);
-              addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
+              setIsCallActive(true);
               break;
 
         case 9: // Access to bonuses before payment
@@ -411,17 +397,20 @@ export default function Home() {
     return <StatusView onFinish={handleStatusFinish} />;
   }
   
-  const renderCallScreen = () => {
-     if (!isCallActive) return null;
-     const callMessage = messages.find(m => m.type === 'live-call');
-     if (callMessage) {
-        return (
-          <div className="fixed inset-0 z-50">
-             <ChatMessage key={callMessage.id} message={{ ...callMessage, meta: { ...callMessage.meta, onCallEnd: callEndRef.current } as any }} onSendMessage={handleSendMessage} />
-          </div>
-        )
-     }
-     return null;
+  if (isCallActive) {
+      return (
+          <ChatMessage 
+              message={{
+                  id: "live-call-message",
+                  sender: "bot",
+                  type: "live-call",
+                  content: "Chamada de Vídeo de Luz",
+                  timestamp: new Date(),
+                  meta: { onCallEnd: handleCallEnd }
+              }} 
+              onSendMessage={handleSendMessage} 
+          />
+      );
   }
 
   if (!conversationStarted) {
@@ -478,3 +467,4 @@ export default function Home() {
   );
 }
 
+    
