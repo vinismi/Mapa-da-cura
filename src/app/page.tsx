@@ -111,14 +111,6 @@ export default function Home() {
       setConversationStep(9);
   }
 
-  const handleUserInput = (text: string) => {
-      if (text === "Ver status") {
-          setIsViewingStatus(true);
-      } else {
-          setUserInput(text);
-      }
-  }
-
   const continueAfterStatus = async () => {
       await showTypingIndicator(7000);
       addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
@@ -468,7 +460,7 @@ export default function Home() {
                   onSendMessage={handleSendMessage}
                   isTyping={isTyping}
                   userInput={userInput}
-                  onUserInput={handleUserInput}
+                  onUserInput={setUserInput}
                   inputPlaceholder={inputPlaceholder}
                 />
             )}
