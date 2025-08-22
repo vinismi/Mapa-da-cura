@@ -80,7 +80,11 @@ export default function Home() {
       content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3",
     });
     setConversationStep(1); // Move to next step which is waiting for the user's name.
-    setInputPlaceholder("Digite seu nome aqui...");
+
+    // Wait 10 seconds then change placeholder
+    setTimeout(() => {
+        setInputPlaceholder("Digite seu nome aqui...");
+    }, 10000);
   };
 
   async function handleCallEnd() {
