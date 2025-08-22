@@ -151,15 +151,21 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
 
     if (callState === 'accepted') {
         return (
-            <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center animate-in fade-in duration-300" onClick={() => window.Wistia.api(wistiaVideoId)?.play()}>
-                 <div className="w-full h-full max-w-md aspect-[9/16] relative">
+            <div className="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center animate-in fade-in duration-300">
+                 <div className="w-full h-full absolute top-0 left-0">
                     <div
                         className={`wistia_embed wistia_async_${wistiaVideoId} videoFoam=true playerColor=56B787 controlsVisibleOnLoad=false playButton=false`}
                         style={{ height: "100%", position: "absolute", width: "100%", top: 0, left: 0 }}
                     >&nbsp;</div>
                 </div>
-                <div className="absolute bottom-5 p-4 flex justify-center items-center gap-4">
-                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16" onClick={(e) => { e.stopPropagation(); handleEndCall(); }}>
+                <div className="absolute bottom-8 left-0 right-0 p-4 flex justify-center items-center gap-6 bg-gradient-to-t from-black/50 to-transparent">
+                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                        <VideoOff className="h-6 w-6" />
+                    </Button>
+                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                        <MicOff className="h-6 w-6" />
+                    </Button>
+                    <Button variant="destructive" size="icon" className="rounded-full h-16 w-16 cursor-default">
                         <Phone className="h-7 w-7 transform -rotate-[135deg]" />
                     </Button>
                 </div>
@@ -362,4 +368,6 @@ declare global {
     Wistia: any;
   }
 }
+    
+
     
