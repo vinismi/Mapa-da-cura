@@ -14,11 +14,14 @@ type ChatMessagesProps = {
 
 export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessagesProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages, isTyping]);
 
 
@@ -29,6 +32,7 @@ export function ChatMessages({ messages, isTyping, onSendMessage }: ChatMessages
           <ChatMessage key={message.id} message={message} onSendMessage={onSendMessage} />
         ))}
         {isTyping && <TypingIndicator />}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );
