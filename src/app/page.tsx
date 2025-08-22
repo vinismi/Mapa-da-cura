@@ -70,7 +70,7 @@ export default function Home() {
   const startConversation = async () => {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Chega de sofrer. Eu preciso encontrar a minha cura e vi que você pode me ajudar com o mapa." });
-    await showTypingIndicator(4000);
+    await showTypingIndicator(2500);
     addMessage({
       sender: "bot",
       type: "audio",
@@ -80,7 +80,7 @@ export default function Home() {
 
     // After 10 seconds, send a text message asking for the name
     setTimeout(async () => {
-      await showTypingIndicator(2000);
+      await showTypingIndicator(1500);
       addMessage({ sender: "bot", type: "text", content: "Como devo te chamar?" });
       setInputPlaceholder("Digite seu nome aqui...");
     }, 8000);
@@ -112,19 +112,19 @@ export default function Home() {
   }
 
   const continueAfterStatus = async () => {
-      await showTypingIndicator(7000);
+      await showTypingIndicator(4000);
       addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
       
-      await showTypingIndicator(8500);
+      await showTypingIndicator(4500);
       addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
       
-      await showTypingIndicator(9000);
+      await showTypingIndicator(4000);
       addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
 
-      await showTypingIndicator(7000);
+      await showTypingIndicator(3000);
       addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 4000));
       setIsCallActive(true);
       setConversationStep(8); // Move to a step where we wait for the call to end
   }
@@ -274,16 +274,7 @@ export default function Home() {
             break;
 
         case 6: // Fallback, not used in main flow
-            await showTypingIndicator(3800);
-            addMessage({ sender: "bot", type: "text", content: `Obrigada por abrir seu coração.` });
-            await showTypingIndicator(3500);
-            addMessage({
-                sender: "bot",
-                type: "status",
-                content: "Preparei umas histórias lindas nos meus status, de gente que, como a gente, buscou e achou um novo brilho. Dá uma espiadinha lá e me diz o que achou!",
-                options: ["Ver status"],
-            });
-            setConversationStep(7);
+            // This case was left here for any potential future use, but is not currently triggered.
             break;
 
         case 7: // After Status
@@ -335,10 +326,10 @@ export default function Home() {
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
 
-            setConversationStep(11);
+            setConversationStep(12);
             break;
         
-        case 11: // After checkout link, handle questions
+        case 12: // After checkout link, handle questions
             await showTypingIndicator(4000);
             addMessage({
                 sender: "bot",
@@ -425,7 +416,7 @@ export default function Home() {
                   className="absolute top-0 left-0 w-full h-full object-cover -z-10"
                   poster="https://i.imgur.com/G2Fa071.jpeg"
                 >
-                  <source src="https://videos.pexels.com/video-files/3253459/3253459-hd_1920_1080_30fps.mp4" type="video/mp4" />
+                  <source src="https://videos.pexels.com/video-files/853507/853507-hd_1920_1080_25fps.mp4" type="video/mp4" />
                 </video>
                 <div className="absolute inset-0 bg-black/60" />
                 <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
@@ -436,7 +427,7 @@ export default function Home() {
                         </Avatar>
                         <div className="flex justify-center items-center mb-4">
                           <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
-                          <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
+                          <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mx-2">
                               Jornada do Despertar Espiritual
                           </h1>
                           <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
@@ -466,9 +457,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
-
-    
