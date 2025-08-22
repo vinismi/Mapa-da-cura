@@ -111,19 +111,34 @@ export default function Home() {
       setUserInput(text);
   }
 
+  const continueAfterStatus = async () => {
+      await showTypingIndicator(7000);
+      addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
+      
+      await showTypingIndicator(8500);
+      addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
+      
+      await showTypingIndicator(9000);
+      addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
+
+      await showTypingIndicator(7000);
+      addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
+
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      setIsCallActive(true);
+      setConversationStep(8); // Move to a step where we wait for the call to end
+  }
+
 
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
-    // Don't add automatic messages as user messages
-    if (text !== "Já vi os status!") {
-        addMessage({ sender: "user", type: "text", content: text });
-    }
+    addMessage({ sender: "user", type: "text", content: text });
     
     setUserInput("");
     setInputPlaceholder("Digite uma mensagem...");
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
-     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
+    setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
 
     try {
       switch (conversationStep) {
@@ -265,25 +280,6 @@ export default function Home() {
                 setIsViewingStatus(true);
                 return; 
             }
-            
-            if (text === "Já vi os status!") {
-              await showTypingIndicator(7000);
-              addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
-              
-              await showTypingIndicator(8500);
-              addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
-              
-              await showTypingIndicator(9000);
-              addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
-
-              await showTypingIndicator(7000);
-              addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
-
-              await new Promise(resolve => setTimeout(resolve, 5000));
-              setIsCallActive(true);
-              setConversationStep(8); // Move to a step where we wait for the call to end
-              break;
-            }
             break;
         
         case 8: // Waiting for call to end - no user input handled here
@@ -375,13 +371,12 @@ export default function Home() {
     }
   };
 
-  const handleStatusFinish = () => {
+  const handleStatusFinish = async () => {
     setIsViewingStatus(false);
     // Use a timeout to ensure the state update for isViewingStatus is processed first
     // and the chat layout is visible again before sending the message.
-    setTimeout(() => {
-      handleSendMessage("Já vi os status!");
-    }, 100);
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await continueAfterStatus();
   };
 
   if (!isMounted) {
@@ -464,5 +459,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
