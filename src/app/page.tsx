@@ -22,6 +22,7 @@ export default function Home() {
   const [userMotivation, setUserMotivation] = useState("");
   const [userPainDuration, setUserPainDuration] = useState("");
   const [userAttempts, setUserAttempts] = useState("");
+  const [userWhatsapp, setUserWhatsapp] = useState("");
   const [isViewingStatus, setIsViewingStatus] = useState(false);
   const [conversationStarted, setConversationStarted] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
@@ -73,20 +74,20 @@ export default function Home() {
       setIsCallActive(false);
       setMessages(prev => prev.filter(m => m.type !== 'live-call'));
       await showTypingIndicator(2500);
-      addMessage({ sender: "bot", type: "text", content: `Que energia! A Ana é a prova viva da transformação que estou te propondo.` });
+      addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
 
       await showTypingIndicator(3000);
-      addMessage({ sender: "bot", type: "text", content: `${userName}, quero ser 100% transparente com você. Minha missão é a sua cura, não o seu dinheiro.`});
+      addMessage({ sender: "bot", type: "text", content: `${userName}, chega de desculpas. A sua transformação é minha prioridade, e vou provar isso.`});
       
       await showTypingIndicator(3000);
       addMessage({
           sender: "bot",
           type: "text",
-          content: "Por isso, vou te dar ACESSO IMEDIATO aos BÔNUS COMPLETOS, antes mesmo de você investir um único centavo. É um presente meu pra você.",
+          content: "Por isso, vou quebrar o protocolo. Você vai receber TODOS OS BÔNUS agora, de presente. Antes de pagar qualquer coisa.",
       });
 
       await showTypingIndicator(3500);
-      addMessage({ sender: "bot", type: "text", content: "Isso mesmo. Você recebe os bônus, e se sentir no seu coração que quer o mapa completo para a sua virada de chave, aí sim você efetua o pagamento. Confiança total.", options: ["Eu quero os bônus!", "Como funciona o pagamento?"] });
+      addMessage({ sender: "bot", type: "text", content: "É isso mesmo. Você acessa os bônus, e se o seu coração disser 'É ISSO', você investe no mapa completo. Confiança total.", options: ["Eu quero os bônus agora!", "Como assim?"] });
 
       setConversationStep(9);
   }
@@ -122,31 +123,28 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
+                    content: `Prazer, ${name}! Chega de rodeios. Me diga com toda a sua força: o que você quer ELIMINAR da sua vida a partir de HOJE?`,
                 });
                 setConversationStep(3);
             } else {
-                // Handle if user says "I'm fine" or similar, then ask for name again.
                 const lowerCaseText = text.toLowerCase();
                  if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
                     await showTypingIndicator(1500);
-                    addMessage({ sender: "bot", type: "text", content: "Que ótimo! Fico feliz em saber. 😊" });
+                    addMessage({ sender: "bot", type: "text", content: "Ótimo. 😊" });
                     await showTypingIndicator(2000);
                     addMessage({
                         sender: "bot",
                         type: "text",
-                        content: "E para a gente se conhecer melhor, como posso te chamar?",
+                        content: "Como devo te chamar?",
                     });
-                    // Keep conversationStep at 1 to wait for the name
                 } else {
-                    // Fallback if AI can't detect name and it's not a "tudo bem" response, assume it's the name.
                     const name = text.trim();
                     setUserName(name);
                     await showTypingIndicator(2500);
                     addMessage({
                         sender: "bot",
                         type: "text",
-                        content: `Prazer em te conhecer, ${name}! Vamos direto ao ponto. Me diga, com toda a sua força: o que você quer TRANSFORMAR na sua vida a partir de HOJE?`,
+                        content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer ELIMINAR da sua vida a partir de HOJE?`,
                     });
                     setConversationStep(3);
                 }
@@ -158,7 +156,7 @@ export default function Home() {
            
            const nameCorrectionCheck = await checkForNameCorrection({ previousName: userName, currentInput: text });
            if (await handleNameCorrection(nameCorrectionCheck, text, () => {
-               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E qual seria a sua maior motivação para buscar a cura espiritual?` });
+               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E o que você quer eliminar da sua vida a partir de hoje?` });
            })) return;
 
            setUserMotivation(motivation);
@@ -190,17 +188,14 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Entendo... Carregar esse peso por tanto tempo não é nada fácil.`,
+                content: `Entendido. Carregar esse fardo por tanto tempo acaba com qualquer um.`,
             });
-            
-            await showTypingIndicator(2200);
-            addMessage({ sender: "bot", type: "text", content: "Mas quero que saiba que você não está sozinha. Muitas pessoas que buscam o despertar passam por isso." });
             
             await showTypingIndicator(2800);
             addMessage({
               sender: "bot",
               type: "text",
-              content: `E ${userName}, me conta, você já tentou outras coisas pra resolver isso? Como foi?`
+              content: `${userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que fez?`
             });
             setConversationStep(5);
             break;
@@ -221,24 +216,20 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Para te ajudar a se reconectar, tenho algo que vai te inspirar profundamente.`,
+                content: `O que você vai ver agora vai te provar que seu caso tem solução.`,
             });
             await showTypingIndicator(2500);
             addMessage({
                 sender: "bot",
                 type: "status",
-                content: "Preparei depoimentos reais nos meus status. São histórias de pessoas que, como nós, buscaram e encontraram uma nova força. Espia lá e me diga o que sentiu.",
+                content: "Preparei depoimentos REAIS nos meus status. Gente como você, que virou o jogo. Espia lá e me diga o que sentiu.",
             });
             setConversationStep(7);
             break;
 
-        case 6: // (This step seems to be skipped now, but keeping logic just in case)
+        case 6: // Fallback, not used in main flow
             await showTypingIndicator(2800);
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: `Obrigada por abrir seu coração. É super importante a gente se lembrar desses momentos bons. Tenho uma coisinha que pode te inspirar...`
-            });
+            addMessage({ sender: "bot", type: "text", content: `Obrigada por abrir seu coração.` });
             await showTypingIndicator(2500);
             addMessage({
                 sender: "bot",
@@ -256,24 +247,24 @@ export default function Home() {
             
             if (text === "Já vi os status!") {
               await showTypingIndicator(3500);
-              addMessage({ sender: "bot", type: "text", content: `Incrível, né? Ver a transformação de outras pessoas nos dá a certeza de que também somos capazes.` });
+              addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
               
               await showTypingIndicator(3000);
-              addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com a sua história, e por isso o universo está agindo.` });
+              addMessage({ sender: "bot", type: "text", content: `Senti uma conexão com você. Por isso, o universo vai te dar um sinal claro.` });
               
               await showTypingIndicator(2000);
-              addMessage({ sender: "bot", type: "text", content: `Uma pessoa que passou por algo muito parecido vai te ligar AGORA.` });
+              addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
 
               await showTypingIndicator(1500);
-              addMessage({ sender: "bot", type: "text", content: `Fica atenta, ela vai te mostrar o caminho que a libertou.` });
+              addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
-              // The flow will now be continued by handleCallEnd
               break;
             }
+            break;
         
-        case 8: // (This step seems to be skipped now, keeping logic)
+        case 8: // Fallback, not used in main flow
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu essa conexão! Agora, se prepara, que o universo conspira. Senti de te conectar com uma pessoa que viveu algo parecido com você... e ela vai te ligar!` });
               
@@ -282,49 +273,71 @@ export default function Home() {
 
               await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
-              // The flow will now be continued by handleCallEnd
               break;
 
         case 9: // Access to bonuses before payment
             if (text.includes("quero") || text.includes("topo") || text.includes("Sim")) {
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: `Perfeito, ${userName}! Para te provar o poder dessa jornada, liberei SEUS PRESENTES. São ferramentas poderosas para você já começar sua transformação HOJE.` });
+                addMessage({ sender: "bot", type: "text", content: `Excelente decisão, ${userName}! Seus presentes estão liberados. Use-os para iniciar sua virada de chave HOJE.` });
                 
                 await showTypingIndicator(3000);
-                addMessage({ sender: "bot", type: "bonuses", content: "Sinta um gostinho da sua nova vida:" });
+                addMessage({ sender: "bot", type: "bonuses", content: "Sinta o poder da sua nova vida:" });
 
                 await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: "Agora, para ter acesso ao tesouro principal, o seu GPS para a alma, preparei este vídeo que demonstra o mapa e como você vai acessá-lo após o pagamento." });
+                addMessage({ sender: "bot", type: "text", content: "Agora, para ter o mapa completo, o seu GPS da alma, assista a este vídeo rápido que mostra como o acesso é liberado após o pagamento." });
 
                 await showTypingIndicator(2000);
                 addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Demonstração e Acesso ao Mapa da Cura" } });
 
-                await showTypingIndicator(12000); 
-                addMessage({ sender: "bot", type: "text", content: "Viu só? Este mapa é a chave para redescobrir sua força, alinhar sua energia e despertar sua versão mais poderosa. Chega de se sentir perdida." });
+                await showTypingIndicator(5000); 
+                addMessage({ sender: "bot", type: "text", content: "Viu? É simples. Este mapa é a ferramenta definitiva para você nunca mais se sentir perdida." });
                 
                 await showTypingIndicator(4000);
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Os bônus já são seus, como prometido. Para ter o mapa completo e selar seu compromisso com a sua cura, o investimento simbólico é de R$19,00.`,
+                    content: `Os bônus são seus. Para ter o mapa completo, o investimento é simbólico: apenas R$19,00.`,
                 });
 
-                await showTypingIndicator(2500);
-                 addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
-
-
-                await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
-
+                await showTypingIndicator(3000);
+                addMessage({ sender: "bot", type: "text", content: "Para garantir que você receba o acesso e nosso suporte, por favor, me informe seu WhatsApp com DDD. Não vamos te mandar spam, é apenas para segurança." });
 
                 setConversationStep(10);
-            } else { // "Como funciona o pagamento?"
+            } else { // "Como assim?"
                  await showTypingIndicator(3500);
-                 addMessage({ sender: "bot", type: "text", content: `É simples: você já recebeu o acesso gratuito aos bônus como prova da minha confiança em você. O pagamento de R$19,00 é para liberar o acesso ao Mapa da Cura Espiritual completo. Assim que o pagamento for confirmado, você recebe seu acesso vitalício.` });
+                 addMessage({ sender: "bot", type: "text", content: `É simples: você já ganhou os bônus. O pagamento de R$19 libera o Mapa da Cura completo. Assim que o pagamento for confirmado, o acesso é seu para sempre.` });
                  await showTypingIndicator(3000);
-                 addMessage({ sender: "bot", type: "text", content: `Pronta para dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
-                 // Keep step at 9 to handle the "Sim" response next, mapping it to the "quero" condition.
+                 addMessage({ sender: "bot", type: "text", content: `Vamos dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
             }
+            break;
+
+        case 10: // Ask for WhatsApp
+            const whatsapp = text;
+            setUserWhatsapp(whatsapp);
+            await showTypingIndicator(2000);
+            addMessage({ sender: "bot", type: "text", content: `Obrigada, ${userName}. Anotado.` });
+
+            await showTypingIndicator(3000);
+            addMessage({ sender: "bot", type: "text", content: `Para finalizar e garantir que o mapa seja perfeito para você, me diga: O que você mais espera encontrar nele? E qual a sua avaliação para este nosso papo até aqui? Sua opinião é ouro pra mim.` });
+
+            setConversationStep(11);
+            break;
+        
+        case 11: // Ask for Feedback
+            const feedback = text;
+            await showTypingIndicator(2000);
+            addMessage({ sender: "bot", type: "text", content: "Perfeito! Seu feedback é o que nos move. Muito obrigada." });
+
+            await showTypingIndicator(3500);
+            addMessage({ sender: "bot", type: "text", content: "Tudo pronto. Para selar seu compromisso com a sua cura, aqui está o tutorial de pagamento e o link para finalizar." });
+
+            await showTypingIndicator(2500);
+            addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+
+            await showTypingIndicator(2000);
+            addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
+
+            setConversationStep(12);
             break;
             
         default:
@@ -442,3 +455,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
