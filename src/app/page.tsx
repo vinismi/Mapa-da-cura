@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChatMessage } from "@/components/chat/chat-message";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -463,3 +464,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
