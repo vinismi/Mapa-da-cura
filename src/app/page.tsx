@@ -71,7 +71,7 @@ export default function Home() {
   
   const startConversation = async () => {
     setConversationStarted(true);
-    addMessage({ sender: "user", type: "text", content: "Olá! Vi que estava interessado no mapa e quero saber mais." });
+    addMessage({ sender: "user", type: "text", content: "Chega de sofrer. Eu preciso encontrar a minha cura e vi que você pode me ajudar com o mapa." });
     await showTypingIndicator(4000);
     await showTypingIndicator(2500); // Simulate "recording"
     addMessage({
@@ -378,8 +378,10 @@ export default function Home() {
   const handleStatusFinish = () => {
     setIsViewingStatus(false);
     if (conversationStep === 7) {
+      // Use a timeout to ensure the state update for isViewingStatus is processed first
       setTimeout(() => {
         handleSendMessage("Já vi os status!");
+        // Another timeout to ensure the message is rendered before scrolling
         setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 500);
       }, 0);
     }
@@ -459,3 +461,5 @@ export default function Home() {
       />
   );
 }
+
+    
