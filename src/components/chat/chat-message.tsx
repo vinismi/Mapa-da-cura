@@ -329,14 +329,14 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             <div className={cn(
                 "relative max-w-xs md:max-w-md lg:max-w-lg rounded-xl shadow-md animate-in fade-in zoom-in-95",
                  isUser
-                    ? "bg-[#075E54] text-white rounded-br-none"
-                    : "bg-secondary dark:bg-zinc-800/90 rounded-bl-none"
+                    ? "bg-[#DCF8C6] text-black rounded-br-none"
+                    : "bg-secondary rounded-bl-none"
             )}>
                  <div className="flex flex-col gap-2 p-2">
                     {renderContent()}
                     <div className={cn(
                         "text-xs self-end -mb-1 -mr-1",
-                        isUser ? "text-green-300/60" : "text-muted-foreground"
+                        isUser ? "text-slate-500" : "text-muted-foreground"
                     )}>
                         {formattedTime}
                          {isUser && (
@@ -355,8 +355,8 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         className={cn(
           "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-2xl shadow-md animate-in fade-in zoom-in-95",
           isUser
-            ? "bg-[#075E54] text-white rounded-br-none"
-            : "bg-secondary dark:bg-zinc-800/90 rounded-bl-none",
+            ? "bg-[#DCF8C6] text-black rounded-br-none"
+            : "bg-secondary rounded-bl-none",
            message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
         )}
       >
@@ -366,7 +366,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         <div
           className={cn(
             "text-xs text-right mt-1.5 -mb-1 -mr-1",
-            isUser ? "text-green-300/60" : "text-muted-foreground"
+            isUser ? "text-slate-500" : "text-muted-foreground"
           )}
         >
           {formattedTime}
