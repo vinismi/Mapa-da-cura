@@ -51,7 +51,7 @@ export const ChatLayout = forwardRef<
         <div
           className="flex flex-1 flex-col overflow-hidden bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://i.imgur.com/kCGm4iT.jpeg')",
+            backgroundImage: "url('https://i.imgur.com/VNVVx1s.jpeg')",
           }}
         >
           <div className="flex-1 overflow-y-auto bg-black/50 backdrop-blur-[2px]">
