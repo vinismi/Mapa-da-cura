@@ -196,6 +196,7 @@ export default function Home() {
             type: "audio", 
             content: "https://unrivaled-gelato-f313ef.netlify.app/audio2.mp3" 
            });
+           setInputPlaceholder("Diga aqui há quanto tempo...");
           
           setConversationStep(4);
           break;
@@ -465,3 +466,5 @@ export default function Home() {
       />
   );
 }
+
+    
