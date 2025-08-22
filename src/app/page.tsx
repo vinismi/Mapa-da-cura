@@ -83,14 +83,14 @@ export default function Home() {
       await showTypingIndicator(2000);
       addMessage({ sender: "bot", type: "text", content: "Como devo te chamar?" });
       setInputPlaceholder("Digite seu nome aqui...");
-    }, 10000);
+    }, 8000);
   };
 
   async function handleCallEnd() {
       setIsCallActive(false);
       
       // Add the "Call ended" summary message
-      addMessage({ sender: "bot", type: "call-summary", content: "Chamada de vídeo encerrada", meta: { callDuration: "1:25" } });
+      addMessage({ sender: "bot", type: "call-summary", content: "Chamada de vídeo encerrada" });
       
       await showTypingIndicator(3500);
       addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
@@ -112,7 +112,11 @@ export default function Home() {
   }
 
   const handleUserInput = (text: string) => {
-      setUserInput(text);
+      if (text === "Ver status") {
+          setIsViewingStatus(true);
+      } else {
+          setUserInput(text);
+      }
   }
 
   const continueAfterStatus = async () => {
@@ -137,6 +141,12 @@ export default function Home() {
   const handleSendMessage = async (text: string) => {
     if (!text.trim()) return;
 
+    if (text === 'Ver status') {
+        setIsViewingStatus(true);
+        setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
+        return;
+    }
+
     addMessage({ sender: "user", type: "text", content: text });
     
     setUserInput("");
@@ -158,6 +168,7 @@ export default function Home() {
                     type: "text",
                     content: `Prazer, ${name}! Chega de rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
                 });
+                setInputPlaceholder("Descreva sua motivação...");
                 setConversationStep(3);
             } else {
                  await showTypingIndicator(2500);
@@ -182,6 +193,7 @@ export default function Home() {
                 type: "text",
                 content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
             });
+            setInputPlaceholder("Descreva sua motivação...");
             setConversationStep(3);
             break;
 
@@ -236,6 +248,7 @@ export default function Home() {
               type: "text",
               content: `${userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que fez?`
             });
+            setInputPlaceholder("Pode me contar, estou aqui pra ouvir...");
             setConversationStep(5);
             break;
             
@@ -263,6 +276,7 @@ export default function Home() {
                 sender: "bot",
                 type: "status",
                 content: "Preparei depoimentos REAIS nos meus status. Gente como você, que virou o jogo. Espia lá e me diga o que sentiu.",
+                options: ["Ver status"],
             });
             setConversationStep(7);
             break;
@@ -275,12 +289,13 @@ export default function Home() {
                 sender: "bot",
                 type: "status",
                 content: "Preparei umas histórias lindas nos meus status, de gente que, como a gente, buscou e achou um novo brilho. Dá uma espiadinha lá e me diz o que achou!",
+                options: ["Ver status"],
             });
             setConversationStep(7);
             break;
 
         case 7: // After Status
-            // This case is handled by handleStatusFinish now to avoid user sending a message.
+            // This case is now handled by handleStatusFinish to avoid user sending a message.
             break;
         
         case 8: // Waiting for call to end - no user input handled here
@@ -289,7 +304,7 @@ export default function Home() {
               break;
 
         case 9: // Access to bonuses before payment
-            if (text.includes("quero") || text.includes("topo") || text.includes("Sim")) {
+            if (text.toLowerCase().includes("quero") || text.toLowerCase().includes("agora") || text.toLowerCase().includes("sim")) {
                 await showTypingIndicator(4000);
                 addMessage({ sender: "bot", type: "text", content: `Excelente decisão, ${userName}! Seus presentes estão liberados. Use-os para iniciar sua virada de chave HOJE.` });
                 
@@ -461,3 +476,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
