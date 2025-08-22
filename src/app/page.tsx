@@ -36,12 +36,15 @@ export default function Home() {
   }, []);
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
-    setMessages((prev) => [
-      ...prev,
-      { ...message, id: Date.now().toString(), timestamp: new Date() },
-    ]);
-     // Force scroll to bottom on new message
-    setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 100);
+    setMessages((prev) => {
+      const newMessages = [
+        ...prev,
+        { ...message, id: Date.now().toString(), timestamp: new Date() },
+      ];
+      // After state updates, force scroll
+      setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
+      return newMessages;
+    });
   };
   
   const showTypingIndicator = async (duration: number) => {
@@ -67,7 +70,6 @@ export default function Home() {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Chega de sofrer. Eu preciso encontrar a minha cura e vi que você pode me ajudar com o mapa." });
     await showTypingIndicator(4000);
-    await showTypingIndicator(2500); // Simulate "recording"
     addMessage({
       sender: "bot",
       type: "audio",
@@ -182,7 +184,6 @@ export default function Home() {
            });
 
            await showTypingIndicator(3800);
-           await showTypingIndicator(1500); // Simulate "recording"
            addMessage({ 
             sender: "bot", 
             type: "audio", 
@@ -223,7 +224,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(6000);
-             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural, sem saudações. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
+            const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural, sem saudações. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -236,6 +237,7 @@ export default function Home() {
                 type: "text",
                 content: `O que você vai ver agora vai te provar que seu caso tem solução.`,
             });
+            
             await showTypingIndicator(4500);
             addMessage({
                 sender: "bot",
@@ -278,19 +280,14 @@ export default function Home() {
 
               await new Promise(resolve => setTimeout(resolve, 5000));
               setIsCallActive(true);
+              setConversationStep(8); // Move to a step where we wait for the call to end
               break;
             }
             break;
         
-        case 8: // Fallback, not used in main flow
-              await showTypingIndicator(4000);
-              addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu essa conexão! Agora, se prepara, que o universo conspira. Senti de te conectar com uma pessoa que viveu algo parecido com você... e ela vai te ligar!` });
-              
-              await showTypingIndicator(3000);
-              addMessage({ sender: "bot", type: "text", content: `Ela vai te mostrar um caminho que a ajudou a florescer. Fica atenta!` });
-
-              await showTypingIndicator(4000);
-              setIsCallActive(true);
+        case 8: // Waiting for call to end - no user input handled here
+              // This case is mostly a placeholder to prevent other cases from running
+              // while the call is active. The flow continues in handleCallEnd.
               break;
 
         case 9: // Access to bonuses before payment
@@ -379,14 +376,11 @@ export default function Home() {
 
   const handleStatusFinish = () => {
     setIsViewingStatus(false);
-    if (conversationStep === 7) {
-      // Use a timeout to ensure the state update for isViewingStatus is processed first
-      setTimeout(() => {
-        handleSendMessage("Já vi os status!");
-        // Another timeout to ensure the message is rendered before scrolling
-        setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 500);
-      }, 0);
-    }
+    // Use a timeout to ensure the state update for isViewingStatus is processed first
+    // and the chat layout is visible again before sending the message.
+    setTimeout(() => {
+      handleSendMessage("Já vi os status!");
+    }, 100);
   };
 
   if (!isMounted) {
@@ -461,10 +455,7 @@ export default function Home() {
         isTyping={isTyping}
         userInput={userInput}
         onUserInput={handleUserInput}
-        hide={isCallActive}
         inputPlaceholder={inputPlaceholder}
       />
   );
 }
-
-    

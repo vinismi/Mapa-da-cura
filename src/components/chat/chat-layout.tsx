@@ -14,7 +14,6 @@ type ChatLayoutProps = {
   userInput: string;
   onUserInput: (text: string) => void;
   onSendMessage: (text: string) => void;
-  hide?: boolean;
   inputPlaceholder?: string;
 };
 
@@ -29,7 +28,6 @@ export const ChatLayout = forwardRef<
       userInput,
       onUserInput,
       onSendMessage,
-      hide = false,
       inputPlaceholder,
     },
     ref
@@ -48,7 +46,7 @@ export const ChatLayout = forwardRef<
     }));
 
     return (
-      <div className={cn("flex h-dvh flex-col bg-background", hide && "invisible")}>
+      <div className="flex h-dvh flex-col bg-background">
         <ChatHeader />
         <div
           className="flex flex-1 flex-col overflow-hidden bg-cover bg-center"
