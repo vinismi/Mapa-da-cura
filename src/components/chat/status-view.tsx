@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,21 +11,21 @@ const stories = [
     type: "image",
     url: "https://i.imgur.com/zCowdDC.png",
     dataAiHint: "testimonial whatsapp",
-    duration: 5000,
+    duration: 8000,
     text: "A gratidão de ver uma vida transformada não tem preço. A jornada dela começou com um simples 'sim'.",
   },
   {
     type: "image",
     url: "https://i.imgur.com/dMFXsPL.png",
     dataAiHint: "testimonial whatsapp serene",
-    duration: 5000,
+    duration: 8000,
     text: "Quando a alma encontra o caminho certo, a cura acontece. Fico emocionada em fazer parte disso!",
   },
   {
     type: "image",
     url: "https://i.imgur.com/RsjRLRo.png",
     dataAiHint: "testimonial whatsapp energy",
-    duration: 5000,
+    duration: 8000,
     text: "Cada mentorada que floresce é uma prova de que estamos no caminho certo. A sua virada de chave também está próxima.",
   },
 ];
@@ -38,6 +38,8 @@ export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isFinished) {
@@ -45,33 +47,39 @@ export function StatusView({ onFinish }: StatusViewProps) {
     }
   }, [isFinished, onFinish]);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (!isFinished) {
-      const currentStory = stories[currentStoryIndex];
-      interval = setInterval(() => {
+  const startProgress = () => {
+    const currentStory = stories[currentStoryIndex];
+    intervalRef.current = setInterval(() => {
         setProgress((prev) => {
-          if (prev >= 100) {
-            if (currentStoryIndex < stories.length - 1) {
-              setCurrentStoryIndex(currentStoryIndex + 1);
-              return 0;
-            } else {
-              if(interval) clearInterval(interval);
-              setIsFinished(true);
-              return 100;
+            if (prev >= 100) {
+                if (currentStoryIndex < stories.length - 1) {
+                    setCurrentStoryIndex((prevIndex) => prevIndex + 1);
+                    return 0;
+                } else {
+                    if (intervalRef.current) clearInterval(intervalRef.current);
+                    setIsFinished(true);
+                    return 100;
+                }
             }
-          }
-          return prev + 100 / (currentStory.duration / 100);
+            return prev + 100 / (currentStory.duration / 100);
         });
-      }, 100);
+    }, 100);
+  };
+
+  useEffect(() => {
+    if (intervalRef.current) {
+        clearInterval(intervalRef.current);
     }
-    
+    if (!isPaused) {
+      startProgress();
+    }
     return () => {
-      if (interval) {
-        clearInterval(interval)
-      }
+        if(intervalRef.current) {
+            clearInterval(intervalRef.current)
+        }
     };
-  }, [currentStoryIndex, isFinished]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStoryIndex, isPaused]);
   
   const goToPrevious = () => {
     setCurrentStoryIndex((prev) => {
@@ -90,19 +98,28 @@ export function StatusView({ onFinish }: StatusViewProps) {
     }
   };
 
+  const handlePause = (pause: boolean) => {
+      setIsPaused(pause);
+  }
 
   const currentStory = stories[currentStoryIndex];
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in">
+    <div 
+        className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in"
+        onMouseDown={() => handlePause(true)}
+        onTouchStart={() => handlePause(true)}
+        onMouseUp={() => handlePause(false)}
+        onTouchEnd={() => handlePause(false)}
+    >
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-4 z-20">
         <div className="flex items-center gap-2 mb-2">
             {stories.map((_, index) => (
                 <div key={index} className="flex-1 h-1 bg-white/30 rounded-full">
                     <div 
-                        className="h-1 bg-white rounded-full transition-all duration-100 linear"
-                        style={{ width: `${index === currentStoryIndex ? progress : index < currentStoryIndex ? 100 : 0}%` }}
+                        className="h-1 bg-white rounded-full"
+                        style={{ width: `${index === currentStoryIndex ? progress : index < currentStoryIndex ? 100 : 0}%`, transition: isPaused ? 'none' : 'width 0.1s linear' }}
                     />
                 </div>
             ))}
@@ -135,7 +152,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
               src={currentStory.url}
               alt="Status"
               layout="fill"
-              objectFit="cover"
+              objectFit="contain"
               className="animate-in zoom-in-105 duration-500"
               data-ai-hint={currentStory.dataAiHint}
             />
