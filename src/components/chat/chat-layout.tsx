@@ -36,13 +36,13 @@ export function ChatLayout({
         <div className="flex-1 overflow-y-auto bg-black/10 backdrop-blur-[2px]">
           <ChatMessages messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
         </div>
+        <ChatInput
+          userInput={userInput}
+          onUserInput={onUserInput}
+          onSendMessage={onSendMessage}
+          options={lastMessageWithOptions?.options}
+        />
       </div>
-      <ChatInput
-        userInput={userInput}
-        onUserInput={onUserInput}
-        onSendMessage={onSendMessage}
-        options={lastMessageWithOptions?.options}
-      />
     </div>
   );
 }
