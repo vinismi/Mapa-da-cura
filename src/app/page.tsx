@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChatLayout } from "@/components/chat/chat-layout";
 import { generatePersonalizedResponse, checkForNameCorrection, type NameCorrectionCheckOutput, extractNameFromFirstMessage } from "@/ai/flows/personalized-response-flow";
 import { useToast } from "@/hooks/use-toast";
@@ -27,10 +27,16 @@ export default function Home() {
   const [conversationStarted, setConversationStarted] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const callEndRef = useRef(handleCallEnd);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    callEndRef.current = handleCallEnd;
+  }, [userName]); // Re-create handleCallEnd when userName changes
+
 
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
     setMessages((prev) => [
@@ -48,9 +54,9 @@ export default function Home() {
   const handleNameCorrection = async (correction: NameCorrectionCheckOutput, text: string, currentQuestion: () => void) => {
     if (correction.isCorrectingName && correction.newName) {
         setUserName(correction.newName);
-        await showTypingIndicator(1500);
+        await showTypingIndicator(2500);
         addMessage({ sender: "bot", type: "text", content: `Ops, anotado! Vou te chamar de ${correction.newName} então. 😉` });
-        await showTypingIndicator(2000);
+        await showTypingIndicator(3000);
         currentQuestion(); // Re-ask the current question
         return true;
     }
@@ -60,8 +66,8 @@ export default function Home() {
   const startConversation = async () => {
     setConversationStarted(true);
     addMessage({ sender: "user", type: "text", content: "Olá! Vi que estava interessado no mapa e quero saber mais." });
-    await showTypingIndicator(1500);
-    await showTypingIndicator(1000); // Simulate "recording"
+    await showTypingIndicator(2500);
+    await showTypingIndicator(1500); // Simulate "recording"
     addMessage({
       sender: "bot",
       type: "audio",
@@ -70,23 +76,23 @@ export default function Home() {
     setConversationStep(1); // Move to next step which is waiting for the user's name.
   };
 
-  const handleCallEnd = async () => {
+  async function handleCallEnd() {
       setIsCallActive(false);
       setMessages(prev => prev.filter(m => m.type !== 'live-call'));
-      await showTypingIndicator(2500);
+      await showTypingIndicator(3500);
       addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
 
-      await showTypingIndicator(3000);
+      await showTypingIndicator(4000);
       addMessage({ sender: "bot", type: "text", content: `${userName}, chega de desculpas. A sua transformação é minha prioridade, e vou provar isso.`});
       
-      await showTypingIndicator(3000);
+      await showTypingIndicator(4000);
       addMessage({
           sender: "bot",
           type: "text",
           content: "Por isso, vou quebrar o protocolo. Você vai receber TODOS OS BÔNUS agora, de presente. Antes de pagar qualquer coisa.",
       });
 
-      await showTypingIndicator(3500);
+      await showTypingIndicator(4500);
       addMessage({ sender: "bot", type: "text", content: "É isso mesmo. Você acessa os bônus, e se o seu coração disser 'É ISSO', você investe no mapa completo. Confiança total.", options: ["Eu quero os bônus agora!", "Como assim?"] });
 
       setConversationStep(9);
@@ -119,7 +125,7 @@ export default function Home() {
             if (nameAnalysis.isNamePresent && nameAnalysis.extractedName) {
                 const name = nameAnalysis.extractedName;
                 setUserName(name);
-                await showTypingIndicator(2500);
+                await showTypingIndicator(3500);
                 addMessage({
                     sender: "bot",
                     type: "text",
@@ -129,9 +135,9 @@ export default function Home() {
             } else {
                 const lowerCaseText = text.toLowerCase();
                  if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
-                    await showTypingIndicator(1500);
+                    await showTypingIndicator(2500);
                     addMessage({ sender: "bot", type: "text", content: "Ótimo. 😊" });
-                    await showTypingIndicator(2000);
+                    await showTypingIndicator(3000);
                     addMessage({
                         sender: "bot",
                         type: "text",
@@ -140,7 +146,7 @@ export default function Home() {
                 } else {
                     const name = text.trim();
                     setUserName(name);
-                    await showTypingIndicator(2500);
+                    await showTypingIndicator(3500);
                     addMessage({
                         sender: "bot",
                         type: "text",
@@ -161,7 +167,7 @@ export default function Home() {
 
            setUserMotivation(motivation);
            
-           await showTypingIndicator(3500);
+           await showTypingIndicator(4500);
            const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} disse que sua motivação é: "${motivation}". Crie uma resposta curta, poderosa e empática. Valide o sentimento dele(a) de forma direta, sem repetir o que foi dito. Use uma linguagem forte e inspiradora. Ex: "Eu entendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
            addMessage({
              sender: "bot",
@@ -169,8 +175,8 @@ export default function Home() {
              content: empathyResponseForMotivation.personalizedResponse
            });
 
-           await showTypingIndicator(2800);
-           await showTypingIndicator(1000); // Simulate "recording"
+           await showTypingIndicator(3800);
+           await showTypingIndicator(1500); // Simulate "recording"
            addMessage({ 
             sender: "bot", 
             type: "audio", 
@@ -184,14 +190,14 @@ export default function Home() {
             const duration = text;
             setUserPainDuration(duration);
 
-            await showTypingIndicator(2500);
+            await showTypingIndicator(3500);
             addMessage({
                 sender: "bot",
                 type: "text",
                 content: `Entendido. Carregar esse fardo por tanto tempo acaba com qualquer um.`,
             });
             
-            await showTypingIndicator(2800);
+            await showTypingIndicator(3800);
             addMessage({
               sender: "bot",
               type: "text",
@@ -204,21 +210,21 @@ export default function Home() {
             const attempts = text;
             setUserAttempts(attempts);
 
-            await showTypingIndicator(4000);
-             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural. Reconheça a frustração sem usar frases prontas. Mostre que entende e reforce que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
+            await showTypingIndicator(5000);
+             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural, sem saudações. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
             addMessage({
                 sender: "bot",
                 type: "text",
                 content: empathyResponse2.personalizedResponse,
             });
 
-            await showTypingIndicator(3800);
+            await showTypingIndicator(4800);
             addMessage({
                 sender: "bot",
                 type: "text",
                 content: `O que você vai ver agora vai te provar que seu caso tem solução.`,
             });
-            await showTypingIndicator(2500);
+            await showTypingIndicator(3500);
             addMessage({
                 sender: "bot",
                 type: "status",
@@ -228,9 +234,9 @@ export default function Home() {
             break;
 
         case 6: // Fallback, not used in main flow
-            await showTypingIndicator(2800);
+            await showTypingIndicator(3800);
             addMessage({ sender: "bot", type: "text", content: `Obrigada por abrir seu coração.` });
-            await showTypingIndicator(2500);
+            await showTypingIndicator(3500);
             addMessage({
                 sender: "bot",
                 type: "status",
@@ -246,67 +252,52 @@ export default function Home() {
             }
             
             if (text === "Já vi os status!") {
-              await showTypingIndicator(4000);
+              await showTypingIndicator(5000);
               addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
               
-              await showTypingIndicator(4500);
+              await showTypingIndicator(6500);
               addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
               
-              await showTypingIndicator(5000);
+              await showTypingIndicator(7000);
               addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
 
-              await showTypingIndicator(3000);
+              await showTypingIndicator(5000);
               addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
-              await new Promise(resolve => setTimeout(resolve, 2000));
+              await new Promise(resolve => setTimeout(resolve, 3000));
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
               break;
             }
             break;
         
         case 8: // Fallback, not used in main flow
-              await showTypingIndicator(3000);
+              await showTypingIndicator(4000);
               addMessage({ sender: "bot", type: "text", content: `Que bom que você sentiu essa conexão! Agora, se prepara, que o universo conspira. Senti de te conectar com uma pessoa que viveu algo parecido com você... e ela vai te ligar!` });
               
-              await showTypingIndicator(2000);
+              await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "text", content: `Ela vai te mostrar um caminho que a ajudou a florescer. Fica atenta!` });
 
-              await showTypingIndicator(3000);
+              await showTypingIndicator(4000);
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
               break;
 
         case 9: // Access to bonuses before payment
             if (text.includes("quero") || text.includes("topo") || text.includes("Sim")) {
-                await showTypingIndicator(2000);
+                await showTypingIndicator(3000);
                 addMessage({ sender: "bot", type: "text", content: `Excelente decisão, ${userName}! Seus presentes estão liberados. Use-os para iniciar sua virada de chave HOJE.` });
                 
-                await showTypingIndicator(3000);
+                await showTypingIndicator(4000);
                 addMessage({ sender: "bot", type: "bonuses", content: "Sinta o poder da sua nova vida:" });
 
-                await showTypingIndicator(3500);
-                addMessage({ sender: "bot", type: "text", content: "Agora, para ter o mapa completo, o seu GPS da alma, assista a este vídeo rápido que mostra como o acesso é liberado após o pagamento." });
-
-                await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "video", content: "https://placehold.co/600x400.png", meta: { videoTitle: "Demonstração e Acesso ao Mapa da Cura" } });
-
-                await showTypingIndicator(5000); 
-                addMessage({ sender: "bot", type: "text", content: "Viu? É simples. Este mapa é a ferramenta definitiva para você nunca mais se sentir perdida." });
-                
-                await showTypingIndicator(4000);
-                addMessage({
-                    sender: "bot",
-                    type: "text",
-                    content: `Os bônus são seus. Para ter o mapa completo, o investimento é simbólico: apenas R$19,00.`,
-                });
-
-                await showTypingIndicator(3000);
+                await showTypingIndicator(4500);
                 addMessage({ sender: "bot", type: "text", content: "Para garantir que você receba o acesso e nosso suporte, por favor, me informe seu WhatsApp com DDD. Não vamos te mandar spam, é apenas para segurança." });
 
                 setConversationStep(10);
+
             } else { // "Como assim?"
-                 await showTypingIndicator(3500);
+                 await showTypingIndicator(4500);
                  addMessage({ sender: "bot", type: "text", content: `É simples: você já ganhou os bônus. O pagamento de R$19 libera o Mapa da Cura completo. Assim que o pagamento for confirmado, o acesso é seu para sempre.` });
-                 await showTypingIndicator(3000);
+                 await showTypingIndicator(4000);
                  addMessage({ sender: "bot", type: "text", content: `Vamos dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
             }
             break;
@@ -314,10 +305,10 @@ export default function Home() {
         case 10: // Ask for WhatsApp
             const whatsapp = text;
             setUserWhatsapp(whatsapp);
-            await showTypingIndicator(2000);
+            await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "text", content: `Obrigada, ${userName}. Anotado.` });
 
-            await showTypingIndicator(3000);
+            await showTypingIndicator(4000);
             addMessage({ sender: "bot", type: "text", content: `Para finalizar e garantir que o mapa seja perfeito para você, me diga: O que você mais espera encontrar nele? E qual a sua avaliação para este nosso papo até aqui? Sua opinião é ouro pra mim.` });
 
             setConversationStep(11);
@@ -325,23 +316,23 @@ export default function Home() {
         
         case 11: // Ask for Feedback
             const feedback = text;
-            await showTypingIndicator(2000);
+            await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "text", content: "Perfeito! Seu feedback é o que nos move. Muito obrigada." });
 
-            await showTypingIndicator(3500);
+            await showTypingIndicator(4500);
             addMessage({ sender: "bot", type: "text", content: "Tudo pronto. Para selar seu compromisso com a sua cura, aqui está o tutorial de pagamento e o link para finalizar." });
 
-            await showTypingIndicator(2500);
+            await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
 
-            await showTypingIndicator(2000);
+            await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
 
             setConversationStep(12);
             break;
             
         default:
-          await showTypingIndicator(2000);
+          await showTypingIndicator(3000);
           const genericResponse = await generatePersonalizedResponse({
             userInput: text,
           });
@@ -393,13 +384,12 @@ export default function Home() {
      if (callMessage) {
         return (
           <div className="fixed inset-0 z-50">
-             <ChatMessage key={callMessage.id} message={{ ...callMessage, meta: { ...callMessage.meta, onCallEnd: handleCallEnd } as any }} onSendMessage={handleSendMessage} />
+             <ChatMessage key={callMessage.id} message={{ ...callMessage, meta: { ...callMessage.meta, onCallEnd: callEndRef.current } as any }} onSendMessage={handleSendMessage} />
           </div>
         )
      }
      return null;
   }
-
 
   if (!conversationStarted) {
     return (
@@ -442,7 +432,7 @@ export default function Home() {
   }
   
   return (
-    <main className="h-dvh max-h-dvh bg-background">
+    <div className="flex flex-col h-dvh bg-background">
       {renderCallScreen()}
       <ChatLayout
         messages={messages}
@@ -452,6 +442,8 @@ export default function Home() {
         onUserInput={setUserInput}
         hide={isCallActive}
       />
-    </main>
+    </div>
   );
 }
+
+    
