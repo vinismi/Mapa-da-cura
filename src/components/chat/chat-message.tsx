@@ -126,24 +126,28 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
     if (callState === 'incoming') {
         return (
             <div 
-                className="fixed inset-0 bg-zinc-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-500 cursor-pointer"
-                onClick={handleAcceptCall}
+                className="fixed inset-0 bg-zinc-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-between p-8 text-white animate-in fade-in duration-500"
             >
                 <div className="flex flex-col items-center gap-4 mt-20 animate-in fade-in slide-in-from-bottom-10 duration-700">
-                    <Avatar className="h-28 w-28 border-4 border-white/50 ring-4 ring-white/20">
-                        <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
-                        <AvatarFallback>A</AvatarFallback>
-                    </Avatar>
-                    <h2 className="text-3xl font-bold">Ana</h2>
-                    <p className="text-lg text-white/80 animate-pulse">Chamada de vídeo recebida...</p>
+                    <div className="relative">
+                        <Avatar className="h-28 w-28 border-4 border-white/50 animate-pulse">
+                            <AvatarImage src="https://i.imgur.com/HAudfSt.png" alt="Ana" data-ai-hint="person friendly"/>
+                            <AvatarFallback>A</AvatarFallback>
+                        </Avatar>
+                        <div className="absolute inset-0 rounded-full border-4 border-green-500/50 animate-ping"></div>
+                        <div className="absolute inset-0 rounded-full border-2 border-green-500/30 animate-ping [animation-delay:500ms]"></div>
+                    </div>
+                    <h2 className="text-3xl font-bold mt-4">Ana</h2>
+                    <p className="text-lg text-white/80">Chamada de vídeo recebida...</p>
                 </div>
                 <div className="flex flex-col items-center gap-6 w-full animate-in fade-in slide-in-from-bottom-10 duration-700 delay-200">
-                     <div 
-                        className="w-full max-w-xs h-20 rounded-full bg-green-500/80 text-white text-xl font-bold flex items-center justify-center gap-3"
+                     <button
+                        onClick={handleAcceptCall}
+                        className="w-20 h-20 rounded-full bg-green-500 text-white text-xl font-bold flex items-center justify-center gap-3 shadow-lg hover:bg-green-600 transition-all transform hover:scale-110"
                     >
-                        <Hand className="h-7 w-7 animate-pulse" />
-                        Toque para atender
-                    </div>
+                        <Phone className="h-8 w-8" />
+                    </button>
+                    <span className="text-lg">Atender</span>
                 </div>
             </div>
         )
@@ -158,11 +162,11 @@ function LiveCall({ onCallEnd }: { onCallEnd?: () => void }) {
                         style={{ height: "100%", position: "absolute", width: "100%", top: 0, left: 0 }}
                     >&nbsp;</div>
                 </div>
-                <div className="absolute bottom-8 left-0 right-0 p-4 flex justify-center items-center gap-6 bg-gradient-to-t from-black/50 to-transparent">
-                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                <div className="absolute bottom-8 left-0 right-0 p-4 flex justify-center items-center gap-6 bg-gradient-to-t from-black/70 to-transparent">
+                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
                         <VideoOff className="h-6 w-6" />
                     </Button>
-                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white">
+                     <Button variant="ghost" size="icon" className="rounded-full h-14 w-14 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
                         <MicOff className="h-6 w-6" />
                     </Button>
                     <Button variant="destructive" size="icon" className="rounded-full h-16 w-16 cursor-default">
