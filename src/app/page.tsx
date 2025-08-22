@@ -309,10 +309,12 @@ export default function Home() {
                 setConversationStep(10);
 
             } else { // "Como assim?"
-                 await showTypingIndicator(4500);
-                 addMessage({ sender: "bot", type: "text", content: `É simples: você já ganhou os bônus. O pagamento de R$19 libera o Mapa da Cura completo. Assim que o pagamento for confirmado, o acesso é seu para sempre.` });
+                 await showTypingIndicator(5000);
+                 addMessage({ sender: "bot", type: "text", content: `É simples: para você sentir o poder da transformação, eu liberei os presentes para você AGORA. São seus, de graça.` });
+                 await showTypingIndicator(6000);
+                 addMessage({ sender: "bot", type: "text", content: `O investimento de apenas R$19,70 é para você ter acesso ao Mapa da Cura completo, o passo a passo definitivo.` });
                  await showTypingIndicator(4000);
-                 addMessage({ sender: "bot", type: "text", content: `Vamos dar o próximo passo?`, options: ["Sim, eu quero o mapa completo!"]});
+                 addMessage({ sender: "bot", type: "text", content: `Vamos dar o próximo passo juntas?`, options: ["Sim, eu quero o mapa completo!"]});
             }
             break;
 
@@ -468,5 +470,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
