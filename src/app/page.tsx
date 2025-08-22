@@ -123,7 +123,7 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Prazer, ${name}! Chega de rodeios. Me diga com toda a sua força: o que você quer ELIMINAR da sua vida a partir de HOJE?`,
+                    content: `Prazer, ${name}! Chega de rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
                 });
                 setConversationStep(3);
             } else {
@@ -144,7 +144,7 @@ export default function Home() {
                     addMessage({
                         sender: "bot",
                         type: "text",
-                        content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer ELIMINAR da sua vida a partir de HOJE?`,
+                        content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
                     });
                     setConversationStep(3);
                 }
@@ -156,7 +156,7 @@ export default function Home() {
            
            const nameCorrectionCheck = await checkForNameCorrection({ previousName: userName, currentInput: text });
            if (await handleNameCorrection(nameCorrectionCheck, text, () => {
-               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E o que você quer eliminar da sua vida a partir de hoje?` });
+               addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E o que você quer transformar na sua vida a partir de hoje?` });
            })) return;
 
            setUserMotivation(motivation);
