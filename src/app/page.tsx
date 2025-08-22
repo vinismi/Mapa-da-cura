@@ -88,6 +88,10 @@ export default function Home() {
 
   async function handleCallEnd() {
       setIsCallActive(false);
+      
+      // Add the "Call ended" summary message
+      addMessage({ sender: "bot", type: "call-summary", content: "Chamada de vídeo encerrada", meta: { callDuration: "1:25" } });
+      
       await showTypingIndicator(3500);
       addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
 
@@ -276,10 +280,7 @@ export default function Home() {
             break;
 
         case 7: // After Status
-            if (text.toLowerCase().includes("status")) {
-                setIsViewingStatus(true);
-                return;
-            }
+            // This case is handled by handleStatusFinish now to avoid user sending a message.
             break;
         
         case 8: // Waiting for call to end - no user input handled here

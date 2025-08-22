@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -299,6 +299,18 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
 
   if (message.type === 'live-call') {
      return <LiveCall onCallEnd={(message.meta as any)?.onCallEnd} />;
+  }
+
+  if (message.type === "call-summary") {
+    return (
+        <div className="flex justify-center items-center my-2">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/80 rounded-full px-3 py-1">
+                <PhoneMissed className="h-3.5 w-3.5" />
+                <span>{message.content}</span>
+                {message.meta?.callDuration && <span>({message.meta.callDuration})</span>}
+            </div>
+        </div>
+    )
   }
 
   if (message.type === 'button' || message.type === 'bonuses') {

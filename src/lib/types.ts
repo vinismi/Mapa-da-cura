@@ -1,7 +1,7 @@
 export type Message = {
   id: string;
   sender: "user" | "bot";
-  type: "text" | "image" | "video" | "audio" | "button" | "bonuses" | "testimonial" | "status" | "live-call";
+  type: "text" | "image" | "video" | "audio" | "button" | "bonuses" | "testimonial" | "status" | "live-call" | "call-summary";
   content: string;
   timestamp: Date;
   dataAiHint?: string;
@@ -17,5 +17,6 @@ export type Message = {
     posterUrl?: string;
     buttonText?: string;
     buttonUrl?: string;
+    callDuration?: string;
   };
 };
