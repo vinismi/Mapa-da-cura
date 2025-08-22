@@ -1,10 +1,12 @@
 
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { X } from "lucide-react";
+import { useState, useCallback } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const stories = [
   {
@@ -36,73 +38,40 @@ type StatusViewProps = {
 
 export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const requestRef = useRef<number>();
 
   const nextStory = useCallback(() => {
-    if (currentStoryIndex < stories.length - 1) {
-      setCurrentStoryIndex(currentStoryIndex + 1);
-      setProgress(0);
-    } else {
-      onFinish();
-    }
-  }, [currentStoryIndex, onFinish]);
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    const currentStory = stories[currentStoryIndex];
-    let startTime = Date.now() - (progress / 100) * currentStory.duration;
-
-    const animate = () => {
-      const elapsedTime = Date.now() - startTime;
-      const newProgress = (elapsedTime / currentStory.duration) * 100;
-
-      if (newProgress >= 100) {
-        nextStory();
-        return;
+    setCurrentStoryIndex((prevIndex) => {
+      if (prevIndex < stories.length - 1) {
+        return prevIndex + 1;
       }
-      setProgress(newProgress);
-      requestRef.current = requestAnimationFrame(animate);
-    };
+      // onFinish(); // Optionally finish when reaching the end
+      return prevIndex;
+    });
+  }, []);
 
-    requestRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
+  const prevStory = useCallback(() => {
+    setCurrentStoryIndex((prevIndex) => {
+      if (prevIndex > 0) {
+        return prevIndex - 1;
       }
-    };
-  }, [currentStoryIndex, isPaused, progress, nextStory]);
-
-  const handleInteractionStart = () => {
-    setIsPaused(true);
-  };
-  
-  const handleInteractionEnd = () => {
-    setIsPaused(false);
-  };
+      return prevIndex;
+    });
+  }, []);
 
   const currentStory = stories[currentStoryIndex];
 
   return (
     <div 
         className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in"
-        onMouseDown={handleInteractionStart}
-        onTouchStart={handleInteractionStart}
-        onMouseUp={handleInteractionEnd}
-        onTouchEnd={handleInteractionEnd}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 p-4 z-20">
+      <div className="absolute top-0 left-0 right-0 p-4 z-20 bg-gradient-to-b from-black/50 to-transparent">
         <div className="flex items-center gap-2 mb-2">
             {stories.map((_, index) => (
                 <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
                     <div 
-                        className="h-1 bg-white"
-                        style={{ width: `${index === currentStoryIndex ? progress : index < currentStoryIndex ? 100 : 0}%` }}
+                        className="h-1 bg-white transition-all duration-300"
+                        style={{ width: index === currentStoryIndex ? '100%' : '0%' }}
                     />
                 </div>
             ))}
@@ -118,22 +87,22 @@ export function StatusView({ onFinish }: StatusViewProps) {
                     <p className="text-white/80 text-sm">agora mesmo</p>
                 </div>
             </div>
-          <button onClick={onFinish} className="text-white p-2">
+          <button onClick={onFinish} className="text-white p-2 bg-black/30 rounded-full hover:bg-black/50 transition-colors">
             <X size={24} />
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative flex items-center justify-center">
         {currentStory.type === "image" && (
           <>
             <Image
               src={currentStory.url}
               alt="Status"
-              layout="fill"
-              objectFit="contain"
-              className="animate-in zoom-in-105 duration-500"
+              width={1080}
+              height={1920}
+              className="object-contain w-auto h-auto max-w-full max-h-full animate-in zoom-in-105 duration-500"
               data-ai-hint={currentStory.dataAiHint}
               priority={true}
             />
@@ -144,6 +113,30 @@ export function StatusView({ onFinish }: StatusViewProps) {
             </div>
           </>
         )}
+      </div>
+
+      {/* Navigation */}
+      <div className="absolute inset-0 flex items-center justify-between p-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full bg-black/30 text-white h-12 w-12 hover:bg-black/50 disabled:hidden"
+            onClick={prevStory}
+            disabled={currentStoryIndex === 0}
+            aria-label="Previous Status"
+          >
+            <ChevronLeft size={32}/>
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full bg-black/30 text-white h-12 w-12 hover:bg-black/50 disabled:hidden"
+            onClick={nextStory}
+            disabled={currentStoryIndex === stories.length - 1}
+            aria-label="Next Status"
+          >
+            <ChevronRight size={32}/>
+          </Button>
       </div>
     </div>
   );
