@@ -1,7 +1,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Video, Phone, MoreVertical, BadgeCheck } from "lucide-react";
+import { Video, Phone, MoreVertical } from "lucide-react";
 
 export function ChatHeader() {
   return (
@@ -16,10 +16,7 @@ export function ChatHeader() {
           <AvatarFallback>L</AvatarFallback>
         </Avatar>
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="font-bold text-base md:text-lg">Luz | Mentora</h2>
-            <BadgeCheck className="h-6 w-6 text-white" />
-          </div>
+          <h2 className="font-bold text-base md:text-lg">Luz | Mentora</h2>
           <p className="text-sm text-white/80 font-medium">online</p>
         </div>
       </div>
