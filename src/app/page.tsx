@@ -122,7 +122,7 @@ export default function Home() {
     setUserInput("");
     setInputPlaceholder("Digite uma mensagem...");
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
-     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 100);
+     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
 
     try {
       switch (conversationStep) {
@@ -338,7 +338,7 @@ export default function Home() {
             addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", meta: { videoTitle: "Tutorial: Como acessar seu mapa" } });
 
             await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
+            addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
 
             setConversationStep(12);
             break;
@@ -390,72 +390,76 @@ export default function Home() {
   if (isViewingStatus) {
     return <StatusView onFinish={handleStatusFinish} />;
   }
-  
-  if (isCallActive) {
-      return (
-          <ChatMessage 
-              message={{
-                  id: "live-call-message",
-                  sender: "bot",
-                  type: "live-call",
-                  content: "Chamada de Vídeo de Luz",
-                  timestamp: new Date(),
-                  meta: { onCallEnd: handleCallEnd }
-              }} 
-              onSendMessage={handleSendMessage} 
-          />
-      );
-  }
 
-  if (!conversationStarted) {
-    return (
-      <div className="relative flex h-dvh w-full flex-col items-center justify-center overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-          poster="https://i.imgur.com/G2Fa071.jpeg"
-        >
-          <source src="https://videos.pexels.com/video-files/3253459/3253459-hd_1920_1080_30fps.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
-            <div className="bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
-                <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-background/50 shadow-lg">
-                  <AvatarImage src="https://i.imgur.com/IhZA0Ke.png" alt="Luz" />
-                  <AvatarFallback>L</AvatarFallback>
-                </Avatar>
-                <div className="flex justify-center items-center mb-4">
-                  <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
-                  <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
-                      Jornada do Despertar Espiritual
-                  </h1>
-                  <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
-                </div>
-                <p className="text-foreground/90 mb-8 text-base md:text-lg">
-                    Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
-                </p>
-                <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" onClick={startConversation}>
-                    Iniciar Conversa Agora
-                    <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
-                </Button>
-            </div>
-        </div>
-      </div>
-    );
-  }
-  
   return (
-    <ChatLayout
-        ref={chatLayoutRef}
-        messages={messages}
-        onSendMessage={handleSendMessage}
-        isTyping={isTyping}
-        userInput={userInput}
-        onUserInput={handleUserInput}
-        inputPlaceholder={inputPlaceholder}
-      />
+    <div className="relative h-dvh w-full">
+        {/* Call UI - Rendered on top */}
+        <div className={cn("absolute inset-0 z-50", isCallActive ? 'visible' : 'invisible')}>
+             {isCallActive && (
+                 <ChatMessage 
+                      message={{
+                          id: "live-call-message",
+                          sender: "bot",
+                          type: "live-call",
+                          content: "Chamada de Vídeo de Luz",
+                          timestamp: new Date(),
+                          meta: { onCallEnd: handleCallEnd }
+                      }} 
+                      onSendMessage={handleSendMessage} 
+                  />
+             )}
+        </div>
+
+        {/* Main Content - Welcome screen or Chat */}
+        <div className={cn("h-full w-full", isCallActive ? 'invisible' : 'visible')}>
+            {!conversationStarted ? (
+              <div className="relative flex h-dvh w-full flex-col items-center justify-center overflow-hidden">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+                  poster="https://i.imgur.com/G2Fa071.jpeg"
+                >
+                  <source src="https://videos.pexels.com/video-files/3253459/3253459-hd_1920_1080_30fps.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-black/60" />
+                <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+                    <div className="bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
+                        <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-background/50 shadow-lg">
+                          <AvatarImage src="https://i.imgur.com/IhZA0Ke.png" alt="Luz" />
+                          <AvatarFallback>L</AvatarFallback>
+                        </Avatar>
+                        <div className="flex justify-center items-center mb-4">
+                          <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
+                          <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
+                              Jornada do Despertar Espiritual
+                          </h1>
+                          <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
+                        </div>
+                        <p className="text-foreground/90 mb-8 text-base md:text-lg">
+                            Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
+                        </p>
+                        <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" onClick={startConversation}>
+                            Iniciar Conversa Agora
+                            <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
+                        </Button>
+                    </div>
+                </div>
+              </div>
+            ) : (
+              <ChatLayout
+                  ref={chatLayoutRef}
+                  messages={messages}
+                  onSendMessage={handleSendMessage}
+                  isTyping={isTyping}
+                  userInput={userInput}
+                  onUserInput={handleUserInput}
+                  inputPlaceholder={inputPlaceholder}
+                />
+            )}
+        </div>
+    </div>
   );
 }
