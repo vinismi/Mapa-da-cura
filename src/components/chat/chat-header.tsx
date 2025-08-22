@@ -5,7 +5,7 @@ import { Video, Phone, MoreVertical } from "lucide-react";
 
 export function ChatHeader() {
   return (
-    <header className="flex items-center justify-between p-2 md:p-3 border-b bg-primary text-primary-foreground shadow-lg shrink-0">
+    <header className="flex items-center justify-between p-2 md:p-3 bg-primary text-primary-foreground shadow-lg shrink-0">
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10 border-2 border-white/50">
           <AvatarImage
