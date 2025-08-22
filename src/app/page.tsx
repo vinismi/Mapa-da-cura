@@ -276,9 +276,9 @@ export default function Home() {
             break;
 
         case 7: // After Status
-            if (text === "Ver status") {
+            if (text.toLowerCase().includes("status")) {
                 setIsViewingStatus(true);
-                return; 
+                return;
             }
             break;
         
@@ -339,7 +339,8 @@ export default function Home() {
 
             setConversationStep(12);
             break;
-            
+        
+        case 12: // After checkout link, keep responding
         default:
           await showTypingIndicator(3000);
           const genericResponse = await generatePersonalizedResponse({
