@@ -258,16 +258,16 @@ export default function Home() {
             }
             
             if (text === "Já vi os status!") {
-              await showTypingIndicator(5000);
+              await showTypingIndicator(7000);
               addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
               
-              await showTypingIndicator(6500);
+              await showTypingIndicator(8500);
               addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
               
-              await showTypingIndicator(7000);
+              await showTypingIndicator(9000);
               addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
 
-              await showTypingIndicator(5000);
+              await showTypingIndicator(7000);
               addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
               await new Promise(resolve => setTimeout(resolve, 3000));
@@ -326,10 +326,13 @@ export default function Home() {
             addMessage({ sender: "bot", type: "text", content: "Perfeito! Seu feedback é o que nos move. Muito obrigada." });
 
             await showTypingIndicator(4500);
-            addMessage({ sender: "bot", type: "text", content: "Tudo pronto. Para selar seu compromisso com a sua cura, aqui está o tutorial de pagamento e o link para finalizar." });
+            addMessage({ sender: "bot", type: "text", content: "Tudo pronto. Para selar seu compromisso com a sua cura, aqui estão os tutoriais para te guiar:" });
 
             await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+            
+            await showTypingIndicator(3500);
+            addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", meta: { videoTitle: "Tutorial: Como acessar seu mapa" } });
 
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://SEU-LINK-DE-CHECKOUT-AQUI.com" } });
@@ -453,3 +456,5 @@ export default function Home() {
       />
   );
 }
+
+    
