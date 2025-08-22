@@ -416,11 +416,11 @@ export default function Home() {
                   className="absolute top-0 left-0 w-full h-full object-cover -z-10"
                   poster="https://i.imgur.com/G2Fa071.jpeg"
                 >
-                  <source src="https://videos.pexels.com/video-files/853507/853507-hd_1920_1080_25fps.mp4" type="video/mp4" />
+                  <source src="https://videos.pexels.com/video-files/853874/853874-hd_1920_1080_30fps.mp4" type="video/mp4" />
                 </video>
                 <div className="absolute inset-0 bg-black/60" />
                 <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-gradient-to-br from-background/80 to-background/60 backdrop-blur-md p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
+                    <div className="bg-background/50 backdrop-blur-lg p-8 rounded-3xl shadow-2xl max-w-lg border border-white/10 animate-in fade-in-50 zoom-in-95 duration-500">
                         <Avatar className="h-20 w-20 mx-auto mb-4 border-4 border-background/50 shadow-lg">
                           <AvatarImage src="https://i.imgur.com/IhZA0Ke.png" alt="Luz" />
                           <AvatarFallback>L</AvatarFallback>

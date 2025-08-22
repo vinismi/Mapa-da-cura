@@ -5,7 +5,6 @@ import { useState, useCallback } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 const stories = [
@@ -13,21 +12,18 @@ const stories = [
     type: "image",
     url: "https://i.imgur.com/zCowdDC.png",
     dataAiHint: "testimonial whatsapp",
-    duration: 10000,
     text: "A gratidão de ver uma vida transformada não tem preço. A jornada dela começou com um simples 'sim'.",
   },
   {
     type: "image",
     url: "https://i.imgur.com/dMFXsPL.png",
     dataAiHint: "testimonial whatsapp serene",
-    duration: 10000,
     text: "Quando a alma encontra o caminho certo, a cura acontece. Fico emocionada em fazer parte disso!",
   },
   {
     type: "image",
     url: "https://i.imgur.com/RsjRLRo.png",
     dataAiHint: "testimonial whatsapp energy",
-    duration: 10000,
     text: "Cada mentorada que floresce é uma prova de que estamos no caminho certo. A sua virada de chave também está próxima.",
   },
 ];
@@ -40,35 +36,22 @@ export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
 
   const nextStory = useCallback(() => {
-    setCurrentStoryIndex((prevIndex) => {
-      if (prevIndex < stories.length - 1) {
-        return prevIndex + 1;
-      }
-      // onFinish(); // Optionally finish when reaching the end
-      return prevIndex;
-    });
+    setCurrentStoryIndex((prevIndex) => (prevIndex < stories.length - 1 ? prevIndex + 1 : prevIndex));
   }, []);
 
   const prevStory = useCallback(() => {
-    setCurrentStoryIndex((prevIndex) => {
-      if (prevIndex > 0) {
-        return prevIndex - 1;
-      }
-      return prevIndex;
-    });
+    setCurrentStoryIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
   }, []);
 
   const currentStory = stories[currentStoryIndex];
 
   return (
-    <div 
-        className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in"
-    >
+    <div className="fixed inset-0 bg-black z-50 flex flex-col animate-in fade-in">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-4 z-20 bg-gradient-to-b from-black/50 to-transparent">
         <div className="flex items-center gap-2 mb-2">
             {stories.map((_, index) => (
-                <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
+                <div key={index} className="flex-1 h-1 bg-white/30 rounded-full">
                     <div 
                         className="h-1 bg-white transition-all duration-300"
                         style={{ width: index === currentStoryIndex ? '100%' : '0%' }}
@@ -116,11 +99,11 @@ export function StatusView({ onFinish }: StatusViewProps) {
       </div>
 
       {/* Navigation */}
-      <div className="absolute inset-0 flex items-center justify-between p-2">
+      <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full bg-black/30 text-white h-12 w-12 hover:bg-black/50 disabled:hidden"
+            className="rounded-full h-full w-32 bg-transparent hover:bg-black/10 text-white/50 hover:text-white disabled:opacity-0 transition-opacity"
             onClick={prevStory}
             disabled={currentStoryIndex === 0}
             aria-label="Previous Status"
@@ -130,7 +113,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full bg-black/30 text-white h-12 w-12 hover:bg-black/50 disabled:hidden"
+            className="rounded-full h-full w-32 bg-transparent hover:bg-black/10 text-white/50 hover:text-white disabled:opacity-0 transition-opacity"
             onClick={nextStory}
             disabled={currentStoryIndex === stories.length - 1}
             aria-label="Next Status"

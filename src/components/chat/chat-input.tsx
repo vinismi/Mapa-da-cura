@@ -55,7 +55,7 @@ export function ChatInput({
           placeholder={placeholder}
           value={userInput}
           onChange={(e) => onUserInput(e.target.value)}
-          className="flex-1 bg-background h-12 rounded-full px-5"
+          className="flex-1 bg-secondary h-12 rounded-full px-5 border-transparent focus-visible:border-primary focus-visible:ring-primary"
           autoComplete="off"
           disabled={!!options && options.length > 0}
         />

@@ -51,10 +51,10 @@ export const ChatLayout = forwardRef<
         <div
           className="flex flex-1 flex-col overflow-hidden bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://i.imgur.com/G2Fa071.jpeg')",
+            backgroundImage: "url('https://i.imgur.com/kCGm4iT.jpeg')",
           }}
         >
-          <div className="flex-1 overflow-y-auto bg-black/10 backdrop-blur-[2px]">
+          <div className="flex-1 overflow-y-auto bg-black/50 backdrop-blur-[2px]">
             <ChatMessages ref={messagesRef} messages={messages} onSendMessage={onSendMessage} isTyping={isTyping} />
           </div>
           <ChatInput
@@ -71,5 +71,3 @@ export const ChatLayout = forwardRef<
 );
 
 ChatLayout.displayName = "ChatLayout";
-
-    
