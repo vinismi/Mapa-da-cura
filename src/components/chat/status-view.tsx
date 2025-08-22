@@ -9,24 +9,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const stories = [
   {
     type: "image",
-    url: "https://placehold.co/1080x1920.png",
-    dataAiHint: "spiritual testimonial happy",
+    url: "https://i.imgur.com/zCowdDC.png",
+    dataAiHint: "testimonial whatsapp",
     duration: 5000,
-    text: "“Eu me sentia perdida, sem rumo. O Mapa da Cura me deu a clareza que eu precisava para seguir em frente.” - Maria S.",
+    text: "A gratidão de ver uma vida transformada não tem preço. A jornada dela começou com um simples 'sim'.",
   },
   {
     type: "image",
-    url: "https://placehold.co/1080x1920.png",
-    dataAiHint: "peaceful serene journey",
+    url: "https://i.imgur.com/dMFXsPL.png",
+    dataAiHint: "testimonial whatsapp serene",
     duration: 5000,
-    text: "“Encontrei uma paz interior que não sentia há anos. Sou muito grata por essa jornada de autoconhecimento.” - Carlos P.",
+    text: "Quando a alma encontra o caminho certo, a cura acontece. Fico emocionada em fazer parte disso!",
   },
   {
     type: "image",
-    url: "https://placehold.co/1080x1920.png",
-    dataAiHint: "energy alignment light",
+    url: "https://i.imgur.com/RsjRLRo.png",
+    dataAiHint: "testimonial whatsapp energy",
     duration: 5000,
-    text: "“Minha energia está completamente renovada. As meditações são poderosas e transformadoras.” - Ana L.",
+    text: "Cada mentorada que floresce é uma prova de que estamos no caminho certo. A sua virada de chave também está próxima.",
   },
 ];
 
