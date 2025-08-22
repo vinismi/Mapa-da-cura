@@ -28,6 +28,8 @@ export default function Home() {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const callEndRef = useRef(handleCallEnd);
+  const chatLayoutRef = useRef<{ scrollToBottom: () => void }>(null);
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -43,10 +45,13 @@ export default function Home() {
       ...prev,
       { ...message, id: Date.now().toString(), timestamp: new Date() },
     ]);
+     // Force scroll to bottom on new message
+    setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 100);
   };
   
   const showTypingIndicator = async (duration: number) => {
       setIsTyping(true);
+      setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 100);
       await new Promise(resolve => setTimeout(resolve, duration));
       setIsTyping(false);
   }
@@ -116,6 +121,7 @@ export default function Home() {
     
     setUserInput("");
     setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
+     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 100);
 
     try {
       switch (conversationStep) {
@@ -366,7 +372,11 @@ export default function Home() {
     setIsViewingStatus(false);
     if (conversationStep === 7) {
       // Use a timeout to ensure state update happens after render cycle
-      setTimeout(() => handleSendMessage("Já vi os status!"), 0);
+      setTimeout(() => {
+        handleSendMessage("Já vi os status!");
+        // Force scroll to bottom after returning from status
+        setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 500);
+      }, 0);
     }
   };
 
@@ -432,9 +442,8 @@ export default function Home() {
   }
   
   return (
-    <div className="flex flex-col h-dvh bg-background">
-      {renderCallScreen()}
-      <ChatLayout
+    <ChatLayout
+        ref={chatLayoutRef}
         messages={messages}
         onSendMessage={handleSendMessage}
         isTyping={isTyping}
@@ -442,8 +451,5 @@ export default function Home() {
         onUserInput={setUserInput}
         hide={isCallActive}
       />
-    </div>
   );
 }
-
-    
