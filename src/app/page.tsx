@@ -142,7 +142,7 @@ export default function Home() {
 
     try {
       switch (conversationStep) {
-        case 1: // Asked for name in audio
+        case 1: // Asked for name
             const nameAnalysis = await extractNameFromFirstMessage({ userInput: text });
 
             if (nameAnalysis.isNamePresent && nameAnalysis.extractedName) {
@@ -156,29 +156,29 @@ export default function Home() {
                 });
                 setConversationStep(3);
             } else {
-                const lowerCaseText = text.toLowerCase();
-                 if (lowerCaseText.includes("tudo bem") || lowerCaseText.includes("estou bem") || lowerCaseText.includes("tudo ótimo")) {
-                    await showTypingIndicator(2500);
-                    addMessage({ sender: "bot", type: "text", content: "Ótimo. 😊" });
-                    await showTypingIndicator(3000);
-                    addMessage({
-                        sender: "bot",
-                        type: "text",
-                        content: "Como devo te chamar?",
-                    });
-                     setInputPlaceholder("Digite seu nome aqui...");
-                } else {
-                    const name = text.trim();
-                    setUserName(name);
-                    await showTypingIndicator(3500);
-                    addMessage({
-                        sender: "bot",
-                        type: "text",
-                        content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
-                    });
-                    setConversationStep(3);
-                }
+                 await showTypingIndicator(2500);
+                 addMessage({ sender: "bot", type: "text", content: "Ótimo. 😊" });
+                 await showTypingIndicator(3000);
+                 addMessage({
+                     sender: "bot",
+                     type: "text",
+                     content: "Como devo te chamar?",
+                 });
+                  setInputPlaceholder("Digite seu nome aqui...");
+                  setConversationStep(2); // Ask for name again
             }
+            break;
+            
+        case 2: // Asked for name again
+            const name = text.trim();
+            setUserName(name);
+            await showTypingIndicator(3500);
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
+            });
+            setConversationStep(3);
             break;
 
         case 3: // Asked about motivation

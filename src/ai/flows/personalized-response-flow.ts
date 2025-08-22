@@ -116,11 +116,17 @@ const extractNamePrompt = ai.definePrompt({
     name: 'extractNamePrompt',
     input: { schema: ExtractNameInputSchema },
     output: { schema: ExtractNameOutputSchema },
-    prompt: `The user was asked "how are you?" and "what's your name?".
-    The user's response is: "{{userInput}}".
-    Analyze the response. Common patterns are "My name is [Name]", "I'm [Name]", or just "[Name]". The user might also say "I'm fine, my name is [Name]".
+    prompt: `You are an expert at extracting a person's name from their first message in a conversation.
+    The user was asked for their name, and possibly how they are doing.
+    Their response is: "{{userInput}}".
+
+    Your task is to identify and extract their name.
+    - Common name patterns are "My name is [Name]", "I'm [Name]", "I am [Name]", or just stating the "[Name]".
+    - The user may mix pleasantries with their name, like "I'm fine, my name is [Name]" or "Prazer, sou o [Name]".
+    - CRITICAL: You must distinguish between a name and a pleasantry. Words like "prazer", "tudo bem", "estou bem", "bem" are NOT names. If the user only says "Prazer", they have not given their name.
+    
     If you are confident you have identified a name, set isNamePresent to true and put the extracted name in the extractedName field.
-    If the user only says something like "I'm fine" or "I'm good", then a name is not present, so set isNamePresent to false.`,
+    If the user only replies with a pleasantry like "I'm fine", "Tudo bem", or "Prazer", and does NOT provide a name, set isNamePresent to false.`,
 });
 
 const extractNameFlow = ai.defineFlow(
