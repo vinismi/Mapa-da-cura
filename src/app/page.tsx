@@ -205,7 +205,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(4000);
-             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `O usuário ${userName} descreveu suas tentativas anteriores para resolver o problema com a seguinte frase: "${attempts}". Mostre empatia de forma breve e natural, sem repetir a frase dele. Reconheça que tentativas podem ser frustrantes, mas reforce que ele(a) está no lugar certo para a mudança definitiva. Use uma linguagem amigável, como se falasse com uma amiga.` });
+             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural. Reconheça a frustração sem usar frases prontas. Mostre que entende e reforce que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -246,19 +246,19 @@ export default function Home() {
             }
             
             if (text === "Já vi os status!") {
-              await showTypingIndicator(3500);
+              await showTypingIndicator(4000);
               addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
               
-              await showTypingIndicator(3000);
-              addMessage({ sender: "bot", type: "text", content: `Senti uma conexão com você. Por isso, o universo vai te dar um sinal claro.` });
+              await showTypingIndicator(4500);
+              addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
               
-              await showTypingIndicator(2000);
+              await showTypingIndicator(5000);
               addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
 
-              await showTypingIndicator(1500);
+              await showTypingIndicator(3000);
               addMessage({ sender: "bot", type: "text", content: `Atenda. Ela vai te mostrar o caminho.` });
 
-              await showTypingIndicator(3000);
+              await new Promise(resolve => setTimeout(resolve, 2000));
               addMessage({ sender: "bot", type: "live-call", content: "Chamada de Vídeo de Luz" });
               break;
             }
@@ -455,5 +455,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
