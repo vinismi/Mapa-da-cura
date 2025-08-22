@@ -350,7 +350,15 @@ export default function Home() {
             setConversationStep(12);
             break;
         
-        case 12: // After checkout link, keep responding
+        case 12: // After checkout link, handle questions
+            await showTypingIndicator(4000);
+            addMessage({
+                sender: "bot",
+                type: "text",
+                content: "Compreendo! A maioria das dúvidas sobre o pagamento e o acesso estão explicadas nos vídeos tutoriais que te enviei. Se a sua dúvida não for respondida lá, pode me chamar no WhatsApp de suporte que irei te passar para garantir que você tenha a melhor experiência possível. ✨"
+            });
+            break;
+        
         default:
           await showTypingIndicator(3000);
           const genericResponse = await generatePersonalizedResponse({
@@ -470,6 +478,8 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
 
