@@ -49,17 +49,17 @@ export function StatusView({ onFinish }: StatusViewProps) {
 
   const startProgress = () => {
     const currentStory = stories[currentStoryIndex];
+    setProgress(0); // Reset progress for new story
     intervalRef.current = setInterval(() => {
         setProgress((prev) => {
             if (prev >= 100) {
                 if (currentStoryIndex < stories.length - 1) {
                     setCurrentStoryIndex((prevIndex) => prevIndex + 1);
-                    return 0;
                 } else {
                     if (intervalRef.current) clearInterval(intervalRef.current);
                     setIsFinished(true);
-                    return 100;
                 }
+                return 0;
             }
             return prev + 100 / (currentStory.duration / 100);
         });
@@ -81,23 +81,6 @@ export function StatusView({ onFinish }: StatusViewProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStoryIndex, isPaused]);
   
-  const goToPrevious = () => {
-    setCurrentStoryIndex((prev) => {
-       const newIndex = prev > 0 ? prev - 1 : 0;
-       if (prev !== newIndex) setProgress(0);
-       return newIndex;
-    });
-  };
-  
-  const goToNext = () => {
-     if (currentStoryIndex < stories.length - 1) {
-        setCurrentStoryIndex((prev) => prev + 1);
-        setProgress(0);
-    } else {
-        setIsFinished(true);
-    }
-  };
-
   const handlePause = (pause: boolean) => {
       setIsPaused(pause);
   }
@@ -143,9 +126,6 @@ export function StatusView({ onFinish }: StatusViewProps) {
 
       {/* Content */}
       <div className="flex-1 relative">
-         <div className="absolute left-0 top-0 bottom-0 w-1/3 z-30" onClick={goToPrevious}></div>
-         <div className="absolute right-0 top-0 bottom-0 w-2/3 z-30" onClick={goToNext}></div>
-
         {currentStory.type === "image" && (
           <>
             <Image
@@ -155,6 +135,7 @@ export function StatusView({ onFinish }: StatusViewProps) {
               objectFit="contain"
               className="animate-in zoom-in-105 duration-500"
               data-ai-hint={currentStory.dataAiHint}
+              priority={true}
             />
              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
                 <p className="text-white text-center text-lg md:text-xl font-medium italic">
