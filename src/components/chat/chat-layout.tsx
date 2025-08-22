@@ -15,6 +15,7 @@ type ChatLayoutProps = {
   onUserInput: (text: string) => void;
   onSendMessage: (text: string) => void;
   hide?: boolean;
+  inputPlaceholder?: string;
 };
 
 export const ChatLayout = forwardRef<
@@ -29,6 +30,7 @@ export const ChatLayout = forwardRef<
       onUserInput,
       onSendMessage,
       hide = false,
+      inputPlaceholder,
     },
     ref
   ) => {
@@ -62,6 +64,7 @@ export const ChatLayout = forwardRef<
             onUserInput={onUserInput}
             onSendMessage={onSendMessage}
             options={lastMessageWithOptions?.options}
+            placeholder={inputPlaceholder}
           />
         </div>
       </div>

@@ -12,6 +12,7 @@ type ChatInputProps = {
   onUserInput: (text: string) => void;
   onSendMessage: (text: string) => void;
   options?: string[];
+  placeholder?: string;
 };
 
 export function ChatInput({
@@ -19,6 +20,7 @@ export function ChatInput({
   onUserInput,
   onSendMessage,
   options,
+  placeholder = "Digite uma mensagem...",
 }: ChatInputProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -50,7 +52,7 @@ export function ChatInput({
       <form onSubmit={handleSubmit} className="flex items-center gap-2">
         <Input
           type="text"
-          placeholder="Digite uma mensagem..."
+          placeholder={placeholder}
           value={userInput}
           onChange={(e) => onUserInput(e.target.value)}
           className="flex-1 bg-background h-12 rounded-full px-5"

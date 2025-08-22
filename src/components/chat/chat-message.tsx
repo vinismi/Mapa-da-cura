@@ -242,7 +242,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
               poster={message.meta?.posterUrl}
             />
              {message.meta?.videoTitle && (
-              <p className="font-semibold text-foreground mt-2 p-1">{message.meta.videoTitle}</p>
+              <p className="font-semibold text-foreground mt-2 p-1 text-base">{message.meta.videoTitle}</p>
             )}
           </div>
         );
@@ -290,7 +290,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
       default:
         // Split by newline and render paragraphs to respect formatting from AI
         return message.content.split('\n').map((paragraph, index) => (
-          <p key={index} className="text-foreground">{paragraph}</p>
+          <p key={index} className="text-foreground text-base">{paragraph}</p>
         ));
     }
   };
@@ -341,11 +341,11 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-xl shadow-md animate-in fade-in zoom-in-95",
+          "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-2xl shadow-md animate-in fade-in zoom-in-95",
           isUser
             ? "bg-[#DCF8C6] dark:bg-green-900/80 rounded-br-none"
             : "bg-background dark:bg-zinc-800/90 rounded-bl-none",
-           message.type === 'video' || message.type === 'image' ? "p-1 bg-transparent dark:bg-transparent shadow-none" : "p-3"
+           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col">
@@ -353,7 +353,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
         </div>
         <div
           className={cn(
-            "text-xs text-right mt-1 -mb-1 -mr-1",
+            "text-xs text-right mt-1.5 -mb-1 -mr-1",
             isUser ? "text-green-800/70 dark:text-green-300/60" : "text-muted-foreground"
           )}
         >
@@ -372,6 +372,3 @@ declare global {
     Wistia: any;
   }
 }
-    
-
-    
