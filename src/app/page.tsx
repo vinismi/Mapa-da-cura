@@ -303,9 +303,9 @@ export default function Home() {
                 await showTypingIndicator(5000);
                 addMessage({ sender: "bot", type: "bonuses", content: "Sinta o poder da sua nova vida:" });
 
-                await showTypingIndicator(5500);
-                addMessage({ sender: "bot", type: "text", content: "Para garantir que você receba o acesso e nosso suporte, por favor, me informe seu WhatsApp com DDD. Não vamos te mandar spam, é apenas para segurança." });
-                setInputPlaceholder("Seu WhatsApp com DDD");
+                await showTypingIndicator(4000);
+                addMessage({ sender: "bot", type: "text", content: `Para finalizar e garantir que o mapa seja perfeito para você, me diga: O que você mais espera encontrar nele? E qual a sua avaliação para este nosso papo até aqui? Sua opinião é ouro pra mim.` });
+                setInputPlaceholder("Seu feedback sincero aqui...");
                 setConversationStep(10);
 
             } else { // "Como assim?"
@@ -318,19 +318,7 @@ export default function Home() {
             }
             break;
 
-        case 10: // Ask for WhatsApp
-            const whatsapp = text;
-            setUserWhatsapp(whatsapp);
-            await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "text", content: `Obrigada, ${userName}. Anotado.` });
-
-            await showTypingIndicator(4000);
-            addMessage({ sender: "bot", type: "text", content: `Para finalizar e garantir que o mapa seja perfeito para você, me diga: O que você mais espera encontrar nele? E qual a sua avaliação para este nosso papo até aqui? Sua opinião é ouro pra mim.` });
-            setInputPlaceholder("Seu feedback sincero aqui...");
-            setConversationStep(11);
-            break;
-        
-        case 11: // Ask for Feedback
+        case 10: // Ask for Feedback
             const feedback = text;
             await showTypingIndicator(4000);
             addMessage({ sender: "bot", type: "text", content: "Perfeito! Seu feedback é o que nos move. Muito obrigada." });
@@ -347,10 +335,10 @@ export default function Home() {
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
 
-            setConversationStep(12);
+            setConversationStep(11);
             break;
         
-        case 12: // After checkout link, handle questions
+        case 11: // After checkout link, handle questions
             await showTypingIndicator(4000);
             addMessage({
                 sender: "bot",
