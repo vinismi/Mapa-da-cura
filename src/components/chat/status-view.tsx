@@ -36,8 +36,12 @@ export function StatusView({ onFinish }: StatusViewProps) {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
 
   const nextStory = useCallback(() => {
-    setCurrentStoryIndex((prevIndex) => (prevIndex < stories.length - 1 ? prevIndex + 1 : prevIndex));
-  }, []);
+    if (currentStoryIndex === stories.length - 1) {
+      onFinish();
+    } else {
+      setCurrentStoryIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [currentStoryIndex, onFinish]);
 
   const prevStory = useCallback(() => {
     setCurrentStoryIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
@@ -78,24 +82,29 @@ export function StatusView({ onFinish }: StatusViewProps) {
 
       {/* Content */}
       <div className="flex-1 relative flex items-center justify-center">
-        {currentStory.type === "image" && (
-          <>
-            <Image
-              src={currentStory.url}
-              alt="Status"
-              width={1080}
-              height={1920}
-              className="object-contain w-auto h-auto max-w-full max-h-full animate-in zoom-in-105 duration-500"
-              data-ai-hint={currentStory.dataAiHint}
-              priority={true}
-            />
-             <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
-                <p className="text-white text-center text-lg md:text-xl font-medium italic">
-                    {currentStory.text}
-                </p>
+        {stories.map((story, index) => (
+            <div
+                key={story.url}
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${index === currentStoryIndex ? 'opacity-100' : 'opacity-0'}`}
+            >
+                {story.type === "image" && (
+                    <Image
+                      src={story.url}
+                      alt="Status"
+                      width={1080}
+                      height={1920}
+                      className="object-contain w-auto h-auto max-w-full max-h-full"
+                      data-ai-hint={story.dataAiHint}
+                      priority={true}
+                    />
+                )}
             </div>
-          </>
-        )}
+        ))}
+        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/80 to-transparent">
+            <p className="text-white text-center text-lg md:text-xl font-medium italic">
+                {currentStory.text}
+            </p>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -113,9 +122,8 @@ export function StatusView({ onFinish }: StatusViewProps) {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full h-full w-32 bg-transparent hover:bg-black/10 text-white/50 hover:text-white disabled:opacity-0 transition-opacity"
+            className="rounded-full h-full w-32 bg-transparent hover:bg-black/10 text-white/50 hover:text-white transition-opacity"
             onClick={nextStory}
-            disabled={currentStoryIndex === stories.length - 1}
             aria-label="Next Status"
           >
             <ChevronRight size={32}/>
