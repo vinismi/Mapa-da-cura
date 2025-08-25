@@ -234,9 +234,9 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
   }, [message.timestamp]);
 
 
-  const onButtonClick = () => {
-    if (message.meta?.buttonUrl) {
-        window.open(message.meta.buttonUrl, "_blank", "noopener,noreferrer");
+  const onButtonClick = (url: string | undefined) => {
+    if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
     } else {
         toast({
             title: "Ação",
@@ -306,27 +306,27 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             return <LiveCall onCallEnd={(message.meta as any)?.onCallEnd} />;
       case "button":
         return (
-          <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
-              <p className="text-foreground mb-4">{message.meta?.text || "Sua transformação começa agora!"}</p>
-              <Button onClick={onButtonClick} className="w-full bg-primary hover:bg-primary/90 text-lg font-bold py-6">
-                {message.content}
-              </Button>
-              {message.meta?.image && (
-                <Image 
-                    src={message.meta.image} 
-                    width={600} 
-                    height={400} 
-                    alt="Oferta Final" 
-                    className="mt-4 rounded-md"
-                    data-ai-hint={message.meta.imageHint}
-                />
-              )}
-          </div>
+            <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
+                <p className="text-foreground mb-4">{message.meta?.text}</p>
+                <Button onClick={() => onButtonClick(message.meta?.buttonUrl)} className="w-full bg-primary hover:bg-primary/90 text-lg font-bold py-6">
+                    {message.content}
+                </Button>
+                {message.meta?.image && (
+                    <Image 
+                        src={message.meta.image} 
+                        width={600} 
+                        height={400} 
+                        alt="Oferta Final" 
+                        className="mt-4 rounded-md"
+                        data-ai-hint={message.meta.imageHint}
+                    />
+                )}
+            </div>
         );
       default:
         // Split by newline and render paragraphs to respect formatting from AI
         return message.content.split('\n').map((paragraph, index) => (
-          <p key={index} className="text-foreground text-base">{paragraph}</p>
+          <p key={index} className="text-foreground text-base whitespace-pre-wrap break-words">{paragraph}</p>
         ));
     }
   };
@@ -420,5 +420,3 @@ declare global {
     Wistia: any;
   }
 }
-
-    
