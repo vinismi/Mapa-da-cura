@@ -420,11 +420,11 @@ export default function Home() {
                           <AvatarFallback>L</AvatarFallback>
                         </Avatar>
                         <div className="flex justify-center items-center mb-4">
-                          <Sparkles className="h-6 w-6 text-primary-foreground animate-pulse"/>
-                          <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground mx-2">
+                          <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
+                          <h1 className="text-3xl md:text-4xl font-bold text-primary mx-2">
                               Jornada do Despertar Espiritual
                           </h1>
-                          <Sparkles className="h-6 w-6 text-primary-foreground animate-pulse"/>
+                          <Sparkles className="h-6 w-6 text-primary animate-pulse"/>
                         </div>
                         <p className="text-foreground/90 mb-8 text-base md:text-lg">
                             Sua cura interior está a uma conversa de distância. Inicie a jornada e desperte seu verdadeiro potencial.
@@ -451,5 +451,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
