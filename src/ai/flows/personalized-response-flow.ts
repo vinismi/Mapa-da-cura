@@ -37,11 +37,14 @@ const personalizedResponsePrompt = ai.definePrompt({
   name: 'personalizedResponsePrompt',
   input: {schema: PersonalizedResponseInputSchema},
   output: {schema: PersonalizedResponseOutputSchema},
-  prompt: `You are a helpful chatbot designed to provide personalized responses based on user input.
+  prompt: `Você é uma mentora espiritual chamada Luz. Sua comunicação é empática, direta e poderosa.
+  Sua missão é entender a dor do usuário e guiá-lo para uma solução, sem rodeios.
+  Valide o sentimento do usuário e mostre que a transformação é possível.
 
-  User Input: {{{userInput}}}
+  Use a seguinte entrada do usuário para criar sua resposta:
+  Entrada do Usuário: {{{userInput}}}
 
-  Generate a response that is tailored to the user's specific needs and pain points, ensuring the conversation feels relevant and engaging.`,
+  Gere uma resposta que seja um reflexo direto do que foi dito, mostrando que você ouviu e se importa, mas sempre guiando para o próximo passo.`,
 });
 
 const personalizedResponseFlow = ai.defineFlow(
@@ -76,10 +79,9 @@ const nameCorrectionPrompt = ai.definePrompt({
     name: 'nameCorrectionPrompt',
     input: { schema: NameCorrectionCheckInputSchema },
     output: { schema: NameCorrectionCheckOutputSchema },
-    prompt: `A user previously said their name was "{{previousName}}". Their current input is "{{currentInput}}".
-    Analyze the user's input to determine if they are trying to correct their name.
-    Common patterns for name correction include phrases like "meu nome é...", "na verdade é...", "quis dizer...", or simply stating a new name that is different from the previous one.
-    If it seems like a correction, set isCorrectingName to true and extract the new name. Otherwise, set isCorrectingName to false.`,
+    prompt: `Análise crítica: Um usuário informou que seu nome era "{{previousName}}". A entrada atual dele é "{{currentInput}}".
+    Determine se a nova entrada é uma correção do nome. Padrões comuns incluem: "meu nome é...", "na verdade é...", "quis dizer...", ou simplesmente um novo nome.
+    Se for uma correção clara, retorne isCorrectingName como true e o novo nome. Caso contrário, retorne false. Seja rigoroso na análise para evitar falsos positivos.`,
 });
 
 const nameCorrectionCheckFlow = ai.defineFlow(
@@ -116,17 +118,17 @@ const extractNamePrompt = ai.definePrompt({
     name: 'extractNamePrompt',
     input: { schema: ExtractNameInputSchema },
     output: { schema: ExtractNameOutputSchema },
-    prompt: `You are an expert at extracting a person's name from their first message in a conversation.
-    The user was asked for their name, and possibly how they are doing.
-    Their response is: "{{userInput}}".
+    prompt: `Você é um especialista em extrair nomes de uma conversa inicial.
+    O usuário foi solicitado a dizer seu nome.
+    A resposta dele foi: "{{userInput}}".
 
-    Your task is to identify and extract their name.
-    - Common name patterns are "My name is [Name]", "I'm [Name]", "I am [Name]", or just stating the "[Name]".
-    - The user may mix pleasantries with their name, like "I'm fine, my name is [Name]" or "Prazer, sou o [Name]".
-    - CRITICAL: You must distinguish between a name and a pleasantry. Words like "prazer", "tudo bem", "estou bem", "bem" are NOT names. If the user only says "Prazer", they have not given their name.
+    Sua tarefa é identificar e extrair o nome com alta precisão.
+    - Padrões: "Meu nome é [Nome]", "Sou [Nome]", ou apenas "[Nome]".
+    - O usuário pode misturar saudações: "Estou bem, sou o [Nome]".
+    - CRÍTICO: Ignore saudações e palavras de cortesia como "prazer", "tudo bem", "estou bem". Se o usuário responder apenas com "Tudo bem" ou "Prazer", ele NÃO informou o nome.
     
-    If you are confident you have identified a name, set isNamePresent to true and put the extracted name in the extractedName field.
-    If the user only replies with a pleasantry like "I'm fine", "Tudo bem", or "Prazer", and does NOT provide a name, set isNamePresent to false.`,
+    Se um nome for identificado com certeza, defina isNamePresent como true e extraia o nome.
+    Se a resposta for apenas uma saudação, ou se não houver um nome claro, defina isNamePresent como false.`,
 });
 
 const extractNameFlow = ai.defineFlow(

@@ -81,7 +81,7 @@ export default function Home() {
     // After 10 seconds, send a text message asking for the name
     setTimeout(async () => {
       await showTypingIndicator(1500);
-      addMessage({ sender: "bot", type: "text", content: "Como devo te chamar?" });
+      addMessage({ sender: "bot", type: "text", content: "Para começarmos, como posso te chamar?" });
       setInputPlaceholder("Digite seu nome aqui...");
     }, 8000);
   };
@@ -158,21 +158,15 @@ export default function Home() {
                 addMessage({
                     sender: "bot",
                     type: "text",
-                    content: `Prazer, ${name}! Chega de rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
+                    content: `Prazer, ${name}! Fico feliz que você deu o primeiro passo. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
                 });
-                setInputPlaceholder("Descreva sua motivação...");
+                setInputPlaceholder("Descreva o que você quer mudar...");
                 setConversationStep(3);
             } else {
                  await showTypingIndicator(2500);
-                 addMessage({ sender: "bot", type: "text", content: "Ótimo. 😊" });
-                 await showTypingIndicator(3000);
-                 addMessage({
-                     sender: "bot",
-                     type: "text",
-                     content: "Como devo te chamar?",
-                 });
-                  setInputPlaceholder("Digite seu nome aqui...");
-                  setConversationStep(2); // Ask for name again
+                 addMessage({ sender: "bot", type: "text", content: "Certo. E como posso te chamar?" });
+                 setInputPlaceholder("Digite seu nome aqui...");
+                 setConversationStep(2); // Ask for name again
             }
             break;
             
@@ -183,9 +177,9 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Ok, ${name}. Sem rodeios. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
+                content: `Ok, ${name}! Agora sim. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
             });
-            setInputPlaceholder("Descreva sua motivação...");
+            setInputPlaceholder("Descreva o que você quer mudar...");
             setConversationStep(3);
             break;
 
@@ -216,7 +210,7 @@ export default function Home() {
 
            setTimeout(async () => {
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: "Me diga, há quanto tempo esse sentimento te acompanha?" });
+                addMessage({ sender: "bot", type: "text", content: "E há quanto tempo esse sentimento te acompanha?" });
                 setInputPlaceholder("Diga aqui há quanto tempo...");
            }, 8000);
           
@@ -231,16 +225,16 @@ export default function Home() {
             addMessage({
                 sender: "bot",
                 type: "text",
-                content: `Entendido. Carregar esse fardo por tanto tempo acaba com qualquer um.`,
+                content: `Entendido. Carregar esse fardo por tanto tempo é exaustivo.`,
             });
             
             await showTypingIndicator(4800);
             addMessage({
               sender: "bot",
               type: "text",
-              content: `${userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que fez?`
+              content: `${userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que já fez?`
             });
-            setInputPlaceholder("Pode me contar, estou aqui pra ouvir...");
+            setInputPlaceholder("Pode me contar, estou aqui pra te ouvir...");
             setConversationStep(5);
             break;
             
@@ -249,7 +243,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(6000);
-            const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e natural, sem saudações. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Use uma linguagem amigável, como se falasse com uma amiga.` });
+            const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e direta. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Ex: "É por isso que tantas pessoas se sentem perdidas. Mas a sua busca termina aqui."` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -433,9 +427,9 @@ export default function Home() {
                           <Sparkles className="h-6 w-6 text-primary-foreground animate-pulse"/>
                         </div>
                         <p className="text-foreground/90 mb-8 text-base md:text-lg">
-                            Receba orientação personalizada e encontre o caminho para a sua cura interior. Inicie uma conversa e descubra o seu potencial.
+                            Sua cura interior está a uma conversa de distância. Inicie a jornada e desperte seu verdadeiro potencial.
                         </p>
-                        <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary/90 hover:bg-primary shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" onClick={startConversation}>
+                        <Button size="lg" className="w-full text-lg h-14 rounded-full group bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105" onClick={startConversation}>
                             Iniciar Conversa Agora
                             <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform"/>
                         </Button>
