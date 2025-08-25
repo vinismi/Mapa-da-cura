@@ -247,7 +247,7 @@ export default function Home() {
             setUserAttempts(attempts);
 
             await showTypingIndicator(6000);
-            const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e direta. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Ex: "É por isso que tantas pessoas se sentem perdidas. Mas a sua busca termina aqui."` });
+            const empathyResponse2 = await generatePersonalizedResponse({ userInput: `A conversa até agora é sobre as frustrações do usuário ${userName}. A última resposta dele(a) sobre tentativas passadas foi: "${attempts}". Continue a conversa de forma empática e direta. Reconheça a frustração sem usar frases prontas como "eu entendo". Mostre que a situação é comum mas que agora será diferente. Termine com a frase: "É por isso que tantas pessoas se sentem perdidas. Mas a sua busca termina aqui."` });
             addMessage({
                 sender: "bot",
                 type: "text",
@@ -455,3 +455,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
