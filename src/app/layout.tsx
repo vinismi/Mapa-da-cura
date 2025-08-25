@@ -27,11 +27,11 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap"
           rel="stylesheet"
         />
+        <Script src="https://fast.wistia.com/assets/external/E-v1.js" strategy="beforeInteractive" />
       </head>
       <body className={cn("font-body antialiased")}>
         {children}
         <Toaster />
-        <Script src="https://fast.wistia.com/assets/external/E-v1.js" strategy="lazyOnload" />
       </body>
     </html>
   );
