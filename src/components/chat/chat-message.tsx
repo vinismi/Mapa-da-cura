@@ -26,7 +26,6 @@ function BonusList() {
         { icon: Gem, text: "Áudio de Meditação Guiada para alinhamento energético" },
         { icon: Shield, text: "Ritual de Proteção Ancestral para proteger sua energia" },
         { icon: BookOpen, text: "O Livro dos Salmos Ocultos com orações para prosperidade" },
-        { icon: Sparkles, text: "Desconto especial em futuros produtos espirituais" },
     ];
 
     const downloadableBonuses = [
@@ -307,7 +306,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
       case "button":
         return (
             <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
-                <p className="text-foreground mb-4">{message.meta?.text}</p>
+                
                 <Button onClick={() => onButtonClick(message.meta?.buttonUrl)} className="w-full bg-primary hover:bg-primary/90 text-lg font-bold py-6">
                     {message.content}
                 </Button>
@@ -393,23 +392,40 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           isUser
             ? "bg-[#DCF8C6] text-black rounded-br-none"
             : "bg-secondary rounded-bl-none",
-           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
+           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3",
+          (message.options && message.options.length > 0) ? "!bg-transparent !shadow-none !p-0" : ""
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col">
-            {renderContent()}
+            {message.content && !message.options && renderContent()}
+             {message.options && (
+                <div className="flex flex-col gap-2 items-start">
+                    {message.content && <p className="text-foreground text-base p-3 bg-secondary rounded-2xl rounded-bl-none">{message.content}</p>}
+                    {message.options.map(option => (
+                        <Button 
+                            key={option} 
+                            variant="outline"
+                            className="bg-background shadow-md"
+                            onClick={() => onSendMessage(option)}>
+                            {option}
+                        </Button>
+                    ))}
+                </div>
+            )}
         </div>
-        <div
-          className={cn(
-            "text-xs text-right mt-1.5 -mb-1 -mr-1",
-            isUser ? "text-slate-500" : "text-muted-foreground"
-          )}
-        >
-          {formattedTime}
-          {isUser && (
-            <CheckCheck className="inline-block ml-1 h-4 w-4 text-blue-400" />
-          )}
-        </div>
+        {message.content && !message.options && (
+            <div
+            className={cn(
+                "text-xs text-right mt-1.5 -mb-1 -mr-1",
+                isUser ? "text-slate-500" : "text-muted-foreground"
+            )}
+            >
+            {formattedTime}
+            {isUser && (
+                <CheckCheck className="inline-block ml-1 h-4 w-4 text-blue-400" />
+            )}
+            </div>
+        )}
       </div>
     </div>
   );
@@ -420,3 +436,5 @@ declare global {
     Wistia: any;
   }
 }
+
+    
