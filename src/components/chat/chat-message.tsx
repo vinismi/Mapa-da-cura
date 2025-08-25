@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed, Download } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { AudioPlayer } from "./audio-player";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { Separator } from "../ui/separator";
 
 type ChatMessageProps = {
   message: Message;
@@ -27,18 +28,53 @@ function BonusList() {
         { icon: BookOpen, text: "O Livro dos Salmos Ocultos com orações para prosperidade" },
         { icon: Sparkles, text: "Desconto especial em futuros produtos espirituais" },
     ];
+
+    const downloadableBonuses = [
+        { name: "Meditacao_Guiada.mp3", size: "7.2 MB", type: "audio" },
+        { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf" },
+        { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf" },
+    ]
+
     return (
-        <Card className="bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur-lg border-primary/20 shadow-lg w-full">
+        <Card className="bg-teal-50 border-teal-200/80 shadow-lg w-full text-gray-800">
             <CardHeader>
-                <CardTitle className="text-lg font-bold text-primary flex items-center gap-2"><Sparkles className="h-5 w-5"/>Seus Presentes Exclusivos</CardTitle>
+                <CardTitle className="text-xl font-bold text-teal-800 flex items-center gap-2">
+                    <Sparkles className="h-6 w-6 text-teal-600"/>
+                    <span>Seus Presentes Foram Liberados!</span>
+                </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 !pt-0">
-                {bonuses.map((bonus, index) => (
-                    <div key={index} className="flex items-start gap-3 text-foreground">
-                        <bonus.icon className="h-5 w-5 mt-1 text-primary shrink-0" />
-                        <span>{bonus.text}</span>
+            <CardContent className="space-y-4 !pt-2">
+                <p className="text-teal-700">Aqui está o que você recebeu para iniciar sua transformação:</p>
+                <div className="space-y-3">
+                    {bonuses.map((bonus, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                            <bonus.icon className="h-5 w-5 mt-1 text-teal-600 shrink-0" />
+                            <span className="font-medium text-gray-700">{bonus.text}</span>
+                        </div>
+                    ))}
+                </div>
+                <Separator className="bg-teal-200/80 my-4"/>
+                <div>
+                    <h4 className="font-bold text-teal-800 mb-3">Seus arquivos para baixar:</h4>
+                    <div className="space-y-2">
+                        {downloadableBonuses.map((file) => (
+                             <div key={file.name} className="bg-white/70 p-3 rounded-lg flex items-center justify-between shadow-sm border border-teal-100">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-teal-100 p-2 rounded-md">
+                                        <Download className="h-5 w-5 text-teal-700"/>
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-sm text-gray-800">{file.name}</p>
+                                        <p className="text-xs text-gray-500">{file.size}</p>
+                                    </div>
+                                </div>
+                                <Button size="sm" variant="outline" className="bg-white text-teal-700 border-teal-300 hover:bg-teal-50">
+                                    Baixar
+                                </Button>
+                             </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </CardContent>
         </Card>
     )
@@ -384,3 +420,5 @@ declare global {
     Wistia: any;
   }
 }
+
+    
