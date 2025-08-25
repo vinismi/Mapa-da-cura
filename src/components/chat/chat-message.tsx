@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed, Download } from "lucide-react";
+import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed, Download, Star } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -23,13 +23,13 @@ type ChatMessageProps = {
 
 function BonusList() {
     const bonuses = [
-        { icon: Gem, text: "Áudio de Meditação Guiada para alinhamento energético" },
+        { icon: Star, text: "E-book: Os 7 Chakras e Como Desbloqueá-los" },
         { icon: Shield, text: "Ritual de Proteção Ancestral para proteger sua energia" },
         { icon: BookOpen, text: "O Livro dos Salmos Ocultos com orações para prosperidade" },
     ];
 
     const downloadableBonuses = [
-        { name: "Meditacao_Guiada.mp3", size: "7.2 MB", type: "audio" },
+        { name: "Ebook_Chakras.pdf", size: "4.1 MB", type: "pdf" },
         { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf" },
         { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf" },
     ]
@@ -393,14 +393,24 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             ? "bg-[#DCF8C6] text-black rounded-br-none"
             : "bg-secondary rounded-bl-none",
            message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3",
-          (message.options && message.options.length > 0) ? "!bg-transparent !shadow-none !p-0" : ""
+           // This handles the case where we have options, we want a clean bubble for the text and then the options below
+          (message.options && message.options.length > 0) ? "bg-transparent shadow-none p-0" : ""
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col">
-            {message.content && !message.options && renderContent()}
+            {/* Render content only if there are no options, or if there is content AND options */}
+            {message.content && (
+              <div className={cn(
+                "p-3 rounded-2xl",
+                isUser
+                  ? "bg-[#DCF8C6] text-black rounded-br-none"
+                  : "bg-secondary rounded-bl-none"
+              )}>
+                 {renderContent()}
+              </div>
+            )}
              {message.options && (
-                <div className="flex flex-col gap-2 items-start">
-                    {message.content && <p className="text-foreground text-base p-3 bg-secondary rounded-2xl rounded-bl-none">{message.content}</p>}
+                <div className="flex flex-col gap-2 items-start mt-2">
                     {message.options.map(option => (
                         <Button 
                             key={option} 
@@ -413,11 +423,12 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
                 </div>
             )}
         </div>
-        {message.content && !message.options && (
+        {message.content && (
             <div
             className={cn(
                 "text-xs text-right mt-1.5 -mb-1 -mr-1",
-                isUser ? "text-slate-500" : "text-muted-foreground"
+                isUser ? "text-slate-500" : "text-muted-foreground",
+                 (message.options && message.options.length > 0) ? "hidden" : "" // Hide timestamp if options are present for cleaner look
             )}
             >
             {formattedTime}
