@@ -253,13 +253,6 @@ export default function Home() {
                 type: "text",
                 content: empathyResponse2.personalizedResponse,
             });
-
-            await showTypingIndicator(5800);
-            addMessage({
-                sender: "bot",
-                type: "text",
-                content: `O que você vai ver agora vai te provar que seu caso tem solução.`,
-            });
             
             await showTypingIndicator(4500);
             addMessage({
@@ -455,5 +448,7 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
