@@ -210,8 +210,12 @@ export default function Home() {
 
            setTimeout(async () => {
                 await showTypingIndicator(2000);
-                addMessage({ sender: "bot", type: "text", content: "E há quanto tempo esse sentimento te acompanha?" });
-                setInputPlaceholder("Diga aqui há quanto tempo...");
+                addMessage({ 
+                  sender: "bot", 
+                  type: "text", 
+                  content: "E há quanto tempo esse sentimento te acompanha?",
+                  options: ["Menos de 1 ano", "De 1 a 5 anos", "De 5 a 10 anos", "Mais de 10 anos"]
+                });
            }, 8000);
           
           setConversationStep(4);
@@ -451,6 +455,8 @@ export default function Home() {
     </div>
   );
 }
+
+    
 
     
 
