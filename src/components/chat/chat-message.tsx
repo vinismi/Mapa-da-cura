@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { AudioPlayer } from "./audio-player";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
@@ -29,9 +29,9 @@ function BonusList() {
     ];
 
     const downloadableBonuses = [
-        { name: "Ebook_Chakras.pdf", size: "4.1 MB", type: "pdf" },
-        { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf" },
-        { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf" },
+        { name: "Ebook_Chakras.pdf", size: "4.1 MB", type: "pdf", url: "https://drive.google.com/file/d/10be4EAPWnpWZF6oOxeOIx7CUUS4QumaS/view" },
+        { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf", url: "https://drive.google.com/file/d/1xUZ7MV-X2gHi3lECrn2Xf73eelXigK7O/view" },
+        { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf", url: "https://drive.google.com/file/d/1QyuXXXa2iFYk_JxmGjB4TKa6y3_kfzT0/view" },
     ]
 
     return (
@@ -67,9 +67,14 @@ function BonusList() {
                                         <p className="text-xs text-gray-500">{file.size}</p>
                                     </div>
                                 </div>
-                                <Button size="sm" variant="outline" className="bg-white text-teal-700 border-teal-300 hover:bg-teal-50">
+                                <a 
+                                  href={file.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className={cn(buttonVariants({ size: "sm", variant: "outline" }), "bg-white text-teal-700 border-teal-300 hover:bg-teal-50")}
+                                >
                                     Baixar
-                                </Button>
+                                </a>
                              </div>
                         ))}
                     </div>
