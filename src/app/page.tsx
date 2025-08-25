@@ -194,7 +194,7 @@ export default function Home() {
            setUserMotivation(motivation);
            
            await showTypingIndicator(4500);
-           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `O usuário ${userName} disse que sua motivação é: "${motivation}". Crie uma resposta curta, poderosa e empática. Valide o sentimento dele(a) de forma direta, sem repetir o que foi dito. Use uma linguagem forte e inspiradora. Ex: "Eu entendo essa força. E é exatamente ela que vamos usar para virar o jogo."` });
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `A motivação do usuário é: "${motivation}". Crie uma resposta de UMA FRASE curta, poderosa e empática. Valide o sentimento dele(a) e mostre que a transformação é possível. Use uma linguagem forte e inspiradora. Exemplo: "Compreendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
            addMessage({
              sender: "bot",
              type: "text",
