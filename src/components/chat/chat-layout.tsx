@@ -32,10 +32,6 @@ export const ChatLayout = forwardRef<
     },
     ref
   ) => {
-    const lastMessageWithOptions = messages
-      .slice()
-      .reverse()
-      .find((m) => m.options && m.options.length > 0);
     
     const messagesRef = useRef<{ scrollToBottom: () => void }>(null);
 
@@ -61,7 +57,6 @@ export const ChatLayout = forwardRef<
             userInput={userInput}
             onUserInput={onUserInput}
             onSendMessage={onSendMessage}
-            options={lastMessageWithOptions?.options}
             placeholder={inputPlaceholder}
           />
         </div>

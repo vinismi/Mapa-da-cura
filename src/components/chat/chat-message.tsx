@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CheckCheck, Gem, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, Hand, PhoneMissed, Download, Star } from "lucide-react";
+import { CheckCheck, Shield, BookOpen, Sparkles, Phone, VideoOff, MicOff, PlayCircle, PhoneMissed, Download, Star } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 import type { Message } from "@/lib/types";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AudioPlayer } from "./audio-player";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 
@@ -393,27 +393,15 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "relative max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-2xl shadow-md animate-in fade-in zoom-in-95",
+          "relative max-w-xs md:max-w-md lg:max-w-lg rounded-2xl shadow-md animate-in fade-in zoom-in-95",
           isUser
             ? "bg-[#DCF8C6] text-black rounded-br-none"
             : "bg-secondary rounded-bl-none",
-           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3",
-           // This handles the case where we have options, we want a clean bubble for the text and then the options below
-          (message.options && message.options.length > 0) ? "bg-transparent shadow-none p-0" : ""
+           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
         )}
       >
-        <div className="break-words whitespace-pre-wrap flex flex-col">
-            {/* Render content only if there are no options, or if there is content AND options */}
-            {message.content && (
-              <div className={cn(
-                "p-3 rounded-2xl",
-                isUser
-                  ? "bg-[#DCF8C6] text-black rounded-br-none"
-                  : "bg-secondary rounded-bl-none"
-              )}>
-                 {renderContent()}
-              </div>
-            )}
+        <div className="break-words whitespace-pre-wrap flex flex-col gap-2">
+            {message.content && renderContent()}
              {message.options && (
                 <div className="flex flex-col gap-2 items-start mt-2">
                     {message.options.map(option => (
@@ -432,8 +420,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             <div
             className={cn(
                 "text-xs text-right mt-1.5 -mb-1 -mr-1",
-                isUser ? "text-slate-500" : "text-muted-foreground",
-                 (message.options && message.options.length > 0) ? "hidden" : "" // Hide timestamp if options are present for cleaner look
+                isUser ? "text-slate-500" : "text-muted-foreground"
             )}
             >
             {formattedTime}
