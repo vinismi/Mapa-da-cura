@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Áudio Espiritual de Cura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: url('/spiritual-bg.png');
+        }
+    </style>
+</head>
+<body class="bg-cover bg-center bg-no-repeat">
+    <main class="flex items-center justify-center min-h-screen bg-black/30">
+        <div class="w-full max-w-md mx-4 text-center bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/30">
+            
+            <h1 class="text-3xl font-bold text-white mb-6 drop-shadow-lg">
+                ✨ Áudio Espiritual de Cura ✨
+            </h1>
+
+            <div id="audio-player" class="relative">
+                <audio id="audio" src="/ElevenLabs_2025-08-19T07_58_38_Hope.mp3" autoplay></audio>
+                
+                <div class="flex items-center justify-center space-x-4">
+                    <button id="play-btn" class="p-4 bg-white/30 text-white rounded-full hover:bg-white/50 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <button id="pause-btn" class="hidden p-4 bg-white/30 text-white rounded-full hover:bg-white/50 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <a href="/ElevenLabs_2025-08-19T07_58_38_Hope.mp3" download="Audio-Cura-Espiritual.mp3" class="inline-block mt-8 w-full px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:bg-teal-700 transition-all duration-300 transform hover:scale-105">
+                Baixar Áudio
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        const audio = document.getElementById('audio');
+        const playBtn = document.getElementById('play-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+
+        const togglePlayPause = () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.classList.add('hidden');
+                pauseBtn.classList.remove('hidden');
+            } else {
+                audio.pause();
+                playBtn.classList.remove('hidden');
+                pauseBtn.classList.add('hidden');
+            }
+        };
+        
+        // Initial state check for autoplay
+        audio.onplaying = () => {
+            playBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+        };
+
+        audio.onpause = () => {
+            playBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+        };
+        
+        // Event Listeners
+        playBtn.addEventListener('click', togglePlayPause);
+        pauseBtn.addEventListener('click', togglePlayPause);
+
+        // Handle the case where autoplay might be blocked
+        audio.play().catch(() => {
+            playBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
