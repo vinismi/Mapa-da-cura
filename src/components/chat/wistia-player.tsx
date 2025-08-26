@@ -9,21 +9,15 @@ type WistiaPlayerProps = {
 
 export function WistiaPlayer({ videoId }: WistiaPlayerProps) {
   useEffect(() => {
-    // This loads the Wistia player API
-    const wistiaScript = document.createElement("script");
-    wistiaScript.src = "https://fast.wistia.com/assets/external/E-v1.js";
-    wistiaScript.async = true;
-    document.body.appendChild(wistiaScript);
-
-    // This specifically loads the video embed
+    // The main script E-v1.js is now loaded in RootLayout.
+    // This component now only needs to load the specific video embed script.
     const videoScript = document.createElement("script");
     videoScript.src = `https://fast.wistia.com/embed/medias/${videoId}.jsonp`;
     videoScript.async = true;
     document.body.appendChild(videoScript);
 
     return () => {
-      // Cleanup scripts on component unmount
-      document.body.removeChild(wistiaScript);
+      // Cleanup script on component unmount
       document.body.removeChild(videoScript);
     };
   }, [videoId]);

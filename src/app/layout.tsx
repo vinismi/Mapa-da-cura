@@ -27,6 +27,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="preconnect" href="https://fast.wistia.com" />
+        <link rel="preconnect" href="https://embedwistia-a.akamaihd.net" />
         <Script src="https://fast.wistia.com/assets/external/E-v1.js" strategy="beforeInteractive" />
       </head>
       <body className={cn("font-body antialiased")}>
