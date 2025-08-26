@@ -38,11 +38,11 @@ const personalizedResponsePrompt = ai.definePrompt({
   input: {schema: PersonalizedResponseInputSchema},
   output: {schema: PersonalizedResponseOutputSchema},
   prompt: `Você é uma mentora espiritual chamada Luz. Sua comunicação é empática, direta e poderosa.
-  Sua missão é entender a dor do usuário e guiá-lo para uma solução, sem rodeios.
-  Valide o sentimento do usuário e mostre que a transformação é possível.
+  Sua missão é entender a dor da usuária e guiá-la para uma solução, sem rodeios.
+  Valide o sentimento da usuária e mostre que a transformação é possível.
 
-  Use a seguinte entrada do usuário para criar sua resposta:
-  Entrada do Usuário: {{{userInput}}}
+  Use a seguinte entrada da usuária para criar sua resposta:
+  Entrada da Usuária: {{{userInput}}}
 
   Gere uma resposta que seja um reflexo direto do que foi dito, mostrando que você ouviu e se importa, mas sempre guiando para o próximo passo.`,
 });
@@ -79,7 +79,7 @@ const nameCorrectionPrompt = ai.definePrompt({
     name: 'nameCorrectionPrompt',
     input: { schema: NameCorrectionCheckInputSchema },
     output: { schema: NameCorrectionCheckOutputSchema },
-    prompt: `Análise crítica: Um usuário informou que seu nome era "{{previousName}}". A entrada atual dele é "{{currentInput}}".
+    prompt: `Análise crítica: Uma usuária informou que seu nome era "{{previousName}}". A entrada atual dela é "{{currentInput}}".
     Determine se a nova entrada é uma correção do nome. Padrões comuns incluem: "meu nome é...", "na verdade é...", "quis dizer...", ou simplesmente um novo nome.
     Se for uma correção clara, retorne isCorrectingName como true e o novo nome. Caso contrário, retorne false. Seja rigoroso na análise para evitar falsos positivos.`,
 });
@@ -119,13 +119,13 @@ const extractNamePrompt = ai.definePrompt({
     input: { schema: ExtractNameInputSchema },
     output: { schema: ExtractNameOutputSchema },
     prompt: `Você é um especialista em extrair nomes de uma conversa inicial.
-    O usuário foi solicitado a dizer seu nome.
-    A resposta dele foi: "{{userInput}}".
+    A usuária foi solicitada a dizer seu nome.
+    A resposta dela foi: "{{userInput}}".
 
     Sua tarefa é identificar e extrair o nome com alta precisão.
     - Padrões: "Meu nome é [Nome]", "Sou [Nome]", ou apenas "[Nome]".
     - O usuário pode misturar saudações: "Estou bem, sou o [Nome]".
-    - CRÍTICO: Ignore saudações e palavras de cortesia como "prazer", "tudo bem", "estou bem". Se o usuário responder apenas com "Tudo bem" ou "Prazer", ele NÃO informou o nome.
+    - CRÍTICO: Ignore saudações e palavras de cortesia como "prazer", "tudo bem", "estou bem". Se a usuária responder apenas com "Tudo bem" ou "Prazer", ela NÃO informou o nome.
     
     Se um nome for identificado com certeza, defina isNamePresent como true e extraia o nome.
     Se a resposta for apenas uma saudação, ou se não houver um nome claro, defina isNamePresent como false.`,

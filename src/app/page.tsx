@@ -194,7 +194,7 @@ export default function Home() {
            setUserMotivation(motivation);
            
            await showTypingIndicator(4500);
-           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `A motivação do usuário é: "${motivation}". Crie uma resposta de UMA FRASE curta, poderosa e empática. Valide o sentimento dele(a) e mostre que a transformação é possível. Use uma linguagem forte e inspiradora. Exemplo: "Compreendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
+           const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `A motivação da usuária é: "${motivation}". Crie uma resposta de UMA FRASE curta, poderosa e empática. Valide o sentimento dela e mostre que a transformação é possível. Use uma linguagem forte e inspiradora. Exemplo: "Compreendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
            addMessage({
              sender: "bot",
              type: "text",
@@ -314,11 +314,14 @@ export default function Home() {
             await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "wistia-video", content: "yzbgyjbr1m", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
             
-            await showTypingIndicator(4500);
-            addMessage({ sender: "bot", type: "text", content: "E para sua total tranquilidade, você tem uma garantia incondicional de 30 dias. Seu risco é zero." });
+            setTimeout(async () => {
+                await showTypingIndicator(4500);
+                addMessage({ sender: "bot", type: "text", content: "E para sua total tranquilidade, você tem uma garantia incondicional de 30 dias. Seu risco é zero." });
+    
+                await showTypingIndicator(3000);
+                addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
+            }, 40000);
 
-            await showTypingIndicator(3000);
-            addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
 
             setConversationStep(12);
             break;
@@ -407,6 +410,7 @@ export default function Home() {
                   loop
                   muted
                   playsInline
+                  controls={false}
                   className="absolute top-0 left-0 w-full h-full object-cover -z-10"
                   poster="https://i.imgur.com/G2Fa071.jpeg"
                 >

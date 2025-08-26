@@ -275,7 +275,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             <div>
                 <WistiaPlayer videoId={message.content} />
                 {message.meta?.videoTitle && (
-                    <p className="font-semibold text-foreground mt-2 p-1 text-base">{message.meta.videoTitle}</p>
+                     <p className="font-semibold text-foreground mt-2 p-1 text-base">{message.meta.videoTitle}</p>
                 )}
             </div>
         );
@@ -321,7 +321,6 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
       case "button":
         return (
             <div className="p-4 bg-background rounded-lg shadow-md border max-w-sm text-center animate-in fade-in zoom-in-95">
-                
                 <Button onClick={() => onButtonClick(message.meta?.buttonUrl)} className="w-full bg-primary hover:bg-primary/90 text-lg font-bold py-6">
                     {message.content}
                 </Button>
@@ -407,7 +406,9 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           isUser
             ? "bg-[#DCF8C6] text-black rounded-br-none"
             : "bg-secondary rounded-bl-none",
-           message.type === 'video' || message.type === 'image' || message.type === 'wistia-video' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
+           message.type === 'video' || message.type === 'image'  ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3",
+           message.type === 'wistia-video' ? "p-1.5" : "p-3"
+
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col gap-2">

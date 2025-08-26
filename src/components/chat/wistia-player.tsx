@@ -9,19 +9,22 @@ type WistiaPlayerProps = {
 
 export function WistiaPlayer({ videoId }: WistiaPlayerProps) {
   useEffect(() => {
-    const script1 = document.createElement("script");
-    script1.src = "https://fast.wistia.com/player.js";
-    script1.async = true;
-    document.body.appendChild(script1);
+    // This loads the Wistia player API
+    const wistiaScript = document.createElement("script");
+    wistiaScript.src = "https://fast.wistia.com/assets/external/E-v1.js";
+    wistiaScript.async = true;
+    document.body.appendChild(wistiaScript);
 
-    const script2 = document.createElement("script");
-    script2.src = `https://fast.wistia.com/embed/${videoId}.js`;
-    script2.async = true;
-    document.body.appendChild(script2);
+    // This specifically loads the video embed
+    const videoScript = document.createElement("script");
+    videoScript.src = `https://fast.wistia.com/embed/medias/${videoId}.jsonp`;
+    videoScript.async = true;
+    document.body.appendChild(videoScript);
 
     return () => {
-      document.body.removeChild(script1);
-      document.body.removeChild(script2);
+      // Cleanup scripts on component unmount
+      document.body.removeChild(wistiaScript);
+      document.body.removeChild(videoScript);
     };
   }, [videoId]);
 
@@ -31,10 +34,11 @@ export function WistiaPlayer({ videoId }: WistiaPlayerProps) {
             .wistia_embed {
                 border-radius: 8px;
                 overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             }
         `}</style>
       <div
-        className={`wistia_embed wistia_async_${videoId} videoFoam=true`}
+        className={`wistia_async_${videoId} videoFoam=true autoPlay=true fullscreenButton=true`}
         style={{ height: "auto", width: "100%", aspectRatio: "0.5625" }}
       >
         &nbsp;
