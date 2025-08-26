@@ -13,38 +13,95 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { cn } from "@/lib/utils";
 
+
+type ConversationState = {
+  messages: Message[];
+  conversationStep: number;
+  userName: string;
+  userMotivation: string;
+  userPainDuration: string;
+  userAttempts: string;
+  conversationStarted: boolean;
+};
+
+const initialConversationState: ConversationState = {
+  messages: [],
+  conversationStep: 0,
+  userName: "",
+  userMotivation: "",
+  userPainDuration: "",
+  userAttempts: "",
+  conversationStarted: false,
+};
+
+
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversationState, setConversationState] = useState<ConversationState>(initialConversationState);
   const [isTyping, setIsTyping] = useState(false);
   const [userInput, setUserInput] = useState("");
-  const [conversationStep, setConversationStep] = useState(0);
   const { toast } = useToast();
-  const [userName, setUserName] = useState("");
-  const [userMotivation, setUserMotivation] = useState("");
-  const [userPainDuration, setUserPainDuration] = useState("");
-  const [userAttempts, setUserAttempts] = useState("");
-  const [userWhatsapp, setUserWhatsapp] = useState("");
   const [isViewingStatus, setIsViewingStatus] = useState(false);
-  const [conversationStarted, setConversationStarted] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const chatLayoutRef = useRef<{ scrollToBottom: () => void }>(null);
   const [inputPlaceholder, setInputPlaceholder] = useState("Digite uma mensagem...");
+  const storageKey = "zap-sales-funnel-progress";
 
-
+  // Load state from localStorage on mount
   useEffect(() => {
     setIsMounted(true);
+    try {
+      const savedStateJSON = localStorage.getItem(storageKey);
+      if (savedStateJSON) {
+        const savedState = JSON.parse(savedStateJSON);
+        // We need to convert date strings back to Date objects
+        savedState.messages = savedState.messages.map((msg: Message) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+        }));
+        setConversationState(savedState);
+
+        // Restore placeholder based on step
+        const currentStep = savedState.conversationStep;
+        if (currentStep === 1 || currentStep === 2) setInputPlaceholder("Digite seu nome aqui...");
+        else if (currentStep === 3) setInputPlaceholder("Descreva o que você quer mudar...");
+        else if (currentStep === 5) setInputPlaceholder("Pode me contar, estou aqui pra te ouvir...");
+        else if (currentStep === 10) setInputPlaceholder("Seu feedback sincero aqui...");
+
+      }
+    } catch (error) {
+      console.error("Failed to load state from localStorage:", error);
+      setConversationState(initialConversationState);
+    }
   }, []);
 
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    if (isMounted) { // Prevent saving initial state before loading from storage
+      try {
+        const stateToSave = JSON.stringify(conversationState);
+        localStorage.setItem(storageKey, stateToSave);
+      } catch (error) {
+        console.error("Failed to save state to localStorage:", error);
+      }
+    }
+  }, [conversationState, isMounted]);
+
+
+  const updateState = (updates: Partial<ConversationState>) => {
+    setConversationState(prevState => ({ ...prevState, ...updates }));
+  };
+
+
   const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
-    setMessages((prev) => {
+    setConversationState(prev => {
       const newMessages = [
-        ...prev,
+        ...prev.messages,
         { ...message, id: Date.now().toString(), timestamp: new Date() },
       ];
       // After state updates, force scroll
       setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
-      return newMessages;
+      return {...prev, messages: newMessages};
     });
   };
   
@@ -57,7 +114,7 @@ export default function Home() {
 
   const handleNameCorrection = async (correction: NameCorrectionCheckOutput, text: string, currentQuestion: () => void) => {
     if (correction.isCorrectingName && correction.newName) {
-        setUserName(correction.newName);
+        updateState({ userName: correction.newName });
         await showTypingIndicator(2500);
         addMessage({ sender: "bot", type: "text", content: `Ops, anotado! Vou te chamar de ${correction.newName} então. 😉` });
         await showTypingIndicator(3000);
@@ -68,7 +125,7 @@ export default function Home() {
   }
   
   const startConversation = async () => {
-    setConversationStarted(true);
+    updateState({ conversationStarted: true });
     addMessage({ sender: "user", type: "text", content: "Chega de sofrer. Eu preciso encontrar a minha cura e vi que você pode me ajudar com o mapa." });
     await showTypingIndicator(2500);
     addMessage({
@@ -76,7 +133,7 @@ export default function Home() {
       type: "audio",
       content: "https://unrivaled-gelato-f313ef.netlify.app/audio1.mp3",
     });
-    setConversationStep(1);
+    updateState({ conversationStep: 1 });
 
     // After 10 seconds, send a text message asking for the name
     setTimeout(async () => {
@@ -96,7 +153,7 @@ export default function Home() {
       addMessage({ sender: "bot", type: "text", content: `A Ana é a prova de que a virada de chave é REAL.` });
 
       await showTypingIndicator(4000);
-      addMessage({ sender: "bot", type: "text", content: `${userName}, chega de desculpas. A sua transformação é minha prioridade, e vou provar isso.`});
+      addMessage({ sender: "bot", type: "text", content: `${conversationState.userName}, chega de desculpas. A sua transformação é minha prioridade, e vou provar isso.`});
       
       await showTypingIndicator(4000);
       addMessage({
@@ -108,7 +165,7 @@ export default function Home() {
       await showTypingIndicator(4500);
       addMessage({ sender: "bot", type: "text", content: "É isso mesmo. Você acessa os bônus, e se o seu coração disser 'É ISSO', você investe no mapa completo. Confiança total.", options: ["Eu quero os bônus agora!", "Como assim?"] });
 
-      setConversationStep(9);
+      updateState({ conversationStep: 9 });
   }
 
   const continueAfterStatus = async () => {
@@ -116,7 +173,7 @@ export default function Home() {
       addMessage({ sender: "bot", type: "text", content: `Viu só? A transformação é real e está ao seu alcance.` });
       
       await showTypingIndicator(4500);
-      addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${userName}. Por isso, o universo vai te dar um sinal claro.` });
+      addMessage({ sender: "bot", type: "text", content: `Senti uma conexão forte com você, ${conversationState.userName}. Por isso, o universo vai te dar um sinal claro.` });
       
       await showTypingIndicator(4000);
       addMessage({ sender: "bot", type: "text", content: `Uma pessoa que viveu o mesmo que você vai te ligar. AGORA.` });
@@ -126,7 +183,7 @@ export default function Home() {
 
       await new Promise(resolve => setTimeout(resolve, 4000));
       setIsCallActive(true);
-      setConversationStep(8); // Move to a step where we wait for the call to end
+      updateState({ conversationStep: 8 }); // Move to a step where we wait for the call to end
   }
 
 
@@ -135,7 +192,10 @@ export default function Home() {
 
     if (text === 'Ver status') {
         setIsViewingStatus(true);
-        setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
+        // Remove options from the "Ver status" message
+        updateState({
+            messages: conversationState.messages.map(msg => msg.type === 'status' ? { ...msg, options: undefined } : msg)
+        });
         return;
     }
 
@@ -143,17 +203,21 @@ export default function Home() {
     
     setUserInput("");
     setInputPlaceholder("Digite uma mensagem...");
-    setMessages(prev => prev.map(msg => ({ ...msg, options: undefined })));
+    // Clear all options from previous messages
+    updateState({
+        messages: conversationState.messages.map(msg => ({ ...msg, options: undefined }))
+    });
+
     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
 
     try {
-      switch (conversationStep) {
+      switch (conversationState.conversationStep) {
         case 1: // Asked for name
             const nameAnalysis = await extractNameFromFirstMessage({ userInput: text });
 
             if (nameAnalysis.isNamePresent && nameAnalysis.extractedName) {
                 const name = nameAnalysis.extractedName;
-                setUserName(name);
+                updateState({ userName: name });
                 await showTypingIndicator(3500);
                 addMessage({
                     sender: "bot",
@@ -161,18 +225,18 @@ export default function Home() {
                     content: `Prazer, ${name}! Fico feliz que você deu o primeiro passo. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
                 });
                 setInputPlaceholder("Descreva o que você quer mudar...");
-                setConversationStep(3);
+                updateState({ conversationStep: 3 });
             } else {
                  await showTypingIndicator(2500);
                  addMessage({ sender: "bot", type: "text", content: "Certo. E como posso te chamar?" });
                  setInputPlaceholder("Digite seu nome aqui...");
-                 setConversationStep(2); // Ask for name again
+                 updateState({ conversationStep: 2 }); // Ask for name again
             }
             break;
             
         case 2: // Asked for name again
             const name = text.trim();
-            setUserName(name);
+            updateState({ userName: name });
             await showTypingIndicator(3500);
             addMessage({
                 sender: "bot",
@@ -180,18 +244,18 @@ export default function Home() {
                 content: `Ok, ${name}! Agora sim. Me diga com toda a sua força: o que você quer transformar na sua vida a partir de HOJE?`,
             });
             setInputPlaceholder("Descreva o que você quer mudar...");
-            setConversationStep(3);
+            updateState({ conversationStep: 3 });
             break;
 
         case 3: // Asked about motivation
            const motivation = text;
            
-           const nameCorrectionCheck = await checkForNameCorrection({ previousName: userName, currentInput: text });
+           const nameCorrectionCheck = await checkForNameCorrection({ previousName: conversationState.userName, currentInput: text });
            if (await handleNameCorrection(nameCorrectionCheck, text, () => {
                addMessage({ sender: "bot", type: "text", content: `Certo, ${nameCorrectionCheck.newName}! E o que você quer transformar na sua vida a partir de hoje?` });
            })) return;
 
-           setUserMotivation(motivation);
+           updateState({ userMotivation: motivation });
            
            await showTypingIndicator(4500);
            const empathyResponseForMotivation = await generatePersonalizedResponse({ userInput: `A motivação da usuária é: "${motivation}". Crie uma resposta de UMA FRASE curta, poderosa e empática. Valide o sentimento dela e mostre que a transformação é possível. Use uma linguagem forte e inspiradora. Exemplo: "Compreendo essa dor. E é exatamente essa força que vamos usar para virar o jogo."` });
@@ -218,12 +282,12 @@ export default function Home() {
                 });
            }, 8000);
           
-          setConversationStep(4);
+          updateState({ conversationStep: 4 });
           break;
         
         case 4: // Asked about pain duration
             const duration = text;
-            setUserPainDuration(duration);
+            updateState({ userPainDuration: duration });
 
             await showTypingIndicator(4500);
             addMessage({
@@ -236,15 +300,15 @@ export default function Home() {
             addMessage({
               sender: "bot",
               type: "text",
-              content: `${userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que já fez?`
+              content: `${conversationState.userName}, seja sincera: você já tentou outras coisas pra resolver isso? O que já fez?`
             });
             setInputPlaceholder("Pode me contar, estou aqui pra te ouvir...");
-            setConversationStep(5);
+            updateState({ conversationStep: 5 });
             break;
             
         case 5: // Asked about previous attempts
             const attempts = text;
-            setUserAttempts(attempts);
+            updateState({ userAttempts: attempts });
 
             await showTypingIndicator(6000);
             const empathyResponse2 = await generatePersonalizedResponse({ userInput: `Sei como é frustrante tentar e não ver resultados. Muitas pessoas passam por isso. Mas o que importa é que sua busca termina aqui. O que você vai ver agora vai te provar que seu caso tem solução.` });
@@ -261,7 +325,7 @@ export default function Home() {
                 content: "Preparei depoimentos REAIS nos meus status. Gente como você, que virou o jogo. Espia lá e me diga o que sentiu.",
                 options: ["Ver status"],
             });
-            setConversationStep(7);
+            updateState({ conversationStep: 7 });
             break;
 
         case 6: // Fallback, not used in main flow
@@ -280,7 +344,7 @@ export default function Home() {
         case 9: // Access to bonuses before payment
             if (text.toLowerCase().includes("quero") || text.toLowerCase().includes("agora") || text.toLowerCase().includes("sim")) {
                 await showTypingIndicator(4000);
-                addMessage({ sender: "bot", type: "text", content: `Excelente decisão, ${userName}! Seus presentes estão liberados. Use-os para iniciar sua virada de chave HOJE.` });
+                addMessage({ sender: "bot", type: "text", content: `Excelente decisão, ${conversationState.userName}! Seus presentes estão liberados. Use-os para iniciar sua virada de chave HOJE.` });
                 
                 await showTypingIndicator(5000);
                 addMessage({ sender: "bot", type: "bonuses", content: "Sinta o poder da sua nova vida:" });
@@ -288,7 +352,7 @@ export default function Home() {
                 await showTypingIndicator(4000);
                 addMessage({ sender: "bot", type: "text", content: `Para finalizar e garantir que o mapa seja perfeito para você, me diga: O que você mais espera encontrar nele? E qual a sua avaliação para este nosso papo até aqui? Sua opinião é ouro pra mim.` });
                 setInputPlaceholder("Seu feedback sincero aqui...");
-                setConversationStep(10);
+                updateState({ conversationStep: 10 });
 
             } else { // "Como assim?"
                  await showTypingIndicator(5000);
@@ -323,7 +387,7 @@ export default function Home() {
             }, 40000);
 
 
-            setConversationStep(12);
+            updateState({ conversationStep: 12 });
             break;
         
         case 12: // After checkout link, handle questions
@@ -403,7 +467,7 @@ export default function Home() {
 
         {/* Main Content - Welcome screen or Chat */}
         <div className={cn("h-full w-full", isCallActive ? 'invisible' : 'visible')}>
-            {!conversationStarted ? (
+            {!conversationState.conversationStarted ? (
               <div className="relative flex h-dvh w-full flex-col items-center justify-center overflow-hidden">
                 <video
                   autoPlay
@@ -443,7 +507,7 @@ export default function Home() {
             ) : (
               <ChatLayout
                   ref={chatLayoutRef}
-                  messages={messages}
+                  messages={conversationState.messages}
                   onSendMessage={handleSendMessage}
                   isTyping={isTyping}
                   userInput={userInput}
