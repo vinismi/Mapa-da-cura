@@ -61,7 +61,7 @@ export function WistiaPlayer({ videoId }: WistiaPlayerProps) {
       <div
         ref={videoContainerRef}
         id={`wistia_player_${videoId}_${Math.random().toString(36).substring(7)}`}
-        className={`wistia_embed wistia_async_${videoId} videoFoam=true autoPlay=false fullscreenButton=true`}
+        className={`wistia_embed wistia_async_${videoId} videoFoam=true autoPlay=false fullscreenButton=true fullscreenOnplay=true`}
         style={{ height: "auto", width: "100%", aspectRatio: "0.5625" }}
       >
         &nbsp;
@@ -75,3 +75,5 @@ declare global {
     Wistia: any;
   }
 }
+
+    

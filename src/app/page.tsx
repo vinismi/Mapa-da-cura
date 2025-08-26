@@ -205,12 +205,16 @@ export default function Home() {
     
     setUserInput("");
     setInputPlaceholder("Digite uma mensagem...");
-    // Clear all options from previous messages
-    // Important: Pass the *new* messages array to the update function
-    setConversationState(prev => ({
-        ...prev,
-        messages: [...prev.messages.filter(m => m.id !== newUserMessage.id), newUserMessage].map(msg => ({ ...msg, options: undefined }))
-    }));
+    
+    // Clear all options from previous messages by updating the state correctly
+    setConversationState(prev => {
+        const updatedMessages = prev.messages.map(msg => ({ ...msg, options: undefined }));
+        return {
+            ...prev,
+            messages: updatedMessages,
+        };
+    });
+
 
     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
 
@@ -379,17 +383,18 @@ export default function Home() {
             await showTypingIndicator(3500);
             addMessage({ sender: "bot", type: "wistia-video", content: "g8x5qmw7tx", meta: { videoTitle: "Tutorial: Como acessar seu mapa" } });
             
-            await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "wistia-video", content: "yzbgyjbr1m", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
-            
             setTimeout(async () => {
-                await showTypingIndicator(4500);
-                addMessage({ sender: "bot", type: "text", content: "E para sua total tranquilidade, você tem uma garantia incondicional de 30 dias. Seu risco é zero." });
-    
-                await showTypingIndicator(3000);
-                addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
-            }, 40000);
-
+                await showTypingIndicator(3500);
+                addMessage({ sender: "bot", type: "wistia-video", content: "yzbgyjbr1m", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+                
+                setTimeout(async () => {
+                    await showTypingIndicator(4500);
+                    addMessage({ sender: "bot", type: "text", content: "E para sua total tranquilidade, você tem uma garantia incondicional de 30 dias. Seu risco é zero." });
+        
+                    await showTypingIndicator(3000);
+                    addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
+                }, 25000);
+            }, 10000);
 
             updateState({ conversationStep: 12 });
             break;
@@ -523,3 +528,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
