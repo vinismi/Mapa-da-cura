@@ -411,7 +411,7 @@ export default function Home() {
                   muted
                   playsInline
                   controls={false}
-                  className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+                  className="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none"
                   poster="https://i.imgur.com/G2Fa071.jpeg"
                 >
                   <source src="https://videos.pexels.com/video-files/853874/853874-hd_1920_1080_30fps.mp4" type="video/mp4" />
@@ -455,3 +455,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
