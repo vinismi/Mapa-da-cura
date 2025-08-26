@@ -93,16 +93,18 @@ export default function Home() {
   };
 
 
-  const addMessage = (message: Omit<Message, "id" | "timestamp">) => {
+  const addMessage = (message: Omit<Message, "id" | "timestamp">): Message => {
+    const newMessage = { ...message, id: Date.now().toString(), timestamp: new Date() };
     setConversationState(prev => {
       const newMessages = [
         ...prev.messages,
-        { ...message, id: Date.now().toString(), timestamp: new Date() },
+        newMessage
       ];
       // After state updates, force scroll
       setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
       return {...prev, messages: newMessages};
     });
+    return newMessage;
   };
   
   const showTypingIndicator = async (duration: number) => {
@@ -199,14 +201,16 @@ export default function Home() {
         return;
     }
 
-    addMessage({ sender: "user", type: "text", content: text });
+    const newUserMessage = addMessage({ sender: "user", type: "text", content: text });
     
     setUserInput("");
     setInputPlaceholder("Digite uma mensagem...");
     // Clear all options from previous messages
-    updateState({
-        messages: conversationState.messages.map(msg => ({ ...msg, options: undefined }))
-    });
+    // Important: Pass the *new* messages array to the update function
+    setConversationState(prev => ({
+        ...prev,
+        messages: [...prev.messages.filter(m => m.id !== newUserMessage.id), newUserMessage].map(msg => ({ ...msg, options: undefined }))
+    }));
 
     setTimeout(() => chatLayoutRef.current?.scrollToBottom(), 0);
 
@@ -519,5 +523,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
