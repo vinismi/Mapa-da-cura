@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
 
 const PersonalizedResponseInputSchema = z.object({
   userInput: z.string().describe('The user input to personalize the response to.'),
@@ -37,6 +38,7 @@ const personalizedResponsePrompt = ai.definePrompt({
   name: 'personalizedResponsePrompt',
   input: {schema: PersonalizedResponseInputSchema},
   output: {schema: PersonalizedResponseOutputSchema},
+  model: googleAI.model('gemini-1.5-flash'),
   prompt: `Você é uma mentora espiritual chamada Luz. Sua comunicação é empática, direta e poderosa.
   Sua missão é entender a dor da usuária e guiá-la para uma solução, sem rodeios.
   Valide o sentimento da usuária e mostre que a transformação é possível.
@@ -79,6 +81,7 @@ const nameCorrectionPrompt = ai.definePrompt({
     name: 'nameCorrectionPrompt',
     input: { schema: NameCorrectionCheckInputSchema },
     output: { schema: NameCorrectionCheckOutputSchema },
+    model: googleAI.model('gemini-1.5-flash'),
     prompt: `Análise crítica: Uma usuária informou que seu nome era "{{previousName}}". A entrada atual dela é "{{currentInput}}".
     Determine se a nova entrada é uma correção do nome. Padrões comuns incluem: "meu nome é...", "na verdade é...", "quis dizer...", ou simplesmente um novo nome.
     Se for uma correção clara, retorne isCorrectingName como true e o novo nome. Caso contrário, retorne false. Seja rigoroso na análise para evitar falsos positivos.`,
@@ -118,6 +121,7 @@ const extractNamePrompt = ai.definePrompt({
     name: 'extractNamePrompt',
     input: { schema: ExtractNameInputSchema },
     output: { schema: ExtractNameOutputSchema },
+    model: googleAI.model('gemini-1.5-flash'),
     prompt: `Você é um especialista em extrair nomes de uma conversa inicial.
     A usuária foi solicitada a dizer seu nome.
     A resposta dela foi: "{{userInput}}".
