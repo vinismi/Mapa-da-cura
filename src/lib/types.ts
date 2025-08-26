@@ -1,7 +1,8 @@
+
 export type Message = {
   id: string;
   sender: "user" | "bot";
-  type: "text" | "image" | "video" | "audio" | "button" | "bonuses" | "testimonial" | "status" | "live-call" | "call-summary";
+  type: "text" | "image" | "video" | "audio" | "button" | "bonuses" | "testimonial" | "status" | "live-call" | "call-summary" | "wistia-video";
   content: string;
   timestamp: Date;
   dataAiHint?: string;

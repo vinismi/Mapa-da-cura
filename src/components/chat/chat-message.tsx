@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Separator } from "../ui/separator";
+import { WistiaPlayer } from "./wistia-player";
 
 type ChatMessageProps = {
   message: Message;
@@ -29,9 +30,9 @@ function BonusList() {
     ];
 
     const downloadableBonuses = [
-        { name: "Ebook_Chakras.pdf", size: "4.1 MB", type: "pdf", url: "https://drive.google.com/file/d/10be4EAPWnpWZF6oOxeOIx7CUUS4QumaS/view" },
-        { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf", url: "https://drive.google.com/file/d/1xUZ7MV-X2gHi3lECrn2Xf73eelXigK7O/view" },
-        { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf", url: "https://drive.google.com/file/d/1QyuXXXa2iFYk_JxmGjB4TKa6y3_kfzT0/view" },
+        { name: "Ebook_Chakras.pdf", size: "4.1 MB", type: "pdf", url: "https://drive.google.com/file/d/10be4EAPWnpWZF6oOxeOIx7CUUS4QumaS/view?usp=sharing" },
+        { name: "Ritual_Protecao.pdf", size: "1.8 MB", type: "pdf", url: "https://drive.google.com/file/d/1xUZ7MV-X2gHi3lECrn2Xf73eelXigK7O/view?usp=sharing" },
+        { name: "Salmos_Ocultos.pdf", size: "3.5 MB", type: "pdf", url: "https://drive.google.com/file/d/1QyuXXXa2iFYk_JxmGjB4TKa6y3_kfzT0/view?usp=sharing" },
     ]
 
     return (
@@ -269,6 +270,15 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
             )}
           </div>
         );
+      case "wistia-video":
+        return (
+            <div>
+                <WistiaPlayer videoId={message.content} />
+                {message.meta?.videoTitle && (
+                    <p className="font-semibold text-foreground mt-2 p-1 text-base">{message.meta.videoTitle}</p>
+                )}
+            </div>
+        );
       case "video":
         return (
           <div className="relative group">
@@ -397,7 +407,7 @@ export function ChatMessage({ message, onSendMessage }: ChatMessageProps) {
           isUser
             ? "bg-[#DCF8C6] text-black rounded-br-none"
             : "bg-secondary rounded-bl-none",
-           message.type === 'video' || message.type === 'image' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
+           message.type === 'video' || message.type === 'image' || message.type === 'wistia-video' ? "p-1.5 bg-transparent dark:bg-transparent shadow-none" : "p-3"
         )}
       >
         <div className="break-words whitespace-pre-wrap flex flex-col gap-2">
@@ -439,5 +449,3 @@ declare global {
     Wistia: any;
   }
 }
-
-    

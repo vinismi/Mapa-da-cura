@@ -309,10 +309,13 @@ export default function Home() {
             addMessage({ sender: "bot", type: "text", content: "Tudo pronto. Para selar seu compromisso com a sua cura, aqui estão os tutoriais para te guiar:" });
 
             await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+            addMessage({ sender: "bot", type: "wistia-video", content: "g8x5qmw7tx", meta: { videoTitle: "Tutorial: Como acessar seu mapa" } });
             
             await showTypingIndicator(3500);
-            addMessage({ sender: "bot", type: "video", content: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", meta: { videoTitle: "Tutorial: Como acessar seu mapa" } });
+            addMessage({ sender: "bot", type: "wistia-video", content: "yzbgyjbr1m", meta: { videoTitle: "Tutorial: Como realizar seu pagamento" } });
+            
+            await showTypingIndicator(4500);
+            addMessage({ sender: "bot", type: "text", content: "E para sua total tranquilidade, você tem uma garantia incondicional de 30 dias. Seu risco é zero." });
 
             await showTypingIndicator(3000);
             addMessage({ sender: "bot", type: "button", content: "Ir para o pagamento seguro", meta: { buttonUrl: "https://www.ggcheckout.com/checkout/v2/Xg11vqZcGKAcMrkaHs36" } });
@@ -448,7 +451,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    
