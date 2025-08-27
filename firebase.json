@@ -7,9 +7,14 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "frameworksBackend": {
-      "id": "nextn",
-      "region": "us-central1"
-    }
+    "rewrites": [
+      {
+        "source": "**",
+        "apphosting": {
+          "backendId": "nextn",
+          "region": "us-central1"
+        }
+      }
+    ]
   }
 }
