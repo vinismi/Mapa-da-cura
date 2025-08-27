@@ -7,14 +7,9 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "apphosting": {
-          "backendId": "mapadacura-backend",
-          "region": "us-central1"
-        }
-      }
-    ]
+    "apphosting": {
+      "backendId": "mapadacura-backend",
+      "region": "us-central1"
+    }
   }
 }
